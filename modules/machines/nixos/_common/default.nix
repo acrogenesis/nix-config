@@ -46,10 +46,10 @@
     "${inputs.secrets}/networks.nix"
   ];
 
-  time.timeZone = "Europe/Berlin";
+  time.timeZone = "America/Monterrey";
 
   users.users = {
-    notthebee = {
+    acrogenesis = {
       hashedPasswordFile = config.age.secrets.hashedUserPassword.path;
     };
     root = {
@@ -96,16 +96,16 @@
       hashedUserPassword.file = "${inputs.secrets}/hashedUserPassword.age";
       smtpPassword = {
         file = "${inputs.secrets}/smtpPassword.age";
-        owner = "notthebee";
-        group = "notthebee";
+        owner = "acrogenesis";
+        group = "acrogenesis";
         mode = "0440";
       };
     };
 
   };
   email = {
-    enable = true;
-    fromAddress = "moe@notthebe.ee";
+    enable = false;
+    fromAddress = "adrian@acrogenesis.com";
     toAddress = "server_announcements@mailbox.org";
     smtpServer = "email-smtp.eu-west-1.amazonaws.com";
     smtpUsername = "AKIAYYXVLL34J7LSXFZF";

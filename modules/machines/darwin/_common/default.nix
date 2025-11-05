@@ -26,7 +26,7 @@
       max-jobs = "auto";
       trusted-users = [
         "root"
-        "notthebee"
+        "acrogenesis"
         "@admin"
       ];
     };

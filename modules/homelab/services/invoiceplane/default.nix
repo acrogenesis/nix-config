@@ -53,9 +53,9 @@ in
       sites.${cfg.url} = {
         invoiceTemplates =
           let
-            notthebee = pkgs.callPackage ./template.nix { };
+            acrogenesis = pkgs.callPackage ./template.nix { };
           in
-          [ notthebee ];
+          [ acrogenesis ];
         settings = {
           DISABLE_SETUP = true;
           SETUP_COMPLETED = true;

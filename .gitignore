@@ -6,3 +6,6 @@
 .direnv
 .env
 result
+
+secrets.nix
+nix-private/

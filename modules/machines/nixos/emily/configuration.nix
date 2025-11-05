@@ -115,7 +115,6 @@ in
     ../../../misc/zfs-root
     ../../../misc/agenix
     ./filesystems
-    ./backup
     ./homelab
     ./secrets
   ];

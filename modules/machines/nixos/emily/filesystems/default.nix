@@ -41,10 +41,10 @@ in
     fsType = "xfs";
   };
 
-  fileSystems."/mnt/data3" = {
-    device = "/dev/disk/by-label/Data3";
-    fsType = "xfs";
-  };
+  # fileSystems."/mnt/data3" = {
+  #   device = "/dev/disk/by-label/Data3";
+  #   fsType = "xfs";
+  # };
 
   fileSystems."/mnt/parity1" = {
     device = "/dev/disk/by-label/Parity1";

@@ -9,22 +9,6 @@ Very much a work in progress.
 > This section is generated automatically from the Nix configuration using GitHub Actions and [this cursed Nix script](bin/generateServicesTable.nix)
 
 <!-- BEGIN SERVICE LIST -->
-### alison
-|Icon|Name|Description|Category|
-|---|---|---|---|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/grafana.svg' width=32 height=32>|Grafana|Platform for data analytics and monitoring|Observability|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/home-assistant.svg' width=32 height=32>|Home Assistant|Home automation platform|Smart Home|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/prometheus.svg' width=32 height=32>|Prometheus|Monitoring system & time series database|Observability|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/png/raspberrymatic.png' width=32 height=32>|RaspberryMatic|Homematic IP CCU|Smart Home|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/uptime-kuma.svg' width=32 height=32>|Uptime Kuma|Service monitoring tool|Services|
-
-
-### aria
-|Icon|Name|Description|Category|
-|---|---|---|---|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/immich.svg' width=32 height=32>|Immich|Self-hosted photo and video management solution|Media|
-
-
 ### emily
 |Icon|Name|Description|Category|
 |---|---|---|---|
@@ -125,7 +109,7 @@ Install the system
 nixos-install \
 --root "/mnt" \
 --no-root-passwd \
---flake "git+file:///mnt/etc/nixos#hostname" # alison, emily, etc.
+ --flake "git+file:///mnt/etc/nixos#hostname" # emily, etc.
 ```
 
 Unmount the filesystems
@@ -141,3 +125,11 @@ Reboot
 ```bash
 reboot
 ```
+
+## Private secrets (`nix-private`)
+
+This flake expects an accompanying secrets repository that provides encrypted payloads and shared network settings. A ready-made template lives in `./nix-private`.
+
+- Copy the `nix-private` directory, update each placeholder `.age` file with real secrets via `agenix -e`, and edit `nix-private/networks.nix` to match your LAN.
+- Point the flake input at your local copy by setting `secrets = { url = "path:./nix-private"; flake = false; };` in `flake.nix` and refreshing the lock file with `nix flake lock --update-input secrets`.
+- Keep the directory private (or push it to your own private Git remote) because it will eventually contain your credentials.

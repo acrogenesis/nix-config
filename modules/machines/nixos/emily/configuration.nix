@@ -96,14 +96,13 @@ in
         rootPool = "-part3";
       };
       bootDevices = [
-        "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K"
-        "ata-Samsung_SSD_870_EVO_250GB_S6PENL0T905657B"
+        "nvme-Patriot_M.2_P300_512GB_P300WCBB24093006490"
       ];
       immutable = true;
       availableKernelModules = [
-        "uhci_hcd"
-        "ehci_pci"
+        "xhci_pci"
         "ahci"
+        "nvme"
         "sd_mod"
         "sr_mod"
       ];

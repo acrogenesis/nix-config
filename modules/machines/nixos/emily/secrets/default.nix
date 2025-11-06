@@ -28,6 +28,7 @@
     duckDNSToken.file = "${inputs.secrets}/duckDNSToken.age";
     withings2intervals.file = "${inputs.secrets}/withings2intervals.age";
     withings2intervals_authcode.file = "${inputs.secrets}/withings2intervals_authcode.age";
+    # resticBackblazeEnv.file = "${inputs.secrets}/resticBackblazeEnv.age";
     resticPassword = {
       file = "${inputs.secrets}/resticPassword.age";
       owner = "restic";

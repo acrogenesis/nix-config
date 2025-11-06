@@ -79,6 +79,17 @@ nix --experimental-features "nix-command flakes" run github:nix-community/disko 
     -- -m destroy,format,mount /tmp/disko.nix
 ```
 
+- If you're using the three 16 TB Seagate data disks, make sure they are labelled **before** `nixos-install` runs:
+
+```bash
+mkfs.xfs -f -L Data1   /dev/disk/by-id/ata-ST16000NM001G-...
+mkfs.xfs -f -L Data2   /dev/disk/by-id/ata-ST16000NM001G-...
+mkfs.xfs -f -L Parity1 /dev/disk/by-id/ata-ST16000NM001G-...
+mount /dev/disk/by-label/Data1   /mnt/data1
+mount /dev/disk/by-label/Data2   /mnt/data2
+mount /dev/disk/by-label/Parity1 /mnt/parity1
+```
+
 Install git
 
 ```bash

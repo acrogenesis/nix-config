@@ -1,14 +1,12 @@
 { config, builtins, ... }:
 let
-  diskMain = builtins.head config.zfs-root.bootDevices;
-  diskMirror = builtins.tail config.zfs-root.bootDevices;
-in
-{
+  bootDevice = builtins.head config.zfs-root.bootDevices;
+in {
   disko.devices = {
     disk = {
       main = {
         type = "disk";
-        device = "/dev/disk/by-id/${diskMain}";
+        device = "/dev/disk/by-id/${bootDevice}";
         content = {
           type = "gpt";
           partitions = {
@@ -18,43 +16,7 @@ in
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot/efis/${diskMain}-part2";
-              };
-            };
-            bpool = {
-              size = "4G";
-              content = {
-                type = "zfs";
-                pool = "bpool";
-              };
-            };
-            rpool = {
-              end = "-1M";
-              content = {
-                type = "zfs";
-                pool = "rpool";
-              };
-            };
-            bios = {
-              size = "100%";
-              type = "EF02";
-            };
-          };
-        };
-      };
-      mirror = {
-        type = "disk";
-        device = "/dev/disk/by-id/${diskMirror}";
-        content = {
-          type = "gpt";
-          partitions = {
-            efi = {
-              size = "1G";
-              type = "EF00";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot/efis/${diskMirror}-part2";
+                mountpoint = "/boot/efis/${bootDevice}-part2";
               };
             };
             bpool = {
@@ -82,7 +44,6 @@ in
     zpool = {
       bpool = {
         type = "zpool";
-        mode = "mirror";
         options = {
           ashift = "12";
           autotrim = "on";
@@ -113,7 +74,6 @@ in
       };
       rpool = {
         type = "zpool";
-        mode = "mirror";
         options = {
           ashift = "12";
           autotrim = "on";

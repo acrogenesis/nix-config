@@ -7,9 +7,9 @@
 }:
 {
   home.packages = with pkgs; [ grc ];
-  age.secrets = lib.mkIf (pkgs.system == "aarch64-darwin") {
-    bwSession.file = "${inputs.secrets}/bwSession.age";
-  };
+  # age.secrets = lib.mkIf (pkgs.system == "aarch64-darwin") {
+  #   bwSession.file = "${inputs.secrets}/bwSession.age";
+  # };
 
   programs = {
     fzf = {
@@ -92,33 +92,20 @@
         zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
         zstyle ':completion:*' menu yes=long select
 
-        ${
-          if (pkgs.system == "aarch64-darwin") then
-            ''
-              path=("$HOME/.nix-profile/bin" "/run/wrappers/bin" "/etc/profiles/per-user/$USER/bin" "/nix/var/nix/profiles/default/bin" "/run/current-system/sw/bin" "/opt/homebrew/bin" $path)
-              export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSession.path})
-              export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
-              alias lsblk="diskutil list"
-              ulimit -n 2048
-            ''
-          else
-            ""
-        }
+        export EDITOR=nvim || export EDITOR=vim
+        export LANG=en_US.UTF-8
+        export LC_CTYPE=en_US.UTF-8
+        export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
-          export EDITOR=nvim || export EDITOR=vim
-          export LANG=en_US.UTF-8
-          export LC_CTYPE=en_US.UTF-8
-          export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+        source $ZPLUG_HOME/repos/unixorn/warhol.plugin.zsh/warhol.plugin.zsh
+        bindkey '^[[A' history-substring-search-up
+        bindkey '^[[B' history-substring-search-down
 
-          source $ZPLUG_HOME/repos/unixorn/warhol.plugin.zsh/warhol.plugin.zsh
-          bindkey '^[[A' history-substring-search-up
-          bindkey '^[[B' history-substring-search-down
-
-          if command -v motd &> /dev/null
-          then
-            motd
-          fi
-          bindkey -e
+        if command -v motd &> /dev/null
+        then
+          motd
+        fi
+        bindkey -e
       '';
     };
   };

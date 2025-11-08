@@ -89,6 +89,7 @@ in
       removableEfi = true;
     };
   };
+  fileSystems."/boot/efis/${bootDeviceId}-part2".device = lib.mkForce "/dev/disk/by-partlabel/disk-main-efi";
   imports = [
     inputs.disko.nixosModules.disko
     ./disko.nix

@@ -53,6 +53,10 @@
       url = "github:notthebee/adiosbot?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    disko = {
+      url = "github:nix-community/disko?shallow=true";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-index-database = {
       url = "github:Mic92/nix-index-database?shallow=true";
       inputs.nixpkgs.follows = "nixpkgs";

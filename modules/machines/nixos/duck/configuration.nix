@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
   ...
@@ -89,6 +90,7 @@ in
     };
   };
   imports = [
+    inputs.disko.nixosModules.disko
     ./disko.nix
     ../../../misc/tailscale
     ../../../misc/zfs-root

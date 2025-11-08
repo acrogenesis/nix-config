@@ -7,37 +7,31 @@
 let
   hl = config.homelab;
   lan = hl.networks.local.lan;
-  emilyIpAddress = lan.reservations.emily.Address;
+  duckIpAddress = lan.reservations.duck.Address;
   gatewayIpAddress = lan.cidr.v4;
   hardDrives = [
     "/dev/disk/by-label/Data1"
     "/dev/disk/by-label/Data2"
-    "/dev/disk/by-label/Data3"
     "/dev/disk/by-label/Parity1"
   ];
 in
 {
-  services.prometheus.exporters.shellyplug.targets = [
-    "192.168.32.4"
-  ];
+  services.prometheus.exporters.shellyplug.targets = [ ];
   services.udev.extraRules = ''
-    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="68:05:ca:39:92:d8", ATTR{type}=="1", NAME="lan0"
-    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="68:05:ca:39:92:d9", ATTR{type}=="1", NAME="lan1"
+    SUBSYSTEM=\"net\", ACTION=\"add\", DRIVERS=\"?*\", ATTR{address}=\"a0:ad:9f:31:cd:70\", NAME=\"enp9s0\"
   '';
-  nixpkgs.config.packageOverrides = pkgs: {
-    vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-  };
   hardware = {
     enableRedistributableFirmware = true;
-    cpu.intel.updateMicrocode = true;
+    cpu.amd.updateMicrocode = true;
     graphics = {
       enable = true;
+      enable32Bit = true;
       extraPackages = with pkgs; [
-        intel-media-driver
-        intel-vaapi-driver
+        mesa.drivers
+        amdvlk
         vaapiVdpau
-        intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
-        vpl-gpu-rt # QSV on 11th gen or newer
+        libva
+        rocmPackages.clr.icd
       ];
     };
   };
@@ -50,43 +44,35 @@ in
       "nvme_core.default_ps_max_latency_us=50000"
     ];
     kernelModules = [
-      "coretemp"
-      "jc42"
-      "lm78"
-      "f71882fg"
+      "kvm-amd"
+      "amdgpu"
     ];
   };
 
-  networking =
-    let
-      mainIface = "lan1";
-    in
-    {
-      useDHCP = true;
-      networkmanager.enable = false;
-      hostName = "emily";
-      interfaces.${mainIface} = {
-        ipv4.addresses = [
-          {
-            address = emilyIpAddress;
-            prefixLength = 24;
-          }
-        ];
-      };
-      defaultGateway = {
-        address = gatewayIpAddress;
-        interface = mainIface;
-      };
-      hostId = "0730ae51";
-      firewall = {
-        enable = true;
-        allowPing = true;
-        trustedInterfaces = [
-          mainIface
-          "tailscale0"
-        ];
-      };
+  networking = {
+    useDHCP = false;
+    networkmanager.enable = false;
+    hostName = "duck";
+    interfaces.enp9s0.ipv4.addresses = [
+      {
+        address = duckIpAddress;
+        prefixLength = 24;
+      }
+    ];
+    defaultGateway = {
+      address = gatewayIpAddress;
+      interface = "enp9s0";
     };
+    hostId = "0730ae51";
+    firewall = {
+      enable = true;
+      allowPing = true;
+      trustedInterfaces = [
+        "enp9s0"
+        "tailscale0"
+      ];
+    };
+  };
   zfs-root = {
     boot = {
       partitionScheme = {
@@ -143,7 +129,7 @@ in
     settings = {
       harddrives = {
         disks = hardDrives;
-        pwmPaths = [ "/sys/class/hwmon/hwmon2/device/pwm2:50:50" ];
+        pwmPaths = [ ];
         extraArgs = [
           "-i 30sec"
         ];
@@ -192,7 +178,6 @@ in
     hddtemp
     smartmontools
     cpufrequtils
-    intel-gpu-tools
     powertop
   ];
 

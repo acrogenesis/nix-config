@@ -9,7 +9,7 @@ Very much a work in progress.
 > This section is generated automatically from the Nix configuration using GitHub Actions and [this cursed Nix script](bin/generateServicesTable.nix)
 
 <!-- BEGIN SERVICE LIST -->
-### emily
+### duck
 |Icon|Name|Description|Category|
 |---|---|---|---|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/audiobookshelf.svg' width=32 height=32>|Audiobookshelf|Audiobook and podcast player|Media|
@@ -120,7 +120,7 @@ Install the system
 nixos-install \
 --root "/mnt" \
 --no-root-passwd \
- --flake "git+file:///mnt/etc/nixos#hostname" # emily, etc.
+ --flake "git+file:///mnt/etc/nixos#hostname" # duck, etc.
 ```
 
 Unmount the filesystems

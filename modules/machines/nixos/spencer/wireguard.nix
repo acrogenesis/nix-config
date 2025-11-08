@@ -31,7 +31,7 @@ in
 
       peers = [
         {
-          name = "emily";
+          name = "duck";
           publicKey = "npTrLwAIJZ3m4XqdmQpP/KIi0C6urjBQHoCuA1vOOTc=";
           allowedIPs = [ "${wgBase}.2/32" ];
         }

@@ -62,7 +62,7 @@ in
     services = {
       enable = true;
       slskd = {
-        enable = true;
+        enable = false;
         environmentFile = config.age.secrets.slskdEnvironmentFile.path;
       };
       backup = {

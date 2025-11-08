@@ -18,7 +18,7 @@ in
 {
   services.prometheus.exporters.shellyplug.targets = [ ];
   services.udev.extraRules = ''
-    SUBSYSTEM=\"net\", ACTION=\"add\", DRIVERS=\"?*\", ATTR{address}=\"a0:ad:9f:31:cd:70\", NAME=\"enp9s0\"
+    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="a0:ad:9f:31:cd:70", NAME="enp9s0"
   '';
   hardware = {
     enableRedistributableFirmware = true;

@@ -511,11 +511,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "path": "git+file://../nix-private",
+        "path": "../nix-private",
         "type": "path"
       },
       "original": {
-        "path": "git+file://../nix-private",
+        "path": "../nix-private",
         "type": "path"
       },
       "parent": []

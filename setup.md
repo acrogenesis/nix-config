@@ -105,6 +105,20 @@ vim ~/.ssh/id_ed25519
 chmod 600 ~/.ssh/id_ed25519
 ```
 
+```bash
+mkdir -p /mnt/persist/ssh && chmod 700 /mnt/persist/ssh
+```
+
+```bash
+# on mac
+scp ~/.config/age/ssh_host_ed25519_key root@192.168.50.125:/mnt/persist/ssh/ssh_host_ed25519_key
+
+# copy the public key (optional but nice to have)
+scp ~/.config/age/ssh_host_ed25519_key.pub root@192.168.50.125:/mnt/persist/ssh/ssh_host_ed25519_key.pub
+
+# lock down permissions on the installer
+chmod 600 /mnt/persist/ssh/ssh_host_ed25519_key
+```
 
 6. **Clone repos directly on the installer** (requires your Git credentials)
 ```bash

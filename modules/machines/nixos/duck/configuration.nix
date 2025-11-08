@@ -89,6 +89,7 @@ in
     };
   };
   imports = [
+    ./disko.nix
     ../../../misc/tailscale
     ../../../misc/zfs-root
     ../../../misc/agenix

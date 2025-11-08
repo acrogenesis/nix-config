@@ -26,79 +26,23 @@ mount /dev/disk/by-label/Data2   /mnt/data2
 mount /dev/disk/by-label/Parity1 /mnt/parity1
 ```
 
-1. **Partition the Patriot NVMe boot drive**
+1. **Clone repos directly on the installer** (requires your Git credentials)
 ```bash
-cat >/tmp/disko.nix <<'DISKO'
-{ disko.devices = {
-    disk.nvme = {
-      type = "disk";
-      device = "/dev/disk/by-id/nvme-Patriot_M.2_P300_512GB_P300WCBB24093006490";
-      content = {
-        type = "gpt";
-        partitions.efi = {
-          size = "1G";
-          type = "EF00";
-          content = {
-            type = "filesystem";
-            format = "vfat";
-            mountpoint = "/boot/efi";
-          };
-        };
-        partitions.bpool = {
-          size = "4G";
-          content = { type = "zfs"; pool = "bpool"; };
-        };
-        partitions.rpool = {
-          end = "-1M";
-          content = { type = "zfs"; pool = "rpool"; };
-        };
-      };
-    };
-    zpool = {
-      bpool = {
-        type = "zpool";
-        options = { ashift = "12"; autotrim = "on"; compatibility = "grub2"; };
-        rootFsOptions = {
-          acltype = "posixacl";
-          canmount = "off";
-          compression = "lz4";
-          relatime = "on";
-          xattr = "sa";
-          "com.sun:auto-snapshot" = "false";
-        };
-        datasets."nixos/root" = { type = "zfs_fs"; mountpoint = "/boot"; };
-      };
-      rpool = {
-        type = "zpool";
-        options = { ashift = "12"; autotrim = "on"; };
-        rootFsOptions = {
-          acltype = "posixacl";
-          canmount = "off";
-          compression = "zstd";
-          relatime = "on";
-          xattr = "sa";
-          "com.sun:auto-snapshot" = "false";
-        };
-        datasets = {
-          "nixos/root"    = { type = "zfs_fs"; mountpoint = "/"; };
-          "nixos/home"    = { type = "zfs_fs"; mountpoint = "/home"; };
-          "nixos/var/log" = { type = "zfs_fs"; mountpoint = "/var/log"; };
-          "nixos/var/lib" = { type = "zfs_fs"; mountpoint = "/var/lib"; };
-          "nixos/persist" = { type = "zfs_fs"; mountpoint = "/persist"; };
-          "nixos/nix"     = { type = "zfs_fs"; mountpoint = "/nix"; };
-        };
-      };
-    };
-  };
-}
-DISKO
+mkdir -p /mnt/etc/nixos
+git clone https://github.com/acrogenesis/nix-config.git /mnt/etc/nixos
+# git clone git@github.com:acrogenesis/nix-private.git /mnt/etc/nixos/nix-private
 
-```bash
-nix --experimental-features "nix-command flakes" run github:nix-community/disko -- \
-  -m destroy,format,mount /tmp/disko.nix
+git config --global --add safe.directory /mnt/etc/nixos
 ```
 
-5. **Setup SSH
+1. **Partition the Patriot NVMe boot drive**
+```bash
+nix run github:nix-community/disko -- \
+  --flake /mnt/etc/nixos#duck \
+  -m destroy,format,mount
+```
+
+1. **Setup SSH**
 ```bash
 vim ~/.ssh/id_ed25519
 chmod 600 ~/.ssh/id_ed25519
@@ -117,15 +61,6 @@ scp ~/.config/age/ssh_host_ed25519_key.pub root@192.168.50.125:/mnt/persist/ssh/
 
 # lock down permissions on the installer
 chmod 600 /mnt/persist/ssh/ssh_host_ed25519_key
-```
-
-6. **Clone repos directly on the installer** (requires your Git credentials)
-```bash
-mkdir -p /mnt/etc/nixos
-git clone https://github.com/acrogenesis/nix-config.git /mnt/etc/nixos
-# git clone git@github.com:acrogenesis/nix-private.git /mnt/etc/nixos/nix-private
-
-git config --global --add safe.directory /mnt/etc/nixos
 ```
 
 1. **Install**

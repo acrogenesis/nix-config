@@ -12,7 +12,7 @@ let
 in
 {
   services.fail2ban-cloudflare = {
-    enable = enabled;
+    enable = true;
     apiKeyFile = config.age.secrets.cloudflareFirewallApiKey.path;
     zoneId = "5a125e72bca5869bfb929db157d89d96";
 

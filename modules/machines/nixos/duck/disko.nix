@@ -1,4 +1,4 @@
-{ config, builtins, ... }:
+{ config, ... }:
 let
   bootDevice = builtins.head config.zfs-root.boot.bootDevices;
   partitionScheme = config.zfs-root.boot.partitionScheme;

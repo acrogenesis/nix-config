@@ -19,7 +19,7 @@ in
   };
   homelab = {
     enable = true;
-    baseDomain = "goose.party";
+    baseDomain = "rebelduck.cc";
     cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
     timeZone = "America/Monterrey";
     mounts = {
@@ -51,12 +51,12 @@ in
           path = "${hl.mounts.fast}/TimeMachine";
           "fruit:time machine" = "yes";
         };
-        YoutubeArchive = {
-          path = "${hl.mounts.merged}/YoutubeArchive";
-        };
-        YoutubeCurrent = {
-          path = "${hl.mounts.fast}/YoutubeCurrent";
-        };
+        # YoutubeArchive = {
+        #   path = "${hl.mounts.merged}/YoutubeArchive";
+        # };
+        # YoutubeCurrent = {
+        #   path = "${hl.mounts.fast}/YoutubeCurrent";
+        # };
       };
     };
     services = {
@@ -74,10 +74,10 @@ in
         local.enable = true;
       };
       keycloak = {
-        enable = false;
+        enable = true;
         dbPasswordFile = config.age.secrets.keycloakDbPasswordFile.path;
         cloudflared = {
-          tunnelId = "06b27fd2-4cb9-42e5-9d79-f4c4c44ca0c6";
+          tunnelId = "a219d447-9e7d-4ff9-a066-43a5e46e38cb";
           credentialsFile = config.age.secrets.keycloakCloudflared.path;
         };
       };
@@ -138,28 +138,28 @@ in
           passwordFile = config.age.secrets.nextcloudAdminPassword.path;
         };
         cloudflared = {
-          tunnelId = "cc246d42-a03d-41d4-97e2-48aa15d47297";
+          tunnelId = "51350538-83fd-4ce4-8a8c-5f561e432c56";
           credentialsFile = config.age.secrets.nextcloudCloudflared.path;
         };
       };
       vaultwarden = {
         enable = false;
         cloudflared = {
-          tunnelId = "3bcbbc74-3667-4504-9258-f272ce006a18";
+          tunnelId = "7f2164f9-b23d-4429-bebf-06eb66e3a7fc";
           credentialsFile = config.age.secrets.vaultwardenCloudflared.path;
         };
       };
       microbin = {
         enable = false;
         cloudflared = {
-          tunnelId = "216d72b6-6b2b-412f-90bc-1a44c1264871";
+          tunnelId = "07d0a879-e05b-4e20-b4f8-a300623282b9";
           credentialsFile = config.age.secrets.microbinCloudflared.path;
         };
       };
       miniflux = {
         enable = false;
         cloudflared = {
-          tunnelId = "9b2cac61-a439-4b1f-a979-f8519ea00e58";
+          tunnelId = "3e6b259f-ffdc-4730-bd8e-8e3c05600a28";
           credentialsFile = config.age.secrets.minifluxCloudflared.path;
         };
         adminCredentialsFile = config.age.secrets.minifluxAdminPassword.path;
@@ -168,7 +168,7 @@ in
         enable = false;
         environmentFile = config.age.secrets.navidromeEnv.path;
         cloudflared = {
-          tunnelId = "dc669277-8528-4a25-bacb-b844a262de17";
+          tunnelId = "5ff1bb60-0716-4a0e-ab0d-4bc6dc1fe6fb";
           credentialsFile = config.age.secrets.navidromeCloudflared.path;
         };
       };

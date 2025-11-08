@@ -5,7 +5,6 @@
 1. **Prep on macOS**
 ```bash
 git clone https://github.com/acrogenesis/nix-config.git
-git clone git@github.com:acrogenesis/nix-private.git   # private secrets repo
 ```
 
 1. **Boot the NixOS ISO & enable flakes**

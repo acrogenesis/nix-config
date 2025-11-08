@@ -119,7 +119,7 @@ in
       };
       jellyfin.enable = true;
       paperless = {
-        enable = false;
+        enable = true;
         passwordFile = config.age.secrets.paperlessPassword.path;
       };
       sabnzbd.enable = true;
@@ -132,7 +132,7 @@ in
         package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.jellyseerr;
       };
       nextcloud = {
-        enable = false;
+        enable = true;
         admin = {
           username = "acrogenesis";
           passwordFile = config.age.secrets.nextcloudAdminPassword.path;
@@ -143,14 +143,14 @@ in
         };
       };
       vaultwarden = {
-        enable = false;
+        enable = true;
         cloudflared = {
           tunnelId = "7f2164f9-b23d-4429-bebf-06eb66e3a7fc";
           credentialsFile = config.age.secrets.vaultwardenCloudflared.path;
         };
       };
       microbin = {
-        enable = false;
+        enable = true;
         cloudflared = {
           tunnelId = "07d0a879-e05b-4e20-b4f8-a300623282b9";
           credentialsFile = config.age.secrets.microbinCloudflared.path;

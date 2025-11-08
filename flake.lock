@@ -511,18 +511,14 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1762584736,
-        "narHash": "sha256-21sCNYLSX1wCHiZ2ko11oRBPKLsANAMCNgxdOJ5dLI0=",
-        "ref": "refs/heads/main",
-        "rev": "105fc350e19861531c5342ce3d7a20fa76317c24",
-        "revCount": 3,
-        "type": "git",
-        "url": "file:///Users/acrogenesis/Development/nix/nix-private"
+        "path": "git+file://../nix-private",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "file:///Users/acrogenesis/Development/nix/nix-private"
-      }
+        "path": "git+file://../nix-private",
+        "type": "path"
+      },
+      "parent": []
     },
     "systems": {
       "locked": {

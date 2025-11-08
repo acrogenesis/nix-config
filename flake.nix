@@ -58,7 +58,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     secrets = {
-      url = "git+file:///Users/acrogenesis/Development/nix/nix-private";
+      url = "git+file://../nix-private";
       flake = false;
     };
     jovian = {

@@ -9,6 +9,7 @@ let
   lan = hl.networks.local.lan;
   duckIpAddress = lan.reservations.duck.Address;
   gatewayIpAddress = lan.cidr.v4;
+  bootDeviceId = "nvme-Patriot_M.2_P300_512GB_P300WCBB24093006490";
   hardDrives = [
     "/dev/disk/by-label/Data1"
     "/dev/disk/by-label/Data2"
@@ -75,15 +76,7 @@ in
   };
   zfs-root = {
     boot = {
-      partitionScheme = {
-        biosBoot = "-part4";
-        efiBoot = "-part2";
-        bootPool = "-part1";
-        rootPool = "-part3";
-      };
-      bootDevices = [
-        "nvme-Patriot_M.2_P300_512GB_P300WCBB24093006490"
-      ];
+      bootDevices = [ bootDeviceId ];
       immutable = true;
       availableKernelModules = [
         "xhci_pci"

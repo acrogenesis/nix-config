@@ -1,6 +1,8 @@
 { config, builtins, ... }:
 let
-  bootDevice = builtins.head config.zfs-root.bootDevices;
+  bootDevice = builtins.head config.zfs-root.boot.bootDevices;
+  partitionScheme = config.zfs-root.boot.partitionScheme;
+  efiMount = "/boot/efis/${bootDevice}${partitionScheme.efiBoot}";
 in
 {
   disko.devices = {
@@ -17,7 +19,7 @@ in
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot/efis/${bootDevice}-part2";
+                mountpoint = efiMount;
               };
             };
             bpool = {

@@ -12,12 +12,12 @@
 
   programs.git = {
     enable = true;
-    userName = "Wolfgang";
-    userEmail = "mail@weirdrescue.pw";
+    userName = "Adrian Cruz";
+    userEmail = "adrian@acrogenesis.com";
 
     extraConfig = {
       core = {
-        sshCommand = "ssh -o 'IdentitiesOnly=yes' -i ~/.ssh/notthebee";
+        sshCommand = "ssh -o 'IdentitiesOnly=yes' -i ~/.ssh/id_ed25519";
       };
     };
     includes = [

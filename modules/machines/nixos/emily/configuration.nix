@@ -196,13 +196,13 @@ in
     powertop
   ];
 
-  tg-notify = {
-    enable = true;
-    credentialsFile = config.age.secrets.tgNotifyCredentials.path;
-  };
+  # tg-notify = {
+  #   enable = false;
+  #   credentialsFile = config.age.secrets.tgNotifyCredentials.path;
+  # };
 
-  services.adiosBot = {
-    enable = true;
-    botTokenFile = config.age.secrets.adiosBotToken.path;
-  };
+  # services.adiosBot = {
+  #   enable = false;
+  #   botTokenFile = config.age.secrets.adiosBotToken.path;
+  # };
 }

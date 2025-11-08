@@ -1,7 +1,8 @@
 { config, builtins, ... }:
 let
   bootDevice = builtins.head config.zfs-root.bootDevices;
-in {
+in
+{
   disko.devices = {
     disk = {
       main = {

@@ -1,13 +1,12 @@
 { ... }:
 let
   home = {
-    username = "notthebee";
-    homeDirectory = "/home/notthebee";
+    username = "acrogenesis";
+    homeDirectory = "/home/acrogenesis";
     stateVersion = "23.11";
   };
 in
 {
-
   nixpkgs = {
     overlays = [ ];
     config = {

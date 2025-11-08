@@ -48,7 +48,7 @@ in
       '';
     };
     timeZone = lib.mkOption {
-      default = "Europe/Berlin";
+      default = "America/Monterrey";
       type = lib.types.str;
       description = ''
         Time zone to be used for the homelab services

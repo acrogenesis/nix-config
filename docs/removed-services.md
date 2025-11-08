@@ -10,3 +10,5 @@
   SnapRAID is configured for two data disks plus one parity disk. `Data3` remains commented out until you install another drive.
 
 Keep this list in sync with future removals or re-enables so it serves as a quick reference for which pieces still need secrets or hardware.
+
+- **maya (NixOS desktop)** — removed from this fork; delete directory `modules/machines/nixos/maya` to avoid lint errors.

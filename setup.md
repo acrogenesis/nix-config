@@ -2,11 +2,6 @@
 
 ## Happy Path
 
-1. **Prep on macOS**
-```bash
-git clone https://github.com/acrogenesis/nix-config.git
-```
-
 1. **Boot the NixOS ISO & enable flakes**
 ```bash
 passwd                               # set root password
@@ -28,23 +23,14 @@ mount /dev/disk/by-label/Parity1 /mnt/parity1
 
 1. **Setup SSH**
 ```bash
-vim ~/.ssh/id_ed25519
-chmod 600 ~/.ssh/id_ed25519
-```
-
-```bash
 mkdir -p /mnt/persist/ssh && chmod 700 /mnt/persist/ssh
-```
 
-```bash
-# on mac
-scp ~/.config/age/ssh_host_ed25519_key root@192.168.50.125:/mnt/persist/ssh/ssh_host_ed25519_key
+scp ~/.config/age/ssh_host_ed25519_key root@192.168.50.20:/mnt/persist/ssh/ssh_host_ed25519_key
+scp ~/.config/age/ssh_host_ed25519_key root@192.168.50.20:/root/.ssh/id_ed25519
 
-# copy the public key (optional but nice to have)
-scp ~/.config/age/ssh_host_ed25519_key.pub root@192.168.50.125:/mnt/persist/ssh/ssh_host_ed25519_key.pub
-
-# lock down permissions on the installer
+chmod 600 ~/.ssh/id_ed25519
 chmod 600 /mnt/persist/ssh/ssh_host_ed25519_key
+
 ```
 
 1. **Clone repos directly on the installer** (requires your Git credentials)
@@ -54,6 +40,10 @@ git clone https://github.com/acrogenesis/nix-config.git /mnt/etc/nixos
 # git clone git@github.com:acrogenesis/nix-private.git /mnt/etc/nixos/nix-private
 
 git config --global --add safe.directory /mnt/etc/nixos
+```
+
+```bash
+scp /Users/acrogenesis/Development/nix/nix-config/secrets.nix root@192.168.50.20:/mnt/etc/nixos/secrets.nix
 ```
 
 1. **Partition the Patriot NVMe boot drive**

@@ -39,6 +39,7 @@ chmod 600 /mnt/persist/ssh/ssh_host_ed25519_key
 
 1. **Clone repos directly on the installer** (requires your Git credentials)
 ```bash
+rm -rf /mnt/etc/nixos
 mkdir -p /mnt/etc/nixos
 git clone https://github.com/acrogenesis/nix-config.git /mnt/etc/nixos
 git config --global --add safe.directory /mnt/etc/nixos

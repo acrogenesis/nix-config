@@ -26,10 +26,15 @@ in
   # This fixes the weird mergerfs permissions issue
   boot.initrd.systemd.enable = true;
 
-  fileSystems.${hl.mounts.fast} = {
-    device = "cache";
-    fsType = "zfs";
-  };
+  # fileSystems.${hl.mounts.fast} = {
+  #   device = "cache";
+  #   fsType = "zfs";
+  # };
+
+  # remove this if enabling cache
+  systemd.tmpfiles.rules = [
+    "d ${hl.mounts.fast} 0775 ${hl.user} ${hl.group} - -"
+  ];
 
   fileSystems."/mnt/data1" = {
     device = "/dev/disk/by-label/Data1";

@@ -93,6 +93,7 @@ in
       ++ (map (x: "d ${x.path} 0775 ${hl.user} ${hl.group} - -") (lib.attrValues cfg.shares));
 
     system.activationScripts.samba_user_create = lib.mkAfter ''
+      install -d -m0755 -o root -g root /run/lock
       install -d -m0755 -o root -g root /run/lock/samba
       install -d -m0750 -o root -g root /var/lib/samba/private
       smb_password=$(cat "${config.age.secrets.sambaPassword.path}")

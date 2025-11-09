@@ -37,8 +37,6 @@ chmod 600 /mnt/persist/ssh/ssh_host_ed25519_key
 ```bash
 mkdir -p /mnt/etc/nixos
 git clone https://github.com/acrogenesis/nix-config.git /mnt/etc/nixos
-# git clone git@github.com:acrogenesis/nix-private.git /mnt/etc/nixos/nix-private
-
 git config --global --add safe.directory /mnt/etc/nixos
 ```
 

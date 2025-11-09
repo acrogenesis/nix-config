@@ -26,22 +26,6 @@ mount /dev/disk/by-label/Data2   /mnt/data2
 mount /dev/disk/by-label/Parity1 /mnt/parity1
 ```
 
-1. **Clone repos directly on the installer** (requires your Git credentials)
-```bash
-mkdir -p /mnt/etc/nixos
-git clone https://github.com/acrogenesis/nix-config.git /mnt/etc/nixos
-# git clone git@github.com:acrogenesis/nix-private.git /mnt/etc/nixos/nix-private
-
-git config --global --add safe.directory /mnt/etc/nixos
-```
-
-1. **Partition the Patriot NVMe boot drive**
-```bash
-nix run github:nix-community/disko -- \
-  --flake /mnt/etc/nixos#duck \
-  -m destroy,format,mount
-```
-
 1. **Setup SSH**
 ```bash
 vim ~/.ssh/id_ed25519
@@ -62,6 +46,24 @@ scp ~/.config/age/ssh_host_ed25519_key.pub root@192.168.50.125:/mnt/persist/ssh/
 # lock down permissions on the installer
 chmod 600 /mnt/persist/ssh/ssh_host_ed25519_key
 ```
+
+1. **Clone repos directly on the installer** (requires your Git credentials)
+```bash
+mkdir -p /mnt/etc/nixos
+git clone https://github.com/acrogenesis/nix-config.git /mnt/etc/nixos
+# git clone git@github.com:acrogenesis/nix-private.git /mnt/etc/nixos/nix-private
+
+git config --global --add safe.directory /mnt/etc/nixos
+```
+
+1. **Partition the Patriot NVMe boot drive**
+```bash
+nix run github:nix-community/disko -- \
+  --flake /mnt/etc/nixos#duck \
+  -m destroy,format,mount
+```
+
+## Repeat ssh and clone
 
 1. **Install**
 ```bash

@@ -141,6 +141,21 @@ reboot
 
 This flake expects an accompanying secrets repository that provides encrypted payloads and shared network settings. A ready-made template lives in `./nix-private`.
 
-- Copy the `nix-private` directory, update each placeholder `.age` file with real secrets via `agenix -e`, and edit `nix-private/networks.nix` to match your LAN.
+- Copy the `nix-private` directory, update each placeholder `.age` file with real secrets (see below), and edit `nix-private/networks.nix` to match your LAN.
 - Point the flake input at your local copy by setting `secrets = { url = "path:./nix-private"; flake = false; };` in `flake.nix` and refreshing the lock file with `nix flake lock --update-input secrets`.
 - Keep the directory private (or push it to your own private Git remote) because it will eventually contain your credentials.
+- The production host currently runs without a dedicated ZFS `cache` pool. `/mnt/cache` is just a regular directory created at boot so services keep working. If you add a fast tier later, reintroduce the `fileSystems.${hl.mounts.fast}` stanza and create/import that pool before rebooting.
+
+### Encrypting secrets correctly
+
+Use the helper script to encrypt/decrypt secrets against the right key:
+
+```bash
+nix shell nixpkgs#age nixpkgs#ssh-to-age --command ./scripts/reencrypt-age-secrets.sh \
+  --personal-key ~/.config/age/ssh_host_ed25519_key \
+  --host-public-key ~/.config/age/ssh_host_ed25519_key.pub \
+  --recipient-type ssh
+```
+
+- Add `--dry-run --yes` first to verify your key can decrypt the existing payloads.
+- Drop `--dry-run` once you are ready to rewrite the `.age` files and commit/push them to `nix-private`.

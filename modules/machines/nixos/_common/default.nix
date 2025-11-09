@@ -94,23 +94,23 @@
     ];
     secrets = {
       hashedUserPassword.file = "${inputs.secrets}/hashedUserPassword.age";
-      smtpPassword = {
-        file = "${inputs.secrets}/smtpPassword.age";
-        owner = "acrogenesis";
-        group = "acrogenesis";
-        mode = "0440";
-      };
+      # smtpPassword = {
+      #   file = "${inputs.secrets}/smtpPassword.age";
+      #   owner = "acrogenesis";
+      #   group = "acrogenesis";
+      #   mode = "0440";
+      # };
     };
 
   };
-  email = {
-    enable = false;
-    fromAddress = "adrian@acrogenesis.com";
-    toAddress = "server_announcements@mailbox.org";
-    smtpServer = "email-smtp.eu-west-1.amazonaws.com";
-    smtpUsername = "AKIAYYXVLL34J7LSXFZF";
-    smtpPasswordPath = config.age.secrets.smtpPassword.path;
-  };
+  # email = {
+  #   enable = false;
+  #   fromAddress = "adrian@acrogenesis.com";
+  #   toAddress = "server_announcements@mailbox.org";
+  #   smtpServer = "email-smtp.eu-west-1.amazonaws.com";
+  #   smtpUsername = "AKIAYYXVLL34J7LSXFZF";
+  #   smtpPasswordPath = config.age.secrets.smtpPassword.path;
+  # };
 
   security = {
     doas.enable = lib.mkDefault false;

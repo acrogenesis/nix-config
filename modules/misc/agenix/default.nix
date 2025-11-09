@@ -10,7 +10,7 @@
       tailscaleAuthKey.file = "${inputs.secrets}/tailscaleAuthKey.age";
       resticBackblazeEnv.file = "${inputs.secrets}/resticBackblazeEnv.age";
       # tgNotifyCredentials.file = "${inputs.secrets}/tgNotifyCredentials.age";
-      gitIncludes.file = "${inputs.secrets}/gitIncludes.age";
+      # gitIncludes.file = "${inputs.secrets}/gitIncludes.age";
     };
   };
 }

@@ -9,6 +9,10 @@ mkdir -p ~/.config/nix
 echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 ```
 
+```bash
+ssh-copy-id -i ~/.ssh/id_ed25519 root@192.168.50.20
+```
+
 1. **Label & mount the data/parity disks** (skip if already labeled)
 ```bash
 mkfs.xfs -f -L Data1   /dev/disk/by-id/ata-ST16000NM001G-2KK103_ZL2GDWS4

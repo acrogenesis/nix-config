@@ -532,11 +532,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1762667332,
-        "narHash": "sha256-rrD8aOPx/ymIRJvcmS9kUaFuU7Ps8zakyeADabbxgsg=",
+        "lastModified": 1762672749,
+        "narHash": "sha256-MHtBtppYfhZmJ0t9bGrrgfZh47GCBeTU69g1SVT8xNU=",
         "ref": "refs/heads/main",
-        "rev": "2fd7eac24507e633b9200842763beb0f4e993eb0",
-        "revCount": 2,
+        "rev": "ed3e846301923064714d74fb3860d50ef22deb68",
+        "revCount": 3,
         "type": "git",
         "url": "ssh://git@github.com/acrogenesis/nix-private.git"
       },

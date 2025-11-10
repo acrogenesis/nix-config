@@ -84,5 +84,9 @@ in
         '';
       };
     };
+    systemd.tmpfiles.rules = lib.mkAfter [
+      "d ${cfg.mediaDir} 0770 ${homelab.user} ${homelab.group} - -"
+      "d ${cfg.consumptionDir} 0770 ${homelab.user} ${homelab.group} - -"
+    ];
   };
 }

@@ -52,7 +52,7 @@ in
   };
 
   networking = {
-    useDHCP = false;
+    useDHCP = true;
     networkmanager.enable = false;
     hostName = "duck";
     nameservers = [ "1.1.1.1" "8.8.8.8" gatewayIpAddress];

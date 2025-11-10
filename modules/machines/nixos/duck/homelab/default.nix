@@ -142,6 +142,7 @@ in
       sabnzbd.enable = true;
       sonarr.enable = true;
       radarr.enable = true;
+      flaresolverr.enable = true;
       bazarr.enable = true;
       prowlarr.enable = true;
       jellyseerr = {

@@ -74,6 +74,7 @@
     ./arr/jellyseerr
     ./arr/sonarr
     ./arr/radarr
+    ./arr/flaresolverr
     #./arr/lidarr
     ./audiobookshelf
     ./deluge

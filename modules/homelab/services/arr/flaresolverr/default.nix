@@ -47,6 +47,8 @@ in
   config = lib.mkIf cfg.enable {
     systemd.tmpfiles.rules = [
       "d ${cfg.configDir} 0750 ${homelab.user} ${homelab.group} - -"
+      "d ${cfg.configDir}/.cache 0750 ${homelab.user} ${homelab.group} - -"
+      "d ${cfg.configDir}/.local 0750 ${homelab.user} ${homelab.group} - -"
     ];
     systemd.services.${service} = {
       description = "FlareSolverr service";
@@ -58,6 +60,10 @@ in
         HOST = "127.0.0.1";
         LOG_LEVEL = cfg.logLevel;
         TZ = homelab.timeZone;
+        HOME = cfg.configDir;
+        XDG_CACHE_HOME = "${cfg.configDir}/.cache";
+        XDG_CONFIG_HOME = cfg.configDir;
+        XDG_DATA_HOME = cfg.configDir;
       };
       serviceConfig = {
         ExecStart = "${pkgs.flaresolverr}/bin/flaresolverr";

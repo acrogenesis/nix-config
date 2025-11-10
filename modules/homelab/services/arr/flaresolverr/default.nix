@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 let
   service = "flaresolverr";
   cfg = config.homelab.services.${service};
@@ -23,7 +23,7 @@ in
     };
     homepage.description = lib.mkOption {
       type = lib.types.str;
-      default = "Movie collection manager";
+      default = "Proxy server to bypass Cloudflare protection";
     };
     homepage.icon = lib.mkOption {
       type = lib.types.str;
@@ -33,17 +33,45 @@ in
       type = lib.types.str;
       default = "Arr";
     };
+    port = lib.mkOption {
+      type = lib.types.port;
+      default = 8191;
+      description = "Local port where ${service} listens.";
+    };
+    logLevel = lib.mkOption {
+      type = lib.types.str;
+      default = "info";
+      description = "Runtime log level for ${service}.";
+    };
   };
   config = lib.mkIf cfg.enable {
-    services.${service} = {
-      enable = true;
-      user = homelab.user;
-      group = homelab.group;
+    systemd.tmpfiles.rules = [
+      "d ${cfg.configDir} 0750 ${homelab.user} ${homelab.group} - -"
+    ];
+    systemd.services.${service} = {
+      description = "FlareSolverr service";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network-online.target" ];
+      requires = [ "network-online.target" ];
+      environment = {
+        PORT = toString cfg.port;
+        HOST = "127.0.0.1";
+        LOG_LEVEL = cfg.logLevel;
+        TZ = homelab.timeZone;
+      };
+      serviceConfig = {
+        ExecStart = "${pkgs.flaresolverr}/bin/flaresolverr";
+        User = homelab.user;
+        Group = homelab.group;
+        WorkingDirectory = cfg.configDir;
+        Restart = "on-failure";
+        RestartSec = 5;
+      };
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
-        reverse_proxy http://127.0.0.1:8191
+        reverse_proxy http://127.0.0.1:${toString cfg.port}
       '';
     };
   };

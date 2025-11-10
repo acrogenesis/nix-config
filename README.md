@@ -145,6 +145,7 @@ This flake expects an accompanying secrets repository that provides encrypted pa
 - Point the flake input at your local copy by setting `secrets = { url = "path:./nix-private"; flake = false; };` in `flake.nix` and refreshing the lock file with `nix flake lock --update-input secrets`.
 - Keep the directory private (or push it to your own private Git remote) because it will eventually contain your credentials.
 - The production host currently runs without a dedicated ZFS `cache` pool. `/mnt/cache` is just a regular directory created at boot so services keep working. If you add a fast tier later, reintroduce the `fileSystems.${hl.mounts.fast}` stanza and create/import that pool before rebooting.
+- Time Machine backups are exported from `/mnt/user/TimeMachine` (the merged array) so macOS sees the full capacity of the data disks. If you ever move the share back to `/mnt/cache`, update the Samba share definition accordingly.
 
 ### Encrypting secrets correctly
 

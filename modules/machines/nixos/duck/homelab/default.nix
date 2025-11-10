@@ -65,7 +65,7 @@ in
           path = "${hl.mounts.merged}/Misc";
         };
         TimeMachine = {
-          path = "${hl.mounts.fast}/TimeMachine";
+          path = "${hl.mounts.merged}/TimeMachine";
           "fruit:time machine" = "yes";
         };
         # YoutubeArchive = {

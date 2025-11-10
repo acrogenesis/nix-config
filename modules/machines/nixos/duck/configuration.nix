@@ -52,10 +52,10 @@ in
   };
 
   networking = {
-    useDHCP = true;
+    useDHCP = false;
     networkmanager.enable = false;
     hostName = "duck";
-    # nameservers = [ "1.1.1.1" "8.8.8.8" gatewayIpAddress];
+    nameservers = [ "1.1.1.1" "8.8.8.8" gatewayIpAddress];
     interfaces.enp9s0.ipv4.addresses = [
       {
         address = duckIpAddress;

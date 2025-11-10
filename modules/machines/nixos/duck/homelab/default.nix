@@ -9,6 +9,7 @@ let
   wg = config.homelab.networks.external.spencer-wireguard;
   wgBase = lib.strings.removeSuffix ".1" wg.gateway;
   hl = config.homelab;
+  lanIp = hl.networks.local.lan.reservations.${config.networking.hostName}.Address;
 in
 {
   services.fail2ban-cloudflare = {
@@ -16,6 +17,22 @@ in
     apiKeyFile = config.age.secrets.cloudflareFirewallApiKey.path;
     zoneId = "5a125e72bca5869bfb929db157d89d96";
 
+  };
+  services.dnsmasq = {
+    enable = true;
+    settings = {
+      interface = [
+        "tailscale0"
+        hl.networks.local.lan.interface
+      ];
+      bind-dynamic = true;
+      local-service = true;
+      domain-needed = true;
+      bogus-priv = true;
+      address = [
+        "/${hl.baseDomain}/${lanIp}"
+      ];
+    };
   };
   homelab = {
     enable = true;

@@ -38,7 +38,10 @@ in
     };
   };
   boot = {
-    zfs.forceImportRoot = true;
+    zfs = {
+      forceImportRoot = true;
+      extraPools = [ "cache" ];
+    };
     kernelParams = [
       "pcie_aspm=force"
       "consoleblank=60"

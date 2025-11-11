@@ -25,6 +25,18 @@ mount /dev/disk/by-label/Data2   /mnt/data2
 mount /dev/disk/by-label/Parity1 /mnt/parity1
 ```
 
+1. **Provision the NVMe cache pool**
+```bash
+lsblk -d -o NAME,SIZE,MODEL
+# verify the Samsung 980 PRO appears as /dev/nvme0n1 (adjust commands if the name differs)
+sudo sgdisk --zap-all /dev/nvme0n1
+sudo sgdisk -n1:0:0 -t1:bf00 /dev/nvme0n1
+sudo zpool create -o ashift=12 -O compression=zstd cache /dev/disk/by-id/nvme-SAMSUNG_SSD_980_PRO_2TB_<serial>-part1
+sudo zfs set mountpoint=/mnt/cache cache
+zpool status cache
+```
+> **Important:** replace `<serial>` with the actual value from `ls /dev/disk/by-id | grep SAMSUNG`. Confirm the target is the Samsung NVMe—never run these commands against the Patriot boot drive.
+
 1. **Setup SSH**
 ```bash
 mkdir -p /mnt/persist/ssh && chmod 700 /mnt/persist/ssh

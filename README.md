@@ -144,7 +144,7 @@ This flake expects an accompanying secrets repository that provides encrypted pa
 - Copy the `nix-private` directory, update each placeholder `.age` file with real secrets (see below), and edit `nix-private/networks.nix` to match your LAN.
 - Point the flake input at your local copy by setting `secrets = { url = "path:./nix-private"; flake = false; };` in `flake.nix` and refreshing the lock file with `nix flake lock --update-input secrets`.
 - Keep the directory private (or push it to your own private Git remote) because it will eventually contain your credentials.
-- The production host currently runs without a dedicated ZFS `cache` pool. `/mnt/cache` is just a regular directory created at boot so services keep working. If you add a fast tier later, reintroduce the `fileSystems.${hl.mounts.fast}` stanza and create/import that pool before rebooting.
+- The fast tier lives on a standalone ZFS pool named `cache` (Samsung 980 PRO NVMe) mounted at `/mnt/cache`. If you ever swap that drive, recreate/import the pool before rebooting or the `fileSystems.${hl.mounts.fast}` mount will fail.
 - Time Machine backups are exported from `/mnt/mergerfs_slow/TimeMachine`, i.e. directly from the data array, so macOS sees the full capacity of the slow tier. If you ever move the share to a different mount, update the Samba share definition accordingly.
 
 ### Encrypting secrets correctly

@@ -84,5 +84,26 @@ in
         '';
       };
     };
+    systemd.tmpfiles.rules = lib.mkAfter [
+      "d ${cfg.mediaDir} 0770 ${homelab.user} ${homelab.group} - -"
+      "d ${cfg.consumptionDir} 0770 ${homelab.user} ${homelab.group} - -"
+    ];
+    systemd.services =
+      let
+        paperlessUnits = [
+          "paperless-consumer"
+          "paperless-scheduler"
+          "paperless-task-queue"
+          "paperless-web"
+        ];
+        requiredMounts = lib.unique [
+          config.services.${service}.dataDir
+          cfg.mediaDir
+          cfg.consumptionDir
+        ];
+      in
+      lib.genAttrs paperlessUnits (_: {
+        unitConfig.RequiresMountsFor = lib.mkAfter requiredMounts;
+      });
   };
 }

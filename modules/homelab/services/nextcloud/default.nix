@@ -114,6 +114,12 @@ in
       settings = {
         overwriteprotocol = "https";
         default_phone_region = "MX";
+        trusted_domains = [
+          "nix-nextcloud"
+          "cloud.rebelduck.cc"
+          "files.rebelduck.cc"
+        ];
+        overwritehost = "cloud.rebelduck.cc";
       };
     };
 

@@ -90,11 +90,10 @@ in
         enable = true;
         tunnels.${cfg.cloudflared.tunnelId} = {
           credentialsFile = cfg.cloudflared.credentialsFile;
-          ingress = (lib.genAttrs hostnames (_: {
+          default = "http_status:404";
+          ingress = lib.genAttrs hostnames (_: {
             service = upstream;
-          })) // {
-            default = "http_status:404";
-          };
+          });
         };
       };
 

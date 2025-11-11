@@ -151,13 +151,11 @@ in
       };
       nextcloud = {
         enable = true;
+        url = "files.${hl.baseDomain}";
         admin = {
           username = "acrogenesis";
           passwordFile = config.age.secrets.nextcloudAdminPassword.path;
         };
-        aliases = [
-          "files.${hl.baseDomain}"
-        ];
         cloudflared = {
           tunnelId = "51350538-83fd-4ce4-8a8c-5f561e432c56";
           credentialsFile = config.age.secrets.nextcloudCloudflared.path;

@@ -107,13 +107,11 @@ in
       };
 
       config = {
+        overwriteProtocol = "https";
+        defaultPhoneRegion = "MX";
         dbtype = "pgsql";
         adminuser = cfg.admin.username;
         adminpassFile = cfg.admin.passwordFile;
-      };
-      settings = {
-        overwriteprotocol = "https";
-        default_phone_region = "MX";
       };
     };
 

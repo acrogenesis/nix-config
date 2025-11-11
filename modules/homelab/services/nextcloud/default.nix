@@ -80,72 +80,67 @@ in
       upstream = "http://127.0.0.1:8009";
     in
     {
-    services.nginx.virtualHosts."nix-nextcloud".listen = [
-      {
-        addr = "127.0.0.1";
-        port = 8009;
-      }
-    ];
-    services.cloudflared = {
-      enable = true;
-      tunnels.${cfg.cloudflared.tunnelId} = {
-        credentialsFile = cfg.cloudflared.credentialsFile;
-        ingress = (lib.genAttrs hostnames (_: {
-          service = upstream;
-        })) // {
-          default = "http_status:404";
+      services.nginx.virtualHosts."nix-nextcloud".listen = [
+        {
+          addr = "127.0.0.1";
+          port = 8009;
+        }
+      ];
+      services.cloudflared = {
+        enable = true;
+        tunnels.${cfg.cloudflared.tunnelId} = {
+          credentialsFile = cfg.cloudflared.credentialsFile;
+          ingress = (lib.genAttrs hostnames (_: {
+            service = upstream;
+          })) // {
+            default = "http_status:404";
+          };
         };
       };
-    };
 
-    services.nextcloud = {
-      enable = true;
-      hostName = "nix-nextcloud";
-      package = pkgs.nextcloud31;
-      database.createLocally = true;
-      configureRedis = true;
-      maxUploadSize = "16G";
-      https = true;
-      autoUpdateApps.enable = true;
-      extraAppsEnable = true;
-      extraApps = with config.services.nextcloud.package.packages.apps; {
-        inherit
-          calendar
-          contacts
-          mail
-          notes
-          tasks
-          ;
+      services.nextcloud = {
+        enable = true;
+        hostName = "nix-nextcloud";
+        package = pkgs.nextcloud31;
+        database.createLocally = true;
+        configureRedis = true;
+        maxUploadSize = "16G";
+        https = true;
+        autoUpdateApps.enable = true;
+        extraAppsEnable = true;
+        extraApps = with config.services.nextcloud.package.packages.apps; {
+          inherit
+            calendar
+            contacts
+            mail
+            notes
+            tasks
+            ;
 
+        };
+
+        config = {
+          dbtype = "pgsql";
+          adminuser = cfg.admin.username;
+          adminpassFile = cfg.admin.passwordFile;
+        };
+        settings = {
+          overwriteprotocol = "https";
+          default_phone_region = "MX";
+          trusted_domains = [
+            "nix-nextcloud"
+          ] ++ hostnames;
+          overwritehost = cfg.url;
+        };
       };
 
-      config = {
-        dbtype = "pgsql";
-        adminuser = cfg.admin.username;
-        adminpassFile = cfg.admin.passwordFile;
-      };
-      settings = {
-        overwriteprotocol = "https";
-        default_phone_region = "MX";
-        trusted_domains = [
-          "nix-nextcloud"
-        ] ++ hostnames;
-        overwritehost = cfg.url;
-      };
-    };
+      services.caddy.virtualHosts = lib.genAttrs hostnames (_: {
+        useACMEHost = hl.baseDomain;
+        extraConfig = ''
+          reverse_proxy ${upstream}
+        '';
+      });
 
-    services.caddy.virtualHosts = lib.mkMerge (
-      map
-        (host: {
-          "${host}" = {
-            useACMEHost = hl.baseDomain;
-            extraConfig = ''
-              reverse_proxy ${upstream}
-            '';
-          };
-        })
-        hostnames
-    );
-
-  };
+    }
+);
 }

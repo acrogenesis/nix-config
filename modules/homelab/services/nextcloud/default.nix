@@ -22,6 +22,11 @@ in
       type = lib.types.str;
       default = "cloud.${hl.baseDomain}";
     };
+    aliases = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "Additional hostnames that should serve the same Nextcloud instance.";
+    };
     monitoredServices = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [
@@ -69,7 +74,12 @@ in
       '';
     };
   };
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf cfg.enable (
+    let
+      hostnames = [ cfg.url ] ++ cfg.aliases;
+      upstream = "http://127.0.0.1:8009";
+    in
+    {
     services.nginx.virtualHosts."nix-nextcloud".listen = [
       {
         addr = "127.0.0.1";
@@ -80,8 +90,11 @@ in
       enable = true;
       tunnels.${cfg.cloudflared.tunnelId} = {
         credentialsFile = cfg.cloudflared.credentialsFile;
-        default = "http_status:404";
-        ingress."${cfg.url}".service = "http://127.0.0.1:8009";
+        ingress = (lib.genAttrs hostnames (_: {
+          service = upstream;
+        })) // {
+          default = "http_status:404";
+        };
       };
     };
 
@@ -116,12 +129,23 @@ in
         default_phone_region = "MX";
         trusted_domains = [
           "nix-nextcloud"
-          "cloud.rebelduck.cc"
-          "files.rebelduck.cc"
-        ];
-        overwritehost = "cloud.rebelduck.cc";
+        ] ++ hostnames;
+        overwritehost = cfg.url;
       };
     };
+
+    services.caddy.virtualHosts = lib.mkMerge (
+      map
+        (host: {
+          "${host}" = {
+            useACMEHost = hl.baseDomain;
+            extraConfig = ''
+              reverse_proxy ${upstream}
+            '';
+          };
+        })
+        hostnames
+    );
 
   };
 }

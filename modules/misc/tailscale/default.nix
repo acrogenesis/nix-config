@@ -13,6 +13,7 @@
     package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.tailscale;
     enable = true;
     authKeyFile = config.age.secrets.tailscaleAuthKey.path;
+    useRoutingFeatures = "both";
     extraUpFlags =
       let
         advertisedRoute =
@@ -23,6 +24,7 @@
       in
       [
         "--advertise-routes=${advertisedRoute}/32"
+        "--advertise-exit-node"
         "--reset"
       ];
   };

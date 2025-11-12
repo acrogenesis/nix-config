@@ -139,13 +139,13 @@ if __name__ == "__main__":
             syslog.syslog(
                     syslog.LOG_INFO, f"Fixing permissions on {cache_path}..."
                     )
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chgrp", "-R", f"{gid}", f"{cache_path}"])
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chmod", "-R", "u=rwX,go=rX", f"{cache_path}"])
+            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown", "-R", f"{uid}:{gid}", f"{cache_path}"])
+            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chmod", "-R", "ug=rwX,o=rX", f"{cache_path}"])
             syslog.syslog(
                     syslog.LOG_INFO, f"Fixing permissions on {slow_path}..."
                     )
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chgrp", "-R", f"{gid}", f"{slow_path}"])
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chmod", "-R", "u=rwX,go=rX", f"{slow_path}"])
+            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown", "-R", f"{uid}:{gid}", f"{slow_path}"])
+            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chmod", "-R", "ug=rwX,o=rX", f"{slow_path}"])
 
     fix_permissions(uid, gid, cache_path, slow_path)
     if args.hc_url != "":

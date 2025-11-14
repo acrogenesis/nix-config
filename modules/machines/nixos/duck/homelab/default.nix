@@ -163,6 +163,7 @@ in
       };
       vaultwarden = {
         enable = true;
+        url = "vault.${hl.baseDomain}";
         cloudflared = {
           tunnelId = "7f2164f9-b23d-4429-bebf-06eb66e3a7fc";
           credentialsFile = config.age.secrets.vaultwardenCloudflared.path;

@@ -92,23 +92,5 @@ in
       install -d -m 0770 -o ${homelab.user} -g ${homelab.group} ${cfg.mediaDir}
       install -d -m 0770 -o ${homelab.user} -g ${homelab.group} ${cfg.consumptionDir}
     '';
-    systemd.services =
-      let
-        paperlessUnits = [
-          "paperless-consumer"
-          "paperless-scheduler"
-          "paperless-task-queue"
-          "paperless-web"
-        ];
-        requiredMounts = lib.unique [
-          config.services.${service}.dataDir
-          cfg.mediaDir
-          cfg.consumptionDir
-        ];
-      in
-      lib.genAttrs paperlessUnits (_: {
-        unitConfig.RequiresMountsFor = lib.mkAfter requiredMounts;
-        serviceConfig.PrivateUsers = lib.mkForce false;
-      });
   };
 }

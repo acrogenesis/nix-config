@@ -88,6 +88,10 @@ in
       "d ${cfg.mediaDir} 0770 ${homelab.user} ${homelab.group} - -"
       "d ${cfg.consumptionDir} 0770 ${homelab.user} ${homelab.group} - -"
     ];
+    system.activationScripts.paperless-directories = ''
+      install -d -m 0770 -o ${homelab.user} -g ${homelab.group} ${cfg.mediaDir}
+      install -d -m 0770 -o ${homelab.user} -g ${homelab.group} ${cfg.consumptionDir}
+    '';
     systemd.services =
       let
         paperlessUnits = [

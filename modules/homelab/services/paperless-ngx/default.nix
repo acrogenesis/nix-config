@@ -104,6 +104,7 @@ in
       in
       lib.genAttrs paperlessUnits (_: {
         unitConfig.RequiresMountsFor = lib.mkAfter requiredMounts;
+        serviceConfig.PrivateUsers = lib.mkForce false;
       });
   };
 }

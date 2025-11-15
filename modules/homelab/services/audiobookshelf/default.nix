@@ -52,7 +52,8 @@ in
   };
   config = lib.mkIf cfg.enable (
     let
-      upstream = "http://127.0.0.1:${toString config.services.${service}.port}";
+      port = 8113;
+      upstream = "http://127.0.0.1:${toString port}";
       cfEnabled = cfg.cloudflared.credentialsFile != null && cfg.cloudflared.tunnelId != null;
     in
     {
@@ -60,7 +61,7 @@ in
         enable = true;
         user = homelab.user;
         group = homelab.group;
-        port = 8113;
+        inherit port;
       };
       services.caddy.virtualHosts."${cfg.url}" = {
         useACMEHost = homelab.baseDomain;

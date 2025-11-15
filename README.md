@@ -15,21 +15,18 @@ Very much a work in progress.
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/audiobookshelf.svg' width=32 height=32>|Audiobookshelf|Audiobook and podcast player|Media|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/bazarr.svg' width=32 height=32>|Bazarr|Subtitle manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/deluge.svg' width=32 height=32>|Deluge|Torrent client|Downloads|
+|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/flaresolverr.svg' width=32 height=32>|FlareSolverr|Proxy server to bypass Cloudflare protection|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/immich.svg' width=32 height=32>|Immich|Self-hosted photo and video management solution|Media|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/invoiceplane.svg' width=32 height=32>|InvoicePlane|Invoicing application|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/jellyfin.svg' width=32 height=32>|Jellyfin|The Free Software Media System|Media|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/jellyseerr.svg' width=32 height=32>|Jellyseerr|Media request and discovery manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/keycloak.svg' width=32 height=32>|Keycloak|Open Source Identity and Access Management|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/png/microbin.png' width=32 height=32>|Microbin|A minimal pastebin|Services|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/miniflux-light.svg' width=32 height=32>|Miniflux|Minimalist and opinionated feed reader|Services|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/navidrome.svg' width=32 height=32>|Navidrome|Self-hosted music streaming service|Media|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/nextcloud.svg' width=32 height=32>|Nextcloud|Enterprise File Storage and Collaboration|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/paperless.svg' width=32 height=32>|Paperless-ngx|Document management system|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/prowlarr.svg' width=32 height=32>|Prowlarr|PVR indexer|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/radarr.svg' width=32 height=32>|Radarr|Movie collection manager|Arr|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/radicale.svg' width=32 height=32>|Radicale|Free and Open-Source CalDAV and CardDAV Server|Services|
+|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/readarr.svg' width=32 height=32>|Readarr|Book collection manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sabnzbd.svg' width=32 height=32>|SABnzbd|The free and easy binary newsreader|Downloads|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/slskd.svg' width=32 height=32>|slskd|Web-based Soulseek client|Downloads|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sonarr.svg' width=32 height=32>|Sonarr|TV show collection manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/bitwarden.svg' width=32 height=32>|Vaultwarden|Password manager|Services|
 

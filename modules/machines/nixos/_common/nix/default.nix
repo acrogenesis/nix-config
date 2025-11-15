@@ -1,4 +1,7 @@
 { lib, ... }:
+let
+  readarrFaustviiPath = ../../../../.. + "/pkgs/readarr-faustvii";
+in
 {
   nix = {
     gc = {
@@ -23,5 +26,14 @@
       allowUnfree = true;
       allowUnfreePredicate = (_: true);
     };
+    overlays = [
+      (_final: prev: {
+        readarr-faustvii =
+          if prev.stdenv.hostPlatform.system == "x86_64-linux" then
+            prev.callPackage readarrFaustviiPath { }
+          else
+            prev.readarr;
+      })
+    ];
   };
 }

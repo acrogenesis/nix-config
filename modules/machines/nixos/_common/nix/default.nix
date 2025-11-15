@@ -30,7 +30,9 @@ in
       (_final: prev: {
         readarr-faustvii =
           if prev.stdenv.hostPlatform.system == "x86_64-linux" then
-            prev.callPackage readarrFaustviiPath { }
+            prev.callPackage readarrFaustviiPath {
+              pkgsMusl = prev.pkgsMusl;
+            }
           else
             prev.readarr;
       })

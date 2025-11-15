@@ -5,6 +5,7 @@
   makeWrapper,
   patchelf,
   musl,
+  pkgsMusl,
 }:
 
 let
@@ -43,7 +44,13 @@ stdenv.mkDerivation rec {
     chmod +x $out/share/${pname}-${version}/Readarr
     patchelf --set-interpreter ${musl}/lib/ld-musl-x86_64.so.1 \
       $out/share/${pname}-${version}/Readarr
-    makeWrapper "$out/share/${pname}-${version}/Readarr" $out/bin/Readarr
+    makeWrapper "$out/share/${pname}-${version}/Readarr" $out/bin/Readarr \
+      --prefix LD_LIBRARY_PATH : ${
+        lib.makeLibraryPath [
+          pkgsMusl.stdenv.cc.cc.lib
+          pkgsMusl.stdenv.cc.cc.libgcc
+        ]
+      }
 
     runHook postInstall
   '';

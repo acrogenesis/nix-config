@@ -1,4 +1,11 @@
-{ lib, stdenv, fetchurl, makeWrapper }:
+{
+  lib,
+  stdenv,
+  fetchurl,
+  makeWrapper,
+  patchelf,
+  musl,
+}:
 
 let
   version = "0.9.0";
@@ -23,7 +30,10 @@ stdenv.mkDerivation rec {
     inherit sha256;
   };
 
-  nativeBuildInputs = [ makeWrapper ];
+  nativeBuildInputs = [
+    makeWrapper
+    patchelf
+  ];
 
   installPhase = ''
     runHook preInstall
@@ -31,6 +41,8 @@ stdenv.mkDerivation rec {
     mkdir -p $out/{bin,share/${pname}-${version}}
     cp -r * $out/share/${pname}-${version}/.
     chmod +x $out/share/${pname}-${version}/Readarr
+    patchelf --set-interpreter ${musl}/lib/ld-musl-x86_64.so.1 \
+      $out/share/${pname}-${version}/Readarr
     makeWrapper "$out/share/${pname}-${version}/Readarr" $out/bin/Readarr
 
     runHook postInstall

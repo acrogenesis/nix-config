@@ -49,6 +49,7 @@ stdenv.mkDerivation rec {
         lib.makeLibraryPath [
           pkgsMusl.stdenv.cc.cc.lib
           pkgsMusl.stdenv.cc.cc.libgcc
+          pkgsMusl.icu
         ]
       }
 

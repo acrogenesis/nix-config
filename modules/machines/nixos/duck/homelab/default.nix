@@ -192,7 +192,13 @@ in
           credentialsFile = config.age.secrets.navidromeCloudflared.path;
         };
       };
-      audiobookshelf.enable = true;
+      audiobookshelf = {
+        enable = true;
+        cloudflared = {
+          tunnelId = "c29b7d0d-ca0f-4db2-95ff-6b5b732e54f3";
+          credentialsFile = config.age.secrets.audiobookshelfCloudflared.path;
+        };
+      };
       deluge.enable = true;
       wireguard-netns = {
         enable = false;

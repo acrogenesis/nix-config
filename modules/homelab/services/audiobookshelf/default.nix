@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 let
   service = "audiobookshelf";
   cfg = config.homelab.services.${service};
@@ -33,20 +33,51 @@ in
       type = lib.types.str;
       default = "Media";
     };
-  };
-  config = lib.mkIf cfg.enable {
-    services.${service} = {
-      enable = true;
-      user = homelab.user;
-      group = homelab.group;
-      port = 8113;
-    };
-    services.caddy.virtualHosts."${cfg.url}" = {
-      useACMEHost = homelab.baseDomain;
-      extraConfig = ''
-        reverse_proxy http://127.0.0.1:${toString config.services.${service}.port}
+    cloudflared.credentialsFile = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      example = lib.literalExpression ''
+        pkgs.writeText "cloudflare-credentials.json" '''
+        {"AccountTag":"secret","TunnelSecret":"secret","TunnelID":"secret"}
+        '''
       '';
+      description = "Path to the Cloudflare tunnel credentials JSON.";
+    };
+    cloudflared.tunnelId = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      example = "00000000-0000-0000-0000-000000000000";
+      description = "Cloudflare tunnel ID used to expose the service.";
     };
   };
-
+  config = lib.mkIf cfg.enable (
+    let
+      upstream = "http://127.0.0.1:${toString config.services.${service}.port}";
+      cfEnabled = cfg.cloudflared.credentialsFile != null && cfg.cloudflared.tunnelId != null;
+    in
+    {
+      services.${service} = {
+        enable = true;
+        user = homelab.user;
+        group = homelab.group;
+        port = 8113;
+      };
+      services.caddy.virtualHosts."${cfg.url}" = {
+        useACMEHost = homelab.baseDomain;
+        extraConfig = ''
+          reverse_proxy ${upstream}
+        '';
+      };
+    }
+    // lib.optionalAttrs cfEnabled {
+      services.cloudflared = {
+        enable = true;
+        tunnels.${cfg.cloudflared.tunnelId} = {
+          credentialsFile = cfg.cloudflared.credentialsFile;
+          default = "http_status:404";
+          ingress."${cfg.url}".service = upstream;
+        };
+      };
+    }
+  );
 }

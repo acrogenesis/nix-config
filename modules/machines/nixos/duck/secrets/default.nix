@@ -22,6 +22,7 @@
     nextcloudAdminPassword.file = "${inputs.secrets}/nextcloudAdminPassword.age";
     vaultwardenCloudflared.file = "${inputs.secrets}/vaultwardenCloudflared.age";
     microbinCloudflared.file = "${inputs.secrets}/microbinCloudflared.age";
+    audiobookshelfCloudflared.file = "${inputs.secrets}/audiobookshelfCloudflared.age";
     minifluxAdminPassword.file = "${inputs.secrets}/minifluxAdminPassword.age";
     minifluxCloudflared.file = "${inputs.secrets}/minifluxCloudflared.age";
     # duckDNSDomain.file = "${inputs.secrets}/duckDNSDomain.age";

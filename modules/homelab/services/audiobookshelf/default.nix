@@ -54,31 +54,32 @@ in
     let
       port = 8113;
       upstream = "http://127.0.0.1:${toString port}";
-      cfEnabled = cfg.cloudflared.credentialsFile != null && cfg.cloudflared.tunnelId != null;
     in
-    {
-      services.${service} = {
-        enable = true;
-        user = homelab.user;
-        group = homelab.group;
-        inherit port;
-      };
-      services.caddy.virtualHosts."${cfg.url}" = {
-        useACMEHost = homelab.baseDomain;
-        extraConfig = ''
-          reverse_proxy ${upstream}
-        '';
-      };
-    }
-    // lib.optionalAttrs cfEnabled {
-      services.cloudflared = {
-        enable = true;
-        tunnels.${cfg.cloudflared.tunnelId} = {
-          credentialsFile = cfg.cloudflared.credentialsFile;
-          default = "http_status:404";
-          ingress."${cfg.url}".service = upstream;
+    lib.mkMerge [
+      {
+        services.${service} = {
+          enable = true;
+          user = homelab.user;
+          group = homelab.group;
+          inherit port;
         };
-      };
-    }
+        services.caddy.virtualHosts."${cfg.url}" = {
+          useACMEHost = homelab.baseDomain;
+          extraConfig = ''
+            reverse_proxy ${upstream}
+          '';
+        };
+      }
+      (lib.mkIf (cfg.cloudflared.credentialsFile != null && cfg.cloudflared.tunnelId != null) {
+        services.cloudflared = {
+          enable = true;
+          tunnels.${cfg.cloudflared.tunnelId} = {
+            credentialsFile = cfg.cloudflared.credentialsFile;
+            default = "http_status:404";
+            ingress."${cfg.url}".service = upstream;
+          };
+        };
+      })
+    ]
   );
 }

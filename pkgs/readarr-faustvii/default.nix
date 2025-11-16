@@ -44,6 +44,12 @@ stdenv.mkDerivation rec {
     chmod +x $out/share/${pname}-${version}/Readarr
     patchelf --set-interpreter ${musl}/lib/ld-musl-x86_64.so.1 \
       $out/share/${pname}-${version}/Readarr
+    sqliteLib=${pkgsMusl.sqlite}/lib/libsqlite3.so
+    if [ -f "$sqliteLib" ]; then
+      ln -sf "$sqliteLib" $out/share/${pname}-${version}/libsqlite3.so
+      ln -sf "$sqliteLib" $out/share/${pname}-${version}/libsqlite3.so.0
+      ln -sf "$sqliteLib" $out/share/${pname}-${version}/liblibsqlite3.so.0
+    fi
     makeWrapper "$out/share/${pname}-${version}/Readarr" $out/bin/Readarr \
       --prefix LD_LIBRARY_PATH : ${
         lib.makeLibraryPath [
@@ -53,7 +59,8 @@ stdenv.mkDerivation rec {
           pkgsMusl.openssl
           pkgsMusl.sqlite
         ]
-      }
+      } \
+      --prefix LD_LIBRARY_PATH : "$out/share/${pname}-${version}"
 
     runHook postInstall
   '';

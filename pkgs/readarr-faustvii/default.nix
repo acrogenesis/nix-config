@@ -51,6 +51,7 @@ stdenv.mkDerivation rec {
           pkgsMusl.stdenv.cc.cc.libgcc
           pkgsMusl.icu
           pkgsMusl.openssl
+          pkgsMusl.sqlite
         ]
       }
 

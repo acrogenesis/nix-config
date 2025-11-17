@@ -80,7 +80,7 @@
 
   programs.git.enable = true;
   programs.mosh.enable = true;
-  programs.btop.enable = true;
+  programs.htop.enable = true;
   programs.neovim = {
     enable = true;
     viAlias = true;

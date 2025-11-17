@@ -58,7 +58,11 @@ in
     useDHCP = true;
     networkmanager.enable = false;
     hostName = "duck";
-    nameservers = [ "1.1.1.1" "8.8.8.8" gatewayIpAddress];
+    nameservers = [
+      "1.1.1.1"
+      "8.8.8.8"
+      gatewayIpAddress
+    ];
     interfaces.enp9s0.ipv4.addresses = [
       {
         address = duckIpAddress;
@@ -93,7 +97,8 @@ in
       removableEfi = true;
     };
   };
-  fileSystems."/boot/efis/${bootDeviceId}-part2".device = lib.mkForce "/dev/disk/by-partlabel/disk-main-efi";
+  fileSystems."/boot/efis/${bootDeviceId}-part2".device =
+    lib.mkForce "/dev/disk/by-partlabel/disk-main-efi";
   imports = [
     inputs.disko.nixosModules.disko
     ./disko.nix

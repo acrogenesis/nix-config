@@ -85,12 +85,11 @@ in
 
     environment.systemPackages = [ config.services.samba.package ];
 
-    systemd.tmpfiles.rules =
-      [
-        "d /var/lock/samba 0755 root root - -"
-        "d /var/lib/samba/private 0750 root root - -"
-      ]
-      ++ (map (x: "d ${x.path} 0775 ${hl.user} ${hl.group} - -") (lib.attrValues cfg.shares));
+    systemd.tmpfiles.rules = [
+      "d /var/lock/samba 0755 root root - -"
+      "d /var/lib/samba/private 0750 root root - -"
+    ]
+    ++ (map (x: "d ${x.path} 0775 ${hl.user} ${hl.group} - -") (lib.attrValues cfg.shares));
 
     system.activationScripts.samba_user_create = lib.mkAfter ''
       install -d -m0755 -o root -g root /run/lock

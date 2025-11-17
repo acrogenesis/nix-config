@@ -128,7 +128,8 @@ in
           default_phone_region = "MX";
           trusted_domains = [
             "nix-nextcloud"
-          ] ++ hostnames;
+          ]
+          ++ hostnames;
           overwritehost = cfg.url;
         };
       };
@@ -141,5 +142,5 @@ in
       });
 
     }
-);
+  );
 }

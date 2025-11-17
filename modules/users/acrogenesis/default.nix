@@ -18,7 +18,9 @@
         "input"
       ];
       group = "acrogenesis";
-      openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEiBWISainNZ2z111xO8t65x6LcMeP67BCtn1/OhvmsV adrian.rangel@gmail.com" ];
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEiBWISainNZ2z111xO8t65x6LcMeP67BCtn1/OhvmsV adrian.rangel@gmail.com"
+      ];
     };
     groups.acrogenesis.gid = 1000;
   };

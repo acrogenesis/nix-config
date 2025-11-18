@@ -96,15 +96,15 @@ sudo rsync -aHAX --delete /mnt/cache/Media/Books/ /mnt/mergerfs_slow/Media/Books
 
 ## 3. Protect against accidental cache writes
 
-Rename the cache directories out of the way and replace them with bind mounts so future writes go straight to `/mnt/user`:
+Move the old cache copies out of the way but leave plain directories behind (do **not** symlink them back into `/mnt/user`, as that creates an infinite loop through mergerfs):
 
 ```bash
-sudo mv /mnt/cache/Media/Photos /mnt/cache/Media/Photos.cache-only && sudo ln -s /mnt/user/Media/Photos /mnt/cache/Media/Photos
-sudo mv /mnt/cache/Media/Music  /mnt/cache/Media/Music.cache-only  && sudo ln -s /mnt/user/Media/Music  /mnt/cache/Media/Music
-sudo mv /mnt/cache/Documents    /mnt/cache/Documents.cache-only    && sudo ln -s /mnt/user/Documents    /mnt/cache/Documents
+sudo mv /mnt/cache/Media/Photos /mnt/cache/Media/Photos.cache-pre-migration && sudo install -d -m 0775 -o share -g share /mnt/cache/Media/Photos
+sudo mv /mnt/cache/Media/Music  /mnt/cache/Media/Music.cache-pre-migration  && sudo install -d -m 0775 -o share -g share /mnt/cache/Media/Music
+sudo mv /mnt/cache/Documents    /mnt/cache/Documents.cache-pre-migration    && sudo install -d -m 0775 -o share -g share /mnt/cache/Documents
 ```
 
-If you ever need to inspect the legacy data, refer to the `*.cache-only` directories. Leave them in place for at least one mover/restic cycle in case rollback is needed.
+The `*.cache-pre-migration` directories hold the extra copies you just made from the NVMe; keep them around until you have at least two successful mover + restic cycles, then delete them to reclaim space.
 
 ## 4. SnapRAID safety net
 

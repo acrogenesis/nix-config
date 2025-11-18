@@ -99,27 +99,26 @@ in
         ];
         serviceConfig =
           let
-            excludeFlag =
+            excludeArgs =
               if cfg.excludedPaths == [ ] then
                 ""
               else
-                ''
-                --exclude ${
+                "--exclude ${
                   concatStringsSep " " (map (path: "${cfg.cacheArray}/${path}") cfg.excludedPaths)
-                } \
-                '';
+                }";
+            runner = pkgs.writeShellScript "run-mergerfs-uncache" ''
+              exec ${lib.getExe mergerfs-uncache} \
+                -s ${config.services.mover.cacheArray} \
+                -d ${config.services.mover.backingArray} \
+                -t ${config.services.mover.percentageFree} \
+                ${excludeArgs} \
+                -u ${config.services.mover.user} \
+                -g ${config.services.mover.group}
+            '';
           in
           {
             Type = "oneshot";
-            ExecStart = ''
-              ${lib.getExe mergerfs-uncache} \
-              -s ${config.services.mover.cacheArray} \
-              -d ${config.services.mover.backingArray} \
-              -t ${config.services.mover.percentageFree} \
-              ${excludeFlag}
-              -u ${config.services.mover.user} \
-              -g ${config.services.mover.group} \
-            '';
+            ExecStart = runner;
             User = config.services.mover.user;
             Group = config.services.mover.group;
           };

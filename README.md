@@ -33,6 +33,37 @@ Very much a work in progress.
 
 <!-- END SERVICE LIST -->
 
+## Backups
+
+Duck’s restic jobs are wired through `modules/homelab/backup`, which automatically includes every enabled homelab service that declares a `configDir` or `dataDir`. For this host that resolves to the following application state directories:
+
+- `/var/lib/audiobookshelf`
+- `/var/lib/bazarr`
+- `/var/lib/deluge`
+- `/var/lib/flaresolverr`
+- `/var/lib/jellyfin`
+- `/var/lib/jellyseerr`
+- `/var/lib/keycloak`
+- `/var/lib/microbin`
+- `/var/lib/nextcloud`
+- `/var/lib/paperless`
+- `/var/lib/prowlarr`
+- `/var/lib/radarr`
+- `/var/lib/readarr`
+- `/var/lib/sabnzbd`
+- `/var/lib/sonarr`
+- `/var/lib/slskd`
+- `/var/lib/vaultwarden`
+
+Two restic targets are configured:
+
+- `appdata-local` → `rest:http://localhost:8000/appdata-local-duck`, runs Monday–Saturday at 05:00 and stores snapshots on `/mnt/user/Backups/Restic`.
+- `appdata-s3` → `s3://acrogenesis-homelab/appdata-duck`, runs Sundays at 05:00 and syncs the same set of directories to Backblaze B2 using the credentials in `resticBackblazeEnv`.
+
+Paperless media has its own S3 job (`paperless-s3`) that pushes `${homelab.services.paperless.mediaDir}` (`/mnt/user/Documents/Paperless/Documents`) every Sunday.
+
+Finally, Duck’s `homelab.services.backup.extraPaths` contains `/mnt/user/Media/Photos`, so Immich’s originals live in both restic repositories as well. Scratch areas such as `/mnt/user/Downloads` or `/mnt/user/Downloads.tmp` are intentionally excluded; add them to `extraPaths` if you ever want them in the snapshot set.
+
 ## Installation runbook (NixOS)
 
 Create a root password using the TTY

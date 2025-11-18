@@ -13,6 +13,11 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
+    configDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/etc/homepage-dashboard";
+      description = "Directory that stores Homepage configuration.";
+    };
     misc = lib.mkOption {
       default = [ ];
       type = lib.types.listOf (

@@ -160,17 +160,6 @@ in
     user = hl.user;
     group = hl.group;
     percentageFree = 60;
-    excludedPaths = [
-      "Media/Music"
-      "Media/Photos"
-      "YoutubeCurrent"
-      "Downloads.tmp"
-      "Media/Kiwix"
-      "Documents"
-      "TimeMachine"
-      ".DS_Store"
-      ".cache"
-    ];
   };
 
   services.autoaspm.enable = true;

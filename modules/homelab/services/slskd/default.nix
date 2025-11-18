@@ -22,15 +22,15 @@ in
     };
     musicDir = lib.mkOption {
       type = lib.types.str;
-      default = "${hl.mounts.fast}/Media/Music/Library";
+      default = "${hl.mounts.merged}/Media/Music/Library";
     };
     downloadDir = lib.mkOption {
       type = lib.types.str;
-      default = "${hl.mounts.fast}/Media/Music/Import";
+      default = "${hl.mounts.merged}/Media/Music/Import";
     };
     incompleteDownloadDir = lib.mkOption {
       type = lib.types.str;
-      default = "${hl.mounts.fast}/Media/Music/Import.tmp";
+      default = "${hl.mounts.merged}/Media/Music/Import.tmp";
     };
     url = lib.mkOption {
       type = lib.types.str;

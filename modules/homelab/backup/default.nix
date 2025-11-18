@@ -29,6 +29,11 @@ in
       type = lib.types.bool;
       default = false;
     };
+    extraPaths = lib.mkOption {
+      description = "Additional absolute directories that should be shipped to Restic.";
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+    };
     passwordFile = lib.mkOption {
       description = "File with password to the Restic repository";
       type = lib.types.path;
@@ -67,22 +72,33 @@ in
   };
   config =
     let
-      enabledServices = (
+      enabledServices =
         lib.attrsets.filterAttrs (
-          _name: value: value ? configDir && value ? enable && value.enable
-        ) hl.services
-      );
-      stateDirs = lib.strings.concatMapStrings (x: x + " ") (
-        lib.lists.forEach (lib.attrsets.mapAttrsToList (name: _value: name) enabledServices) (
+          _name: value:
+            value ? enable
+            && value.enable
+            && (
+              value ? configDir || value ? dataDir
+            )
+        ) hl.services;
+      stateDirList =
+        lib.concatMap (
           x:
-          lib.attrsets.attrByPath [
-            x
-            "configDir"
-          ] false enabledServices
-        )
-      );
+          let
+            attrs = enabledServices.${x};
+            dir =
+              if attrs ? configDir then
+                attrs.configDir
+              else if attrs ? dataDir then
+                attrs.dataDir
+              else
+                null;
+          in
+          lib.optionals (dir != null && dir != false) [ dir ]
+        ) (lib.attrsets.mapAttrsToList (name: _value: name) enabledServices);
+      backupPaths = lib.lists.unique (stateDirList ++ cfg.extraPaths);
     in
-    lib.mkIf (cfg.enable && enabledServices != { }) {
+    lib.mkIf (cfg.enable && backupPaths != [ ]) {
       systemd.tmpfiles.rules = lib.lists.optionals cfg.local.enable [
         "d ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -"
       ];
@@ -122,9 +138,7 @@ in
               ];
               exclude = [
               ];
-              paths = [
-                "/tmp/appdata-local-${config.networking.hostName}.tar"
-              ];
+              paths = backupPaths;
               backupPrepareCommand =
                 let
                   restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-local.repository}' -p ${cfg.passwordFile}";
@@ -132,7 +146,6 @@ in
                 ''
                   ${restic} stats || ${restic} init
                   ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 5
-                  ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-local-${config.networking.hostName}.tar ${stateDirs}
                   ${restic} unlock
                 '';
             };
@@ -156,9 +169,7 @@ in
                 ];
                 exclude = [
                 ];
-                paths = [
-                  "/tmp/appdata-s3-${config.networking.hostName}.tar"
-                ];
+                paths = backupPaths;
                 backupPrepareCommand =
                   let
                     restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-s3.repository}'";
@@ -166,7 +177,6 @@ in
                   ''
                     ${restic} stats || ${restic} init
                     ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 3
-                    ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-s3-${config.networking.hostName}.tar ${stateDirs}
                     ${restic} unlock
                   '';
               };

@@ -34,6 +34,11 @@ in
       type = lib.types.str;
       default = "Services";
     };
+    configDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/var/lib/keycloak";
+      description = "Directory containing Keycloak state.";
+    };
     dbPasswordFile = lib.mkOption {
       type = lib.types.path;
     };

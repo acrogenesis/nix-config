@@ -11,11 +11,11 @@ in
     };
     mediaDir = lib.mkOption {
       type = lib.types.str;
-      default = "${homelab.mounts.fast}/Documents/Paperless/Documents";
+      default = "${homelab.mounts.merged}/Documents/Paperless/Documents";
     };
     consumptionDir = lib.mkOption {
       type = lib.types.str;
-      default = "${homelab.mounts.fast}/Documents/Paperless/Import";
+      default = "${homelab.mounts.merged}/Documents/Paperless/Import";
     };
     passwordFile = lib.mkOption {
       type = lib.types.path;
@@ -92,5 +92,15 @@ in
       install -d -m 0770 -o ${homelab.user} -g ${homelab.group} ${cfg.mediaDir}
       install -d -m 0770 -o ${homelab.user} -g ${homelab.group} ${cfg.consumptionDir}
     '';
+    systemd.services =
+      lib.listToAttrs (
+        map (svc: {
+          name = svc;
+          value.unitConfig.RequiresMountsFor = [
+            cfg.mediaDir
+            cfg.consumptionDir
+          ];
+        }) cfg.monitoredServices
+      );
   };
 }

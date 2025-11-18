@@ -25,8 +25,13 @@ in
       '';
     };
     mediaDir = lib.mkOption {
-      type = lib.types.path;
-      default = "${config.homelab.mounts.fast}/Photos/Immich";
+      type = lib.types.str;
+      default = "${config.homelab.mounts.merged}/Photos/Immich";
+    };
+    configDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/var/lib/immich";
+      description = "Directory containing Immich application state.";
     };
     url = lib.mkOption {
       type = lib.types.str;
@@ -50,7 +55,10 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    systemd.tmpfiles.rules = [ "d ${cfg.mediaDir} 0775 immich ${homelab.group} - -" ];
+    systemd.tmpfiles.rules = [
+      "d ${cfg.mediaDir} 0775 immich ${homelab.group} - -"
+      "d ${cfg.configDir} 0770 immich ${homelab.group} - -"
+    ];
     users.users.immich.extraGroups = [
       "video"
       "render"

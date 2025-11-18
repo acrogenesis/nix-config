@@ -22,6 +22,10 @@ in
       type = lib.types.port;
       default = 5055;
     };
+    configDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/var/lib/${service}/config";
+    };
     package = lib.mkPackageOption pkgs "jellyseerr" { };
     homepage.name = lib.mkOption {
       type = lib.types.str;
@@ -45,6 +49,7 @@ in
       enable = true;
       port = cfg.port;
       package = cfg.package;
+      configDir = cfg.configDir;
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;

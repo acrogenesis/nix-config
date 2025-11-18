@@ -22,6 +22,11 @@ in
       type = lib.types.str;
       default = "127.0.0.1";
     };
+    configDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/var/lib/prometheus";
+      description = "Path containing Prometheus TSDB data.";
+    };
     port = lib.mkOption {
       type = lib.types.port;
       default = 9090;

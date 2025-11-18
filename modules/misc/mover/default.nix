@@ -12,6 +12,7 @@ let
     mkEnableOption
     types
     mkOption
+    concatStringsSep
     ;
   mergerfs-uncache = pkgs.writeScriptBin "mergerfs-uncache" (readFile ./mergerfs-uncache.py);
 in
@@ -35,10 +36,8 @@ in
       default = 50;
     };
     excludedPaths = mkOption {
-      description = "List of paths that should be excluded from moving";
+      description = "List of paths (relative to cacheArray) that should be excluded from moving";
       type = types.listOf types.str;
-      apply =
-        old: lib.strings.concatStringsSep " " (map (x: config.services.mover.cacheArray + "/" + x) old);
       default = [ ];
     };
     user = mkOption {
@@ -98,20 +97,32 @@ in
           pkgs.gawk
           mergerfs-uncache
         ];
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = ''
-            ${lib.getExe mergerfs-uncache} \
-            -s ${config.services.mover.cacheArray} \
-            -d ${config.services.mover.backingArray} \
-            -t ${config.services.mover.percentageFree} \
-            --exclude ${config.services.mover.excludedPaths} \
-            -u ${config.services.mover.user} \
-            -g ${config.services.mover.group} \
-          '';
-          User = config.services.mover.user;
-          Group = config.services.mover.group;
-        };
+        serviceConfig =
+          let
+            excludeFlag =
+              if cfg.excludedPaths == [ ] then
+                ""
+              else
+                ''
+                --exclude ${
+                  concatStringsSep " " (map (path: "${cfg.cacheArray}/${path}") cfg.excludedPaths)
+                } \
+                '';
+          in
+          {
+            Type = "oneshot";
+            ExecStart = ''
+              ${lib.getExe mergerfs-uncache} \
+              -s ${config.services.mover.cacheArray} \
+              -d ${config.services.mover.backingArray} \
+              -t ${config.services.mover.percentageFree} \
+              ${excludeFlag}
+              -u ${config.services.mover.user} \
+              -g ${config.services.mover.group} \
+            '';
+            User = config.services.mover.user;
+            Group = config.services.mover.group;
+          };
         onFailure = lib.lists.optionals (config ? tg-notify && config.tg-notify.enable) [
           "tg-notify@%i.service"
         ];

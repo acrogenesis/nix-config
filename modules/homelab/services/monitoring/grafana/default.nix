@@ -33,6 +33,11 @@ in
       type = lib.types.str;
       default = "Observability";
     };
+    configDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/var/lib/${service}";
+      description = "Directory for Grafana state and plugins.";
+    };
   };
   config = lib.mkIf cfg.enable {
     services.grafana = {

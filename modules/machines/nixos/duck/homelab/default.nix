@@ -53,13 +53,13 @@ in
           path = "${hl.mounts.merged}/Backups";
         };
         Documents = {
-          path = "${hl.mounts.fast}/Documents";
+          path = "${hl.mounts.merged}/Documents";
         };
         Media = {
           path = "${hl.mounts.merged}/Media";
         };
         Music = {
-          path = "${hl.mounts.fast}/Media/Music";
+          path = "${hl.mounts.merged}/Media/Music";
         };
         Misc = {
           path = "${hl.mounts.merged}/Misc";
@@ -72,7 +72,7 @@ in
         #   path = "${hl.mounts.merged}/YoutubeArchive";
         # };
         # YoutubeCurrent = {
-        #   path = "${hl.mounts.fast}/YoutubeCurrent";
+        #   path = "${hl.mounts.merged}/YoutubeCurrent";
         # };
       };
     };
@@ -89,6 +89,9 @@ in
         s3.url = "https://s3.us-west-002.backblazeb2.com/acrogenesis-homelab";
         s3.environmentFile = config.age.secrets.resticBackblazeEnv.path;
         local.enable = true;
+        extraPaths = [
+          "${hl.mounts.merged}/Media/Photos"
+        ];
       };
       keycloak = {
         enable = true;
@@ -104,7 +107,7 @@ in
       };
       immich = {
         enable = true;
-        mediaDir = "${hl.mounts.fast}/Media/Photos";
+        mediaDir = "${hl.mounts.merged}/Media/Photos";
       };
       invoiceplane = {
         enable = false;

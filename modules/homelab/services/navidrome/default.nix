@@ -19,7 +19,7 @@ in
     };
     musicDir = lib.mkOption {
       type = lib.types.str;
-      default = "${hl.mounts.fast}/Media/Music/Library";
+      default = "${hl.mounts.merged}/Media/Music/Library";
     };
     url = lib.mkOption {
       type = lib.types.str;

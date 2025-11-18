@@ -26,6 +26,11 @@ in
       type = lib.types.str;
       default = "Services";
     };
+    configDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/var/lib/radicale";
+      description = "Directory containing Radicale collections.";
+    };
     passwordFile = lib.mkOption {
       description = "Path to Radicale user credentials";
       type = lib.types.path;
@@ -46,7 +51,7 @@ in
           ];
         };
         storage = {
-          filesystem_folder = "/var/lib/radicale/collections";
+          filesystem_folder = "${cfg.configDir}/collections";
         };
 
         auth = {

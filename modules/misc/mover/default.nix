@@ -103,9 +103,7 @@ in
               if cfg.excludedPaths == [ ] then
                 ""
               else
-                "--exclude ${
-                  concatStringsSep " " (map (path: "${cfg.cacheArray}/${path}") cfg.excludedPaths)
-                }";
+                "--exclude ${concatStringsSep " " (map (path: "${cfg.cacheArray}/${path}") cfg.excludedPaths)}";
             runner = pkgs.writeShellScript "run-mergerfs-uncache" ''
               exec ${lib.getExe mergerfs-uncache} \
                 -s ${config.services.mover.cacheArray} \

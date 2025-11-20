@@ -66,6 +66,7 @@ in
     services.immich = {
       group = homelab.group;
       enable = true;
+      host = "127.0.0.1";
       port = 2283;
       mediaLocation = "${cfg.mediaDir}";
     };

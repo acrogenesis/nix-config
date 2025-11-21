@@ -82,7 +82,7 @@ in
     systemd.services = {
       immich-server.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];
       immich-server.serviceConfig.DeviceAllow = [ "/dev/dri/renderD128" ];
-      immich-server.serviceConfig.PrivateDevices = false;
+      immich-server.serviceConfig.PrivateDevices = lib.mkForce false;
       immich-machine-learning.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];
       immich-machine-learning.serviceConfig.Environment = [ "MPLCONFIGDIR=/var/cache/immich-machine-learning/matplotlib" ];
     };

@@ -80,7 +80,6 @@
 
   programs.git.enable = true;
   programs.mosh.enable = true;
-  programs.btop.enable = true;
   programs.neovim = {
     enable = true;
     viAlias = true;
@@ -126,6 +125,7 @@
     wget
     iperf3
     eza
+    btop
     fastfetch
     tmux
     rsync

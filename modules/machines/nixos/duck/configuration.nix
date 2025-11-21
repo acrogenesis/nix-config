@@ -174,6 +174,7 @@ in
     smartmontools
     cpufrequtils
     powertop
+    rocmPackages.rocm-smi
   ];
 
   # tg-notify = {

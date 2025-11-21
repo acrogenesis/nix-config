@@ -58,6 +58,7 @@ in
     systemd.tmpfiles.rules = [
       "d ${cfg.mediaDir} 0775 ${cfg.user} ${homelab.group} - -"
       "d ${cfg.configDir} 0770 ${cfg.user} ${homelab.group} - -"
+      "d /var/cache/immich-machine-learning/matplotlib 0770 ${cfg.user} ${homelab.group} - -"
     ];
     users.users.${cfg.user}.extraGroups = lib.mkBefore [
       "video"
@@ -78,6 +79,7 @@ in
     systemd.services = {
       immich-server.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];
       immich-machine-learning.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];
+      immich-machine-learning.serviceConfig.Environment = [ "MPLCONFIGDIR=/var/cache/immich-machine-learning/matplotlib" ];
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;

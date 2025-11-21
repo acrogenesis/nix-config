@@ -72,6 +72,7 @@ in
       environment = {
         IMMICH_FFMPEG_HWACCEL = "vaapi";
         IMMICH_FFMPEG_HWDEVICE = "/dev/dri/renderD128";
+        LIBVA_DRIVER_NAME = "radeonsi";
       };
     };
     systemd.services = {

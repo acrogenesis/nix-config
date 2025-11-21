@@ -11,7 +11,7 @@ in
   options.homelab.services.immich = {
     enable = lib.mkEnableOption "Self-hosted photo and video management solution";
     user = lib.mkOption {
-      default = config.homelab.user;
+      default = "immich";
       type = lib.types.str;
       description = ''
         User to run the Immich container as
@@ -56,18 +56,24 @@ in
   };
   config = lib.mkIf cfg.enable {
     systemd.tmpfiles.rules = [
-      "d ${cfg.mediaDir} 0775 immich ${homelab.group} - -"
-      "d ${cfg.configDir} 0770 immich ${homelab.group} - -"
+      "d ${cfg.mediaDir} 0775 ${cfg.user} ${homelab.group} - -"
+      "d ${cfg.configDir} 0770 ${cfg.user} ${homelab.group} - -"
     ];
-    users.users.immich.extraGroups = [
+    users.users.${cfg.user}.extraGroups = lib.mkBefore [
       "video"
       "render"
     ];
     services.immich = {
+      user = cfg.user;
       group = homelab.group;
       enable = true;
       port = 2283;
       mediaLocation = "${cfg.mediaDir}";
+    };
+    systemd.services = {
+      immich-server.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];
+      immich-machine-learning.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];
+      immich-microservices.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;

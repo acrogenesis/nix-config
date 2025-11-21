@@ -61,8 +61,6 @@ in
       "minfreespace=1000G"
       "func.getattr=newest"
       "fsname=mergerfs_slow"
-      "uid=994"
-      "gid=993"
       "umask=002"
       "x-mount.mkdir"
     ];
@@ -79,8 +77,6 @@ in
       "minfreespace=500G"
       "func.getattr=newest"
       "fsname=user"
-      "uid=994"
-      "gid=993"
       "umask=002"
       "x-mount.mkdir"
     ];

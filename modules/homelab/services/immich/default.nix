@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -71,6 +72,8 @@ in
       port = 2283;
       mediaLocation = "${cfg.mediaDir}";
       environment = {
+        IMMICH_FFMPEG_PATH = "${pkgs.ffmpeg-full}/bin/ffmpeg";
+        IMMICH_FFPROBE_PATH = "${pkgs.ffmpeg-full}/bin/ffprobe";
         IMMICH_FFMPEG_HWACCEL = "vaapi";
         IMMICH_FFMPEG_HWDEVICE = "/dev/dri/renderD128";
         LIBVA_DRIVER_NAME = "radeonsi";

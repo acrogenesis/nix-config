@@ -77,7 +77,6 @@ in
     systemd.services = {
       immich-server.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];
       immich-machine-learning.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];
-      immich-microservices.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;

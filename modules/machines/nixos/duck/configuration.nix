@@ -37,6 +37,17 @@ in
       ];
     };
   };
+  nixpkgs.overlays = [
+    (final: prev: {
+      btop = prev.btop.overrideAttrs (old: {
+        nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ prev.makeWrapper ];
+        postFixup = (old.postFixup or "") + ''
+          wrapProgram $out/bin/btop \
+            --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ prev.rocmPackages.rocm-smi ]}
+        '';
+      });
+    })
+  ];
   boot = {
     zfs = {
       forceImportRoot = true;

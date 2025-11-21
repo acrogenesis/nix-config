@@ -16,7 +16,6 @@
         "video"
         "podman"
         "input"
-        "render"
       ];
       group = "acrogenesis";
       openssh.authorizedKeys.keys = [

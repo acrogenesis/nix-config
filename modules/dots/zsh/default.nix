@@ -96,8 +96,15 @@
         export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
         source $ZPLUG_HOME/repos/unixorn/warhol.plugin.zsh/warhol.plugin.zsh
-        bindkey '^[[A' history-substring-search-up
-        bindkey '^[[B' history-substring-search-down
+        # Make ↑/↓ walk history entries matching the current prefix (oh-my-zsh style)
+        if [[ -n ''${terminfo[kcuu1]} ]]; then
+          bindkey ''${terminfo[kcuu1]} history-beginning-search-backward
+        fi
+        if [[ -n ''${terminfo[kcud1]} ]]; then
+          bindkey ''${terminfo[kcud1]} history-beginning-search-forward
+        fi
+        bindkey '^[[A' history-beginning-search-backward
+        bindkey '^[[B' history-beginning-search-forward
 
         if command -v motd &> /dev/null
         then

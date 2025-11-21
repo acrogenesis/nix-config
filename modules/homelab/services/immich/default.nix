@@ -69,6 +69,10 @@ in
       enable = true;
       port = 2283;
       mediaLocation = "${cfg.mediaDir}";
+      environment = {
+        IMMICH_FFMPEG_HWACCEL = "vaapi";
+        IMMICH_FFMPEG_HWDEVICE = "/dev/dri/renderD128";
+      };
     };
     systemd.services = {
       immich-server.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];

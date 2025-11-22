@@ -28,6 +28,7 @@ in
     let
       nixpkgsMap = {
         maya = "-unstable";
+        duck = "-unstable";
       };
       myNixosSystem =
         name: self.inputs."nixpkgs${lib.attrsets.attrByPath [ name ] "" nixpkgsMap}".lib.nixosSystem;

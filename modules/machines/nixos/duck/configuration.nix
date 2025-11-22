@@ -30,7 +30,6 @@ in
       enable32Bit = true;
       extraPackages = with pkgs; [
         mesa
-        amdvlk
         vaapiVdpau
         libva
         rocmPackages.clr.icd

@@ -154,7 +154,7 @@ in
       prowlarr.enable = true;
       jellyseerr = {
         enable = true;
-        package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.jellyseerr;
+        package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.jellyseerr;
       };
       nextcloud = {
         enable = true;

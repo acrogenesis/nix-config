@@ -20,9 +20,10 @@
         "--advertise-routes=${advertisedRoute}/32"
         "--advertise-exit-node"
       ];
+      system = pkgs.stdenv.hostPlatform.system;
     in
     {
-      package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.tailscale;
+      package = inputs.nixpkgs-unstable.legacyPackages.${system}.tailscale;
       enable = true;
       authKeyFile = config.age.secrets.tailscaleAuthKey.path;
       useRoutingFeatures = "both";

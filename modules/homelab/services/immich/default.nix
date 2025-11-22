@@ -71,13 +71,6 @@ in
       enable = true;
       port = 2283;
       mediaLocation = "${cfg.mediaDir}";
-      environment = {
-        IMMICH_FFMPEG = "${pkgs.ffmpeg-full}/bin/ffmpeg";
-        IMMICH_FFPROBE = "${pkgs.ffmpeg-full}/bin/ffprobe";
-        IMMICH_FFMPEG_HWACCEL = "vaapi";
-        IMMICH_FFMPEG_HWDEVICE = "/dev/dri/renderD128";
-        LIBVA_DRIVER_NAME = "radeonsi";
-      };
     };
     systemd.services = {
       immich-server.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];

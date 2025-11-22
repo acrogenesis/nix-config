@@ -98,4 +98,13 @@ in
     };
   };
 
+  # Ensure the cache pool mounts via fstab without systemd dropping to emergency.
+  system.activationScripts.cacheMountpoint = ''
+    if ${pkgs.zfs}/bin/zfs list -H cache >/dev/null 2>&1; then
+      current=$(${pkgs.zfs}/bin/zfs get -H -o value mountpoint cache || true)
+      if [ "$current" != "legacy" ]; then
+        ${pkgs.zfs}/bin/zfs set mountpoint=legacy cache
+      fi
+    fi
+  '';
 }

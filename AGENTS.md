@@ -1,5 +1,7 @@
 # AGENTS Checklist & Notes
 
+Remember you are not connected to the homelab directly, if you need to run any commands on #duck ask me to run it for you.
+
 ## Documentation hygiene
 
 - Update `README.md` whenever install steps or supported hosts change.

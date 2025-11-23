@@ -76,7 +76,9 @@ in
       immich-server.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];
       immich-server.serviceConfig.DeviceAllow = [ "/dev/dri/renderD128" ];
       immich-server.serviceConfig.PrivateDevices = lib.mkForce false;
-      immich-machine-learning.serviceConfig.Environment = [ "MPLCONFIGDIR=/var/cache/immich-machine-learning/matplotlib" ];
+      immich-machine-learning.serviceConfig.Environment = [
+        "MPLCONFIGDIR=/var/cache/immich-machine-learning/matplotlib"
+      ];
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;

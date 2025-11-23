@@ -37,7 +37,7 @@ in
     };
   };
   nixpkgs.overlays = [
-    (final: prev: {
+    (_final: prev: {
       btop = prev.btop.overrideAttrs (old: {
         nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ prev.makeWrapper ];
         postFixup = (old.postFixup or "") + ''

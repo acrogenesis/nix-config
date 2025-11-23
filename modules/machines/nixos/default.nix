@@ -13,6 +13,7 @@ let
     };
     home-manager.users.acrogenesis.imports = [
       self.inputs.agenix.homeManagerModules.default
+      self.inputs.nixvim.homeModules.nixvim
       self.inputs.nix-index-database.homeModules.nix-index
       ../../users/acrogenesis/dots.nix
       ../../users/acrogenesis/age.nix

@@ -72,30 +72,23 @@ in
   };
   config =
     let
-      enabledServices =
-        lib.attrsets.filterAttrs (
-          _name: value:
-            value ? enable
-            && value.enable
-            && (
-              value ? configDir || value ? dataDir
-            )
-        ) hl.services;
-      stateDirList =
-        lib.concatMap (
-          x:
-          let
-            attrs = enabledServices.${x};
-            dir =
-              if attrs ? configDir then
-                attrs.configDir
-              else if attrs ? dataDir then
-                attrs.dataDir
-              else
-                null;
-          in
-          lib.optionals (dir != null && dir != false) [ dir ]
-        ) (lib.attrsets.mapAttrsToList (name: _value: name) enabledServices);
+      enabledServices = lib.attrsets.filterAttrs (
+        _name: value: value ? enable && value.enable && (value ? configDir || value ? dataDir)
+      ) hl.services;
+      stateDirList = lib.concatMap (
+        x:
+        let
+          attrs = enabledServices.${x};
+          dir =
+            if attrs ? configDir then
+              attrs.configDir
+            else if attrs ? dataDir then
+              attrs.dataDir
+            else
+              null;
+        in
+        lib.optionals (dir != null && dir != false) [ dir ]
+      ) (lib.attrsets.mapAttrsToList (name: _value: name) enabledServices);
       backupPaths = lib.lists.unique (stateDirList ++ cfg.extraPaths);
     in
     lib.mkIf (cfg.enable && backupPaths != [ ]) {

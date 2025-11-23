@@ -13,11 +13,10 @@
   programs.git = {
     enable = true;
 
-    settings = {
-      user = {
-        name = "Adrian";
-        email = "adrian@acrogenesis.com";
-      };
+    userName = "Adrian";
+    userEmail = "adrian@acrogenesis.com";
+
+    extraConfig = {
       core.sshCommand = "ssh -o 'IdentitiesOnly=yes' -i ~/.ssh/id_ed25519";
     };
     includes = [

@@ -1,6 +1,7 @@
 # AGENTS Checklist & Notes
 
 Remember you are not connected to the homelab directly, if you need to run any commands on #duck ask me to run it for you.
+Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` passes before finishing tasks.
 
 ## Documentation hygiene
 
@@ -10,7 +11,7 @@ Remember you are not connected to the homelab directly, if you need to run any c
 
 ## Key learnings (2025-11-10)
 
-- hddfancontrol v2 *requires* at least one PWM path per instance in `<path>:<start>:<stop>` form. Leaving the list empty still emits `-p` without an argument, so the daemon bails out (systemd status code 2). Duck uses `/sys/class/hwmon/hwmon2/device/pwm2:50:50`.
+- hddfancontrol v2 *requires* at least one PWM path per instance in `<path>:<start>:<stop>` form. Leaving the list empty still emits `-p` without an argument, so the daemon bails out (systemd status code 2). Duck uses `/sys/devices/platform/nct6775.656/hwmon/hwmon7/pwm2:50:50` (nct6775 module).
 - Paperless-ngx services need explicit `RequiresMountsFor` on `/mnt/user/Documents/Paperless/{Documents,Import}` (see `modules/homelab/services/paperless-ngx/default.nix`) or systemd fails to enter the namespace with status 226 whenever those ZFS mounts lag during boot.
 - `kernel.unprivileged_userns_clone=0` means systemd can't honor `PrivateUsers`. Force `PrivateUsers = false` for every Paperless unit in the same module, or the ExecStartPre wrapper exits early with 226/NAMESPACE.
 

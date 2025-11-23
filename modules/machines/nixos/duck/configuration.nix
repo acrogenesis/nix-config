@@ -145,7 +145,7 @@ in
     settings = {
       harddrives = {
         disks = hardDrives;
-        pwmPaths = [ "/sys/class/hwmon/hwmon2/device/pwm2:50:50" ];
+        pwmPaths = [ "/sys/devices/platform/nct6775.656/hwmon/hwmon7/pwm2:50:50" ];
         extraArgs = [
           "-i 30sec"
         ];

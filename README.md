@@ -30,6 +30,7 @@ Very much a work in progress.
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/bazarr.svg' width=32 height=32>|Bazarr|Subtitle manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/deluge.svg' width=32 height=32>|Deluge|Torrent client|Downloads|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/flaresolverr.svg' width=32 height=32>|FlareSolverr|Proxy server to bypass Cloudflare protection|Arr|
+|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/home-assistant.svg' width=32 height=32>|Home Assistant|Home automation platform|Smart Home|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/immich.svg' width=32 height=32>|Immich|Self-hosted photo and video management solution|Media|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/jellyfin.svg' width=32 height=32>|Jellyfin|The Free Software Media System|Media|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/jellyseerr.svg' width=32 height=32>|Jellyseerr|Media request and discovery manager|Arr|

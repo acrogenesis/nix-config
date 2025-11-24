@@ -126,6 +126,7 @@ in
         #   }
         # ];
       };
+      homeassistant.enable = true;
       jellyfin.enable = true;
       paperless = {
         enable = true;

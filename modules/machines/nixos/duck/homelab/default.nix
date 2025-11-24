@@ -18,22 +18,6 @@ in
     zoneId = "5a125e72bca5869bfb929db157d89d96";
 
   };
-  services.dnsmasq = {
-    enable = true;
-    settings = {
-      interface = [
-        "tailscale0"
-        hl.networks.local.lan.interface
-      ];
-      bind-dynamic = true;
-      local-service = true;
-      domain-needed = true;
-      bogus-priv = true;
-      address = [
-        "/${hl.baseDomain}/${lanIp}"
-      ];
-    };
-  };
   homelab = {
     enable = true;
     baseDomain = "rebelduck.cc";
@@ -78,6 +62,11 @@ in
     };
     services = {
       enable = true;
+      technitium = {
+        enable = true;
+        dnsPort = 53;
+        dnsListenAddress = lanIp;
+      };
       slskd = {
         enable = false;
         environmentFile = config.age.secrets.slskdEnvironmentFile.path;

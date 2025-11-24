@@ -69,6 +69,7 @@ in
     networkmanager.enable = false;
     hostName = "duck";
     nameservers = [
+      duckIpAddress
       "1.1.1.1"
       "8.8.8.8"
       gatewayIpAddress

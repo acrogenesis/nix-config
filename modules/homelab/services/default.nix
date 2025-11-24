@@ -95,6 +95,7 @@
     ./smarthome/homeassistant
     ./smarthome/raspberrymatic
     ./paperless-ngx
+    ./technitium
     ./radicale
     ./sabnzbd
     ./slskd

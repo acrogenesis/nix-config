@@ -50,6 +50,7 @@ in
             autoStart = true;
             extraOptions = [
               "--pull=newer"
+              "--cap-add=NET_RAW"
             ];
             volumes = [
               "${cfg.configDir}:/config"

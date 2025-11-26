@@ -16,11 +16,12 @@ let
     "/dev/disk/by-label/Data2"
     "/dev/disk/by-label/Parity1"
   ];
+  primaryInterface = "enp5s0";
 in
 {
   services.prometheus.exporters.shellyplug.targets = [ ];
   services.udev.extraRules = ''
-    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="a0:ad:9f:31:cd:70", NAME="enp9s0"
+    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="88:c9:b3:b3:4f:ab", NAME="${primaryInterface}"
   '';
   hardware = {
     enableRedistributableFirmware = true;
@@ -74,7 +75,7 @@ in
       "8.8.8.8"
       gatewayIpAddress
     ];
-    interfaces.enp9s0.ipv4.addresses = [
+    interfaces.${primaryInterface}.ipv4.addresses = [
       {
         address = duckIpAddress;
         prefixLength = 24;
@@ -82,14 +83,14 @@ in
     ];
     defaultGateway = {
       address = gatewayIpAddress;
-      interface = "enp9s0";
+      interface = primaryInterface;
     };
     hostId = "0730ae51";
     firewall = {
       enable = true;
       allowPing = true;
       trustedInterfaces = [
-        "enp9s0"
+        primaryInterface
         "tailscale0"
       ];
     };

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -13,6 +14,12 @@ in
   options.homelab.services.${service} = {
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
+    };
+    package = lib.mkOption {
+      type = lib.types.nullOr lib.types.package;
+      default = if pkgs ? technitium-dns-server then pkgs.technitium-dns-server else null;
+      defaultText = lib.literalExpression "pkgs.technitium-dns-server";
+      description = "Technitium DNS Server package to use.";
     };
     configDir = lib.mkOption {
       type = lib.types.str;
@@ -27,8 +34,8 @@ in
     };
     dnsPort = lib.mkOption {
       type = lib.types.port;
-      default = 1053;
-      description = "Host port for DNS (UDP/TCP) to avoid clashing with existing resolvers.";
+      default = 53;
+      description = "Host port for DNS (UDP/TCP).";
     };
     webListenAddress = lib.mkOption {
       type = lib.types.str;
@@ -63,6 +70,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.package != null;
+        message = "homelab.services.${service}.package is null; pkgs.technitium-dns-server is not available on this platform.";
+      }
+    ];
+
     systemd.tmpfiles.rules = [ "d ${cfg.configDir} 0770 ${homelab.user} ${homelab.group} - -" ];
 
     networking.firewall = {
@@ -70,26 +84,32 @@ in
       allowedUDPPorts = [ cfg.dnsPort ];
     };
 
-    virtualisation.podman.enable = true;
-    virtualisation.oci-containers.containers.${service} = {
-      image = "technitium/dns-server:latest";
-      autoStart = true;
-      extraOptions = [
-        "--pull=newer"
-      ];
-      environment = {
-        TZ = homelab.timeZone;
-        PUID = toString config.users.users.${homelab.user}.uid;
-        PGID = toString config.users.groups.${homelab.group}.gid;
+    systemd.services.${service} = {
+      description = "Technitium DNS Server";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
+      serviceConfig = {
+        Type = "simple";
+        WorkingDirectory = cfg.configDir;
+        ExecStart = "${cfg.package}/bin/technitium-dns-server ${cfg.configDir}";
+        Environment = [
+          "ASPNETCORE_URLS=http://${cfg.webListenAddress}:${toString cfg.webPort}"
+        ];
+        Restart = "on-failure";
+        RestartSec = "5s";
+        User = homelab.user;
+        Group = homelab.group;
+        AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
+        CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
+        NoNewPrivileges = true;
+        ProtectSystem = "strict";
+        ProtectHome = true;
+        ReadWritePaths = [ cfg.configDir ];
+        DevicePolicy = "closed";
+        PrivateTmp = true;
+        RequiresMountsFor = [ cfg.configDir ];
       };
-      volumes = [
-        "${cfg.configDir}:/etc/dns/config"
-      ];
-      ports = [
-        "${cfg.dnsListenAddress}:${toString cfg.dnsPort}:53/udp"
-        "${cfg.dnsListenAddress}:${toString cfg.dnsPort}:53/tcp"
-        "${cfg.webListenAddress}:${toString cfg.webPort}:5380/tcp"
-      ];
     };
 
     services.caddy.virtualHosts."${cfg.url}" = {

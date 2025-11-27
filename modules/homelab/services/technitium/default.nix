@@ -84,6 +84,9 @@ in
       allowedUDPPorts = [ cfg.dnsPort ];
     };
 
+    # Avoid Podman's embedded DNS (aardvark) taking port 53 on 10.88.0.1.
+    virtualisation.podman.defaultNetwork.settings.dns_enabled = lib.mkForce false;
+
     systemd.services.${service} = {
       description = "Technitium DNS Server";
       wantedBy = [ "multi-user.target" ];

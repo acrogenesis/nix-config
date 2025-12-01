@@ -26,6 +26,14 @@ in
   hardware = {
     enableRedistributableFirmware = true;
     cpu.amd.updateMicrocode = true;
+    nvidia = {
+      modesetting.enable = true;
+      powerManagement.enable = false;
+      open = false;
+      nvidiaSettings = false;
+      package = config.boot.kernelPackages.nvidiaPackages.production;
+    };
+    nvidia-container-toolkit.enable = true;
     graphics = {
       enable = true;
       enable32Bit = true;
@@ -34,17 +42,34 @@ in
         libva-vdpau-driver
         libva
         rocmPackages.clr.icd
+        nvidia-vaapi-driver
       ];
     };
   };
+  services.xserver.videoDrivers = [ "nvidia" ];
   nixpkgs.overlays = [
     (_final: prev: {
       btop = prev.btop.overrideAttrs (old: {
         nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ prev.makeWrapper ];
-        postFixup = (old.postFixup or "") + ''
-          wrapProgram $out/bin/btop \
-            --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ prev.rocmPackages.rocm-smi ]}
-        '';
+        postFixup =
+          (old.postFixup or "")
+          + (
+            let
+              extraLibs =
+                lib.optionals (prev ? rocmPackages && prev.rocmPackages ? "rocm-smi") [
+                  prev.rocmPackages."rocm-smi"
+                ]
+                ++ lib.optionals (prev.stdenv.isLinux && prev ? linuxPackages && prev.linuxPackages ? nvidia_x11) [
+                  prev.linuxPackages.nvidia_x11
+                ];
+              extraLdPath =
+                lib.makeLibraryPath extraLibs + lib.optionalString (prev.stdenv.isLinux) ":/run/opengl-driver/lib";
+            in
+            ''
+              wrapProgram $out/bin/btop \
+                --prefix LD_LIBRARY_PATH : ${extraLdPath}
+            ''
+          );
       });
     })
   ];
@@ -155,7 +180,10 @@ in
     };
   };
 
-  virtualisation.docker.storageDriver = "overlay2";
+  virtualisation.docker = {
+    storageDriver = "overlay2";
+    enableNvidia = true;
+  };
 
   system.autoUpgrade.enable = true;
 
@@ -187,6 +215,7 @@ in
     cpufrequtils
     powertop
     rocmPackages.rocm-smi
+    config.hardware.nvidia.package
   ];
 
   # tg-notify = {

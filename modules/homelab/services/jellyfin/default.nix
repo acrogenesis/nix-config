@@ -59,6 +59,10 @@ in
         );
       })
     ];
+    users.users.${homelab.user}.extraGroups = lib.mkBefore [
+      "video"
+      "render"
+    ];
     services.${service} = {
       enable = true;
       user = homelab.user;
@@ -68,6 +72,17 @@ in
     systemd.services.jellyfin.serviceConfig.Environment = [
       "JELLYFIN_WEB_DIR=${pkgs.jellyfin-web}/share/jellyfin-web"
     ];
+    systemd.services.jellyfin.serviceConfig = {
+      PrivateDevices = lib.mkForce false;
+      DeviceAllow = [
+        "/dev/dri/renderD128"
+        "/dev/nvidia0"
+        "/dev/nvidiactl"
+        "/dev/nvidia-uvm"
+        "/dev/nvidia-uvm-tools"
+        "/dev/nvidia-modeset"
+      ];
+    };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''

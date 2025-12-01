@@ -9,6 +9,7 @@ Very much a work in progress.
 | Component   | Details |
 | --- | --- |
 | CPU | Ryzen 5 Pro 4650G |
+| GPU | NVIDIA T1000 8GB |
 | Motherboard | Asus Prime B550M-A AC |
 | PSU | Corsair RMX Series (2021), RM850x |
 | RAM | NEMIX RAM 32GB (2X16GB) DDR4 2400MHZ PC4-19200 2Rx8 1.2V CL17 288-PIN ECC UDIMM Unbuffered Memory KIT |

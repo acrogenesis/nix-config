@@ -76,7 +76,14 @@ in
     };
     systemd.services = {
       immich-server.serviceConfig.RequiresMountsFor = [ cfg.mediaDir ];
-      immich-server.serviceConfig.DeviceAllow = [ "/dev/dri/renderD128" ];
+      immich-server.serviceConfig.DeviceAllow = [
+        "/dev/dri/renderD128"
+        "/dev/nvidia0"
+        "/dev/nvidiactl"
+        "/dev/nvidia-uvm"
+        "/dev/nvidia-uvm-tools"
+        "/dev/nvidia-modeset"
+      ];
       immich-server.serviceConfig.PrivateDevices = lib.mkForce false;
       immich-machine-learning.serviceConfig.Environment = [
         "MPLCONFIGDIR=/var/cache/immich-machine-learning/matplotlib"

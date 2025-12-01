@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -62,7 +63,11 @@ in
       enable = true;
       user = homelab.user;
       group = homelab.group;
+      dataDir = cfg.configDir;
     };
+    systemd.services.jellyfin.serviceConfig.Environment = [
+      "JELLYFIN_WEB_DIR=${pkgs.jellyfin-web}/share/jellyfin-web"
+    ];
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''

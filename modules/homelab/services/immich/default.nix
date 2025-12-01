@@ -59,6 +59,9 @@ in
       "d ${cfg.mediaDir} 0775 ${cfg.user} ${homelab.group} - -"
       "d ${cfg.configDir} 0770 ${cfg.user} ${homelab.group} - -"
       "d /var/cache/immich-machine-learning/matplotlib 0770 ${cfg.user} ${homelab.group} - -"
+      # Immich expects an encoded-video directory with a marker file for health checks.
+      "d ${cfg.mediaDir}/encoded-video 0775 ${cfg.user} ${homelab.group} - -"
+      "f ${cfg.mediaDir}/encoded-video/.immich 0664 ${cfg.user} ${homelab.group} - -"
     ];
     users.users.${cfg.user}.extraGroups = lib.mkBefore [
       "video"

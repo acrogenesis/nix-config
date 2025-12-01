@@ -52,7 +52,8 @@ in
   };
 
   fileSystems.${hl.mounts.slow} = {
-    device = "/mnt/data*";
+    # Explicitly list the mergerfs branches; globbing won't be expanded by systemd.
+    device = "/mnt/data1:/mnt/data2";
     options = [
       "category.create=mfs"
       "defaults"

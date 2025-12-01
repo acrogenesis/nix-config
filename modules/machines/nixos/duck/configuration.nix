@@ -87,7 +87,13 @@ in
     kernelModules = [
       "kvm-amd"
       "amdgpu"
+      "nvidia"
+      "nvidia_modeset"
+      "nvidia_uvm"
+      "nvidia_drm"
     ];
+    blacklistedKernelModules = [ "nouveau" ];
+    extraModulePackages = [ config.hardware.nvidia.package ];
   };
 
   networking = {

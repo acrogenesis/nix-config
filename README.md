@@ -28,6 +28,7 @@ Very much a work in progress.
 |Icon|Name|Description|Category|
 |---|---|---|---|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/audiobookshelf.svg' width=32 height=32>|Audiobookshelf|Audiobook and podcast player|Media|
+|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/audiobookshelf.svg' width=32 height=32>|AudioBookRequest|Audiobook request manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/bazarr.svg' width=32 height=32>|Bazarr|Subtitle manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/deluge.svg' width=32 height=32>|Deluge|Torrent client|Downloads|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/flaresolverr.svg' width=32 height=32>|FlareSolverr|Proxy server to bypass Cloudflare protection|Arr|
@@ -54,6 +55,7 @@ Very much a work in progress.
 Duck’s restic jobs are wired through `modules/homelab/backup`, which automatically includes every enabled homelab service that declares a `configDir` or `dataDir`. For this host that resolves to the following application state directories:
 
 - `/var/lib/audiobookshelf`
+- `/var/lib/audiobookrequest`
 - `/var/lib/bazarr`
 - `/var/lib/deluge`
 - `/var/lib/flaresolverr`

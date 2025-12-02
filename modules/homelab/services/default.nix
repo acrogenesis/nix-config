@@ -91,6 +91,7 @@
     ./arr/radarr
     ./arr/flaresolverr
     #./arr/lidarr
+    ./audiobookrequest
     ./audiobookshelf
     ./deluge
     #./deemix

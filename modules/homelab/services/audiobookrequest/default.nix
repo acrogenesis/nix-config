@@ -17,7 +17,7 @@ in
     };
     port = lib.mkOption {
       type = lib.types.port;
-      default = 8000;
+      default = 8010;
       description = "Host port ${service} listens on.";
     };
     image = lib.mkOption {

@@ -51,6 +51,7 @@ in
             extraOptions = [
               "--pull=newer"
               "--cap-add=NET_RAW"
+              "--cap-add=NET_ADMIN"
               "--network=host"
             ];
             volumes = [

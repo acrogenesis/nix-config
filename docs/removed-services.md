@@ -3,6 +3,9 @@
 - **Borg backup to Aria** (`modules/machines/nixos/duck/backup/default.nix`)
   Aria was removed from this fork, and the backup job pushed to `ssh://share@aria`. Bringing it back requires a new target host and the corresponding secrets (`borgBackupKey`, `borgBackupSSHKey`).
 
+- **Readarr** (homelab Arr stack)
+  Removed from the homelab stack; the module (`modules/homelab/services/arr/readarr`) and custom package overlay (`pkgs/readarr-faustvii`) were deleted. Recreate the module and package if you want Readarr again.
+
 - **Keycloak**, **Nextcloud**, **Vaultwarden**, **Paperless**, **Navidrome**, **Miniflux**, **Microbin**, **Radicale**, **InvoicePlane**, **WireGuard netns**
   These homelab services are currently disabled. Their `.age` secrets are commented out; re-enable them only after you recreate the necessary secrets and infrastructure (Cloudflare tunnels, databases, etc.).
 

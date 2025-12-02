@@ -71,7 +71,6 @@
     ./arr/jellyseerr
     ./arr/sonarr
     ./arr/radarr
-    ./arr/readarr
     ./arr/flaresolverr
     #./arr/lidarr
     ./audiobookshelf

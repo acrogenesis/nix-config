@@ -15,7 +15,7 @@ Stop every service that reads or writes the media/config directories we are abou
 ```bash
 sudo systemctl stop 'immich*' \
   paperless-consumer.service paperless-scheduler.service paperless-task-queue.service paperless-web.service \
-  jellyfin.service sabnzbd.service sonarr.service radarr.service readarr.service flaresolverr.service bazarr.service prowlarr.service jellyseerr.service \
+  jellyfin.service sabnzbd.service sonarr.service radarr.service flaresolverr.service bazarr.service prowlarr.service jellyseerr.service \
   slskd.service navidrome.service deemix.service deluged.service audiobookshelf.service homepage-dashboard.service \
   keycloak.service grafana.service prometheus.service radicale.service mergerfs-uncache.service mover.service
 # Ignore “Unit … not loaded” errors—those simply mean the service is currently disabled on this host. For timers, stop both the service and the timer (e.g., `sudo systemctl stop mergerfs-uncache.timer`).
@@ -140,7 +140,7 @@ All should be `active (running)`. If anything failed because of missing director
 sudo systemctl start keycloak.service
 sudo systemctl start grafana.service prometheus.service radicale.service homepage-dashboard.service
 sudo systemctl start jellyseerr.service jellyfin.service audiobookshelf.service
-sudo systemctl start sabnzbd.service radarr.service sonarr.service readarr.service flaresolverr.service bazarr.service prowlarr.service
+sudo systemctl start sabnzbd.service radarr.service sonarr.service flaresolverr.service bazarr.service prowlarr.service
 sudo systemctl start navidrome.service slskd.service deemix.service deluged.service
 sudo systemctl start paperless-consumer.service paperless-scheduler.service paperless-task-queue.service paperless-web.service
 sudo systemctl start 'immich*'

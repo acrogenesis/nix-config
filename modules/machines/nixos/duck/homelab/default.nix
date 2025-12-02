@@ -135,10 +135,6 @@ in
       sabnzbd.enable = true;
       sonarr.enable = true;
       radarr.enable = true;
-      readarr = {
-        enable = true;
-        package = pkgs.readarr-faustvii;
-      };
       flaresolverr.enable = true;
       bazarr.enable = true;
       prowlarr.enable = true;

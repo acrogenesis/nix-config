@@ -14,6 +14,7 @@
       80
       443
     ];
+    environment.etc."caddy/errors".source = ../../../assets/errors;
     security.acme = {
       acceptTerms = true;
       defaults.email = "adrian@acrogenesis.com";
@@ -42,6 +43,21 @@
         "http://*.${config.homelab.baseDomain}" = {
           extraConfig = ''
             redir https://{host}{uri}
+          '';
+        };
+
+        "*.${config.homelab.baseDomain}" = {
+          useACMEHost = config.homelab.baseDomain;
+          extraConfig = ''
+            root * /etc/caddy/errors
+            handle {
+              try_files {path} /404.html
+              file_server
+            }
+            handle_errors {
+              rewrite * /404.html
+              file_server
+            }
           '';
         };
 

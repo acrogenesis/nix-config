@@ -27,8 +27,8 @@ Very much a work in progress.
 ### duck
 |Icon|Name|Description|Category|
 |---|---|---|---|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/audiobookshelf.svg' width=32 height=32>|Audiobookshelf|Audiobook and podcast player|Media|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/audiobookshelf.svg' width=32 height=32>|AudioBookRequest|Audiobook request manager|Arr|
+|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/audiobookshelf.svg' width=32 height=32>|Audiobookshelf|Audiobook and podcast player|Media|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/bazarr.svg' width=32 height=32>|Bazarr|Subtitle manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/deluge.svg' width=32 height=32>|Deluge|Torrent client|Downloads|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/flaresolverr.svg' width=32 height=32>|FlareSolverr|Proxy server to bypass Cloudflare protection|Arr|

@@ -50,9 +50,15 @@
           useACMEHost = config.homelab.baseDomain;
           extraConfig = ''
             root * /etc/caddy/errors
-            rewrite * /404.html
-            file_server {
-              status 404
+            @missing not file
+            handle @missing {
+              rewrite * /404.html
+              file_server {
+                status 404
+              }
+            }
+            handle {
+              file_server
             }
           '';
         };

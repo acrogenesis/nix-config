@@ -51,13 +51,10 @@ in
             extraOptions = [
               "--pull=newer"
               "--cap-add=NET_RAW"
+              "--network=host"
             ];
             volumes = [
               "${cfg.configDir}:/config"
-            ];
-            ports = [
-              "127.0.0.1:8123:8123"
-              "127.0.0.1:8124:80"
             ];
             environment = {
               TZ = homelab.timeZone;

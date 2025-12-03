@@ -7,6 +7,10 @@ let
   service = "navidrome";
   hl = config.homelab;
   cfg = hl.services.${service};
+  hostnames = [ cfg.url ];
+  address = config.services.${service}.settings.Address or "127.0.0.1";
+  port = config.services.${service}.settings.Port or 4533;
+  upstream = "http://${address}:${toString port}";
 in
 {
   options.homelab.services.${service} = {
@@ -84,10 +88,14 @@ in
       tunnels.${cfg.cloudflared.tunnelId} = {
         credentialsFile = cfg.cloudflared.credentialsFile;
         default = "http_status:404";
-        ingress."${cfg.url}".service = "http://${config.services.${service}.settings.Address}:${
-          toString config.services.${service}.settings.Port
-        }";
+        ingress."${cfg.url}".service = upstream;
       };
     };
+    services.caddy.virtualHosts = lib.genAttrs hostnames (_: {
+      useACMEHost = hl.baseDomain;
+      extraConfig = ''
+        reverse_proxy ${upstream}
+      '';
+    });
   };
 }

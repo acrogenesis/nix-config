@@ -7,6 +7,8 @@ let
   service = "miniflux";
   hl = config.homelab;
   cfg = hl.services.${service};
+  hostnames = [ cfg.url ];
+  upstream = "http://${config.services.${service}.config.LISTEN_ADDR}";
 in
 {
   options.homelab.services.${service} = {
@@ -75,8 +77,14 @@ in
       tunnels.${cfg.cloudflared.tunnelId} = {
         credentialsFile = cfg.cloudflared.credentialsFile;
         default = "http_status:404";
-        ingress."${cfg.url}".service = "http://${config.services.${service}.config.LISTEN_ADDR}";
+        ingress."${cfg.url}".service = upstream;
       };
     };
+    services.caddy.virtualHosts = lib.genAttrs hostnames (_: {
+      useACMEHost = hl.baseDomain;
+      extraConfig = ''
+        reverse_proxy ${upstream}
+      '';
+    });
   };
 }

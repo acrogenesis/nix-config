@@ -8,6 +8,8 @@ let
   service = "keycloak";
   cfg = config.homelab.services.${service};
   hl = config.homelab;
+  hostnames = [ cfg.url ];
+  upstream = "http://127.0.0.1:${toString config.services.${service}.settings.http-port}";
 in
 {
   options.homelab.services.${service} = {
@@ -61,9 +63,7 @@ in
       tunnels.${cfg.cloudflared.tunnelId} = {
         credentialsFile = cfg.cloudflared.credentialsFile;
         default = "http_status:404";
-        ingress."${cfg.url}".service = "http://127.0.0.1:${
-          toString config.services.${service}.settings.http-port
-        }";
+        ingress."${cfg.url}".service = upstream;
       };
     };
 
@@ -102,6 +102,12 @@ in
         http-enabled = true;
       };
     };
+    services.caddy.virtualHosts = lib.genAttrs hostnames (_: {
+      useACMEHost = hl.baseDomain;
+      extraConfig = ''
+        reverse_proxy ${upstream}
+      '';
+    });
   };
 
 }

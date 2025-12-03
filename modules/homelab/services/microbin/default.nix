@@ -18,6 +18,9 @@ let
   service = "microbin";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
+  hostnames = [ cfg.url ];
+  upstream =
+    "http://${config.services.microbin.settings.MICROBIN_BIND}:${toString config.services.microbin.settings.MICROBIN_PORT}";
 in
 {
   options.homelab.services.${service} = {
@@ -113,10 +116,15 @@ in
         tunnels.${cfg.cloudflared.tunnelId} = {
           credentialsFile = cfg.cloudflared.credentialsFile;
           default = "http_status:404";
-          ingress."${cfg.url}".service =
-            "http://${config.services.microbin.settings.MICROBIN_BIND}:${toString config.services.microbin.settings.MICROBIN_PORT}";
+          ingress."${cfg.url}".service = upstream;
         };
       };
+      caddy.virtualHosts = lib.genAttrs hostnames (_: {
+        useACMEHost = homelab.baseDomain;
+        extraConfig = ''
+          reverse_proxy ${upstream}
+        '';
+      });
     };
   };
 

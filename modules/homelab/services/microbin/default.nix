@@ -19,8 +19,7 @@ let
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
   hostnames = [ cfg.url ];
-  upstream =
-    "http://${config.services.microbin.settings.MICROBIN_BIND}:${toString config.services.microbin.settings.MICROBIN_PORT}";
+  upstream = "http://${config.services.microbin.settings.MICROBIN_BIND}:${toString config.services.microbin.settings.MICROBIN_PORT}";
 in
 {
   options.homelab.services.${service} = {

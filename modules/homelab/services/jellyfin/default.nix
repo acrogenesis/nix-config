@@ -63,6 +63,10 @@ in
       "video"
       "render"
     ];
+    systemd.tmpfiles.rules = [
+      "d /var/cache/jellyfin 0750 ${homelab.user} ${homelab.group} - -"
+      "d /var/cache/jellyfin/mesa-shader-cache 0750 ${homelab.user} ${homelab.group} - -"
+    ];
     services.${service} = {
       enable = true;
       user = homelab.user;
@@ -71,6 +75,12 @@ in
     };
     systemd.services.jellyfin.serviceConfig.Environment = [
       "JELLYFIN_WEB_DIR=${pkgs.jellyfin-web}/share/jellyfin-web"
+      # Force VA-API to use the AMD iGPU and keep shader caches off /var/empty.
+      "LIBVA_DRIVER_NAME=radeonsi"
+      "VDPAU_DRIVER=radeonsi"
+      "XDG_CACHE_HOME=/var/cache/jellyfin"
+      "MESA_SHADER_CACHE_DIR=/var/cache/jellyfin/mesa-shader-cache"
+      "VK_ICD_FILENAMES=/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json"
     ];
     systemd.services.jellyfin.serviceConfig = {
       PrivateDevices = lib.mkForce false;

@@ -58,11 +58,25 @@ in
       mergerfs-uncache
     ];
 
-    security.sudo.extraConfig = ''
-      # mergerfs mover helper
-      Cmnd_Alias MERGERFS_MOVER = /run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service, /run/current-system/sw/bin/chown -R ${cfg.user}:${cfg.group} ${cfg.backingArray}, /run/current-system/sw/bin/chown -R ${cfg.user}:${cfg.group} ${cfg.cacheArray}, "/run/current-system/sw/bin/chmod -R ug=rwX,o=rX ${cfg.backingArray}", "/run/current-system/sw/bin/chmod -R ug=rwX,o=rX ${cfg.cacheArray}"
-      ${cfg.user} ALL=(ALL:ALL) NOPASSWD: MERGERFS_MOVER
-    '';
+    security.sudo.extraRules = [
+      {
+        users = [ cfg.user ];
+        commands = [
+          {
+            command = "/run/current-system/sw/bin/journalctl";
+            options = [ "NOPASSWD" ];
+          }
+          {
+            command = "/run/current-system/sw/bin/chown";
+            options = [ "NOPASSWD" ];
+          }
+          {
+            command = "/run/current-system/sw/bin/chmod";
+            options = [ "NOPASSWD" ];
+          }
+        ];
+      }
+    ];
 
     systemd = {
       services.mergerfs-uncache = {

@@ -58,25 +58,15 @@ in
       mergerfs-uncache
     ];
 
-    security.sudo.extraRules =
-      let
-        moverCommands = [
-          "/run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service"
-          "/run/current-system/sw/bin/chown -R ${config.services.mover.user}:${config.services.mover.group} ${config.services.mover.backingArray}"
-          "/run/current-system/sw/bin/chown -R ${config.services.mover.user}:${config.services.mover.group} ${config.services.mover.cacheArray}"
-          "/run/current-system/sw/bin/chmod -R ug=rwX\\,o=rX ${config.services.mover.backingArray}"
-          "/run/current-system/sw/bin/chmod -R ug=rwX\\,o=rX ${config.services.mover.cacheArray}"
-        ];
-      in
-      map (cmd: {
-        users = [ config.services.mover.user ];
-        commands = [
-          {
-            command = cmd;
-            options = [ "NOPASSWD" ];
-          }
-        ];
-      }) moverCommands;
+    security.sudo.extraConfig = ''
+      # mergerfs mover helper
+      ${cfg.user} ALL=(ALL:ALL) NOPASSWD: \
+        /run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service, \
+        /run/current-system/sw/bin/chown -R ${cfg.user}:${cfg.group} ${cfg.backingArray}, \
+        /run/current-system/sw/bin/chown -R ${cfg.user}:${cfg.group} ${cfg.cacheArray}, \
+        /run/current-system/sw/bin/chmod -R ug=rwX\,o=rX ${cfg.backingArray}, \
+        /run/current-system/sw/bin/chmod -R ug=rwX\,o=rX ${cfg.cacheArray}
+    '';
 
     systemd = {
       services.mergerfs-uncache = {

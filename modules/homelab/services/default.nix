@@ -108,6 +108,7 @@
     ./navidrome
     ./nextcloud
     ./smarthome/homeassistant
+    ./smarthome/matter-server
     ./smarthome/raspberrymatic
     ./paperless-ngx
     ./technitium

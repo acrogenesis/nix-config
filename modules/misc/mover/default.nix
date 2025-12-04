@@ -60,11 +60,8 @@ in
 
     security.sudo.extraConfig = ''
       # mergerfs mover helper
-      ${cfg.user} ALL=(ALL:ALL) NOPASSWD: /run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service
-      ${cfg.user} ALL=(ALL:ALL) NOPASSWD: /run/current-system/sw/bin/chown -R ${cfg.user}:${cfg.group} ${cfg.backingArray}
-      ${cfg.user} ALL=(ALL:ALL) NOPASSWD: /run/current-system/sw/bin/chown -R ${cfg.user}:${cfg.group} ${cfg.cacheArray}
-      ${cfg.user} ALL=(ALL:ALL) NOPASSWD: /run/current-system/sw/bin/chmod -R ug=rwX\,o=rX ${cfg.backingArray}
-      ${cfg.user} ALL=(ALL:ALL) NOPASSWD: /run/current-system/sw/bin/chmod -R ug=rwX\,o=rX ${cfg.cacheArray}
+      Cmnd_Alias MERGERFS_MOVER = /run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service, /run/current-system/sw/bin/chown -R ${cfg.user}:${cfg.group} ${cfg.backingArray}, /run/current-system/sw/bin/chown -R ${cfg.user}:${cfg.group} ${cfg.cacheArray}, "/run/current-system/sw/bin/chmod -R ug=rwX,o=rX ${cfg.backingArray}", "/run/current-system/sw/bin/chmod -R ug=rwX,o=rX ${cfg.cacheArray}"
+      ${cfg.user} ALL=(ALL:ALL) NOPASSWD: MERGERFS_MOVER
     '';
 
     systemd = {

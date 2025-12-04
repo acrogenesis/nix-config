@@ -63,7 +63,7 @@ in
         users = [ config.services.mover.user ];
         commands = [
           {
-            command = "/run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service *";
+            command = "/run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service \\*";
             options = [ "NOPASSWD" ];
           }
           {

@@ -87,6 +87,7 @@ in
     kernelModules = [
       "kvm-amd"
       "amdgpu"
+      "nct6775"
       "nvidia"
       "nvidia_modeset"
       "nvidia_uvm"
@@ -178,7 +179,7 @@ in
     settings = {
       harddrives = {
         disks = hardDrives;
-        pwmPaths = [ "/sys/devices/platform/nct6775.656/hwmon/hwmon7/pwm2:50:50" ];
+        pwmPaths = [ "/sys/devices/platform/nct6775.656/hwmon/hwmon7/pwm2:25:25" ];
         extraArgs = [
           "-i 30sec"
         ];

@@ -121,6 +121,11 @@
 
   homelab.motd.enable = true;
 
+  environment.etc = {
+    "terminfo/x/xterm-ghostty".source = "${pkgs.ghostty.terminfo}/share/terminfo/x/xterm-ghostty";
+    "terminfo/78/xterm-ghostty".source = "${pkgs.ghostty.terminfo}/share/terminfo/x/xterm-ghostty";
+  };
+
   environment.systemPackages = with pkgs; [
     wget
     iperf3

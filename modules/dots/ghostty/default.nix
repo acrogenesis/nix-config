@@ -11,6 +11,7 @@
       adjust-cell-height = "50%";
       font-thicken = true;
       font-thicken-strength = 120;
+      term = "xterm-ghostty";
     };
   };
 }

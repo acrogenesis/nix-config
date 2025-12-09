@@ -10,6 +10,7 @@ let
   lan = hl.networks.local.lan;
   duckIpAddress = lan.reservations.duck.Address;
   gatewayIpAddress = lan.cidr.v4;
+  lanInterface = lan.interface;
   bootDeviceId = "nvme-Patriot_M.2_P300_512GB_P300WCBB24093006490";
   hardDrives = [
     "/dev/disk/by-label/Data1"
@@ -17,11 +18,19 @@ let
     "/dev/disk/by-label/Parity1"
   ];
   primaryInterface = "enp5s0";
+  secondaryInterface = lanInterface;
+  bridgeInterface = "br0";
+  bridgeInterfaces = lib.unique [
+    primaryInterface
+    secondaryInterface
+  ];
+  duckMacAddress = lan.reservations.duck.MACAddress;
 in
 {
   services.prometheus.exporters.shellyplug.targets = [ ];
   services.udev.extraRules = ''
     SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="88:c9:b3:b3:4f:ab", NAME="${primaryInterface}"
+    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="${duckMacAddress}", NAME="${secondaryInterface}"
   '';
   hardware = {
     enableRedistributableFirmware = true;
@@ -98,7 +107,7 @@ in
   };
 
   networking = {
-    useDHCP = true;
+    useDHCP = false;
     networkmanager.enable = false;
     hostName = "duck";
     nameservers = [
@@ -107,22 +116,35 @@ in
       "8.8.8.8"
       gatewayIpAddress
     ];
-    interfaces.${primaryInterface}.ipv4.addresses = [
-      {
-        address = duckIpAddress;
-        prefixLength = 24;
-      }
-    ];
+    bridges.${bridgeInterface} = {
+      interfaces = bridgeInterfaces;
+      rstp = true;
+    };
+    interfaces =
+      lib.genAttrs bridgeInterfaces (_: {
+        useDHCP = false;
+      })
+      // {
+        ${bridgeInterface} = {
+          useDHCP = false;
+          ipv4.addresses = [
+            {
+              address = duckIpAddress;
+              prefixLength = 24;
+            }
+          ];
+        };
+      };
     defaultGateway = {
       address = gatewayIpAddress;
-      interface = primaryInterface;
+      interface = bridgeInterface;
     };
     hostId = "0730ae51";
     firewall = {
       enable = true;
       allowPing = true;
       trustedInterfaces = [
-        primaryInterface
+        bridgeInterface
         "tailscale0"
       ];
     };

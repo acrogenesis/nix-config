@@ -121,10 +121,8 @@
 
   homelab.motd.enable = true;
 
-  environment.etc = {
-    "terminfo/x/xterm-ghostty".source = "${pkgs.ghostty.terminfo}/share/terminfo/x/xterm-ghostty";
-    "terminfo/78/xterm-ghostty".source = "${pkgs.ghostty.terminfo}/share/terminfo/x/xterm-ghostty";
-  };
+  # Ensure Ghostty terminfo is available at login time for SSH clients.
+  environment.sessionVariables.TERMINFO_DIRS = "/etc/terminfo:/run/current-system/sw/share/terminfo";
 
   environment.systemPackages = with pkgs; [
     wget

@@ -55,7 +55,15 @@ in
           "d ${cacheDir} 0750 ${hl.user} ${hl.group} - -"
           "d ${eggCacheDir} 0750 ${hl.user} ${hl.group} - -"
         ];
+        # Deluge plugins try to unpack into ~/.cache by default; point them at a writable path.
+        services.deluged.environment = {
+          HOME = cfg.configDir;
+          XDG_CACHE_HOME = cacheDir;
+          PYTHON_EGG_CACHE = eggCacheDir;
+        };
         services.deluge-web.environment = {
+          HOME = cfg.configDir;
+          XDG_CACHE_HOME = cacheDir;
           PYTHON_EGG_CACHE = eggCacheDir;
         };
       }

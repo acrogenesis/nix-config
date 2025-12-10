@@ -61,7 +61,7 @@ in
           XDG_CACHE_HOME = cacheDir;
           PYTHON_EGG_CACHE = eggCacheDir;
         };
-        services.deluge-web.environment = {
+        services.delugeweb.environment = {
           HOME = cfg.configDir;
           XDG_CACHE_HOME = cacheDir;
           PYTHON_EGG_CACHE = eggCacheDir;

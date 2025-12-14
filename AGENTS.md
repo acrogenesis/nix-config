@@ -15,6 +15,10 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 - Paperless-ngx services need explicit `RequiresMountsFor` on `/mnt/user/Documents/Paperless/{Documents,Import}` (see `modules/homelab/services/paperless-ngx/default.nix`) or systemd fails to enter the namespace with status 226 whenever those ZFS mounts lag during boot.
 - `kernel.unprivileged_userns_clone=0` means systemd can't honor `PrivateUsers`. Force `PrivateUsers = false` for every Paperless unit in the same module, or the ExecStartPre wrapper exits early with 226/NAMESPACE.
 
+## Key learnings (2025-12-13)
+
+- When `zfs-root.boot.immutable = true`, the initrd rolls everything back to `rpool/nixos/empty@start` on every boot. Unless you refresh that `@start` snapshot whenever you rebuild, the machine keeps returning to the install state and you have to reapply the latest generation manually. Automate `zfs snapshot -r rpool/nixos/empty@start` from an activation script (or after each rebuild) so the next boot keeps the intended config.
+
 ## Key learnings (2025-05-08)
 
 - Always reconcile `modules/machines/*/secrets/default.nix` with any services you disable; lingering entries force nonexistent secrets.

@@ -87,14 +87,15 @@ in
         };
         systemd.services.immutable-root-snapshot = {
           description = "Refresh immutable root rollback snapshot";
-          enable = true;
           after = [ "local-fs.target" ];
           wantedBy = [ "multi-user.target" ];
           serviceConfig = {
             Type = "oneshot";
             ExecStart = ''
               if ${pkgs.zfs}/bin/zfs list -H rpool/nixos/empty >/dev/null 2>&1; then
-                ${pkgs.zfs}/bin/zfs destroy -r rpool/nixos/empty@start >/dev/null 2>&1 || true
+                if ${pkgs.zfs}/bin/zfs list -H rpool/nixos/empty@start >/dev/null 2>&1; then
+                  ${pkgs.zfs}/bin/zfs destroy -r rpool/nixos/empty@start >/dev/null 2>&1 || true
+                fi
                 ${pkgs.zfs}/bin/zfs snapshot -r rpool/nixos/empty@start
               fi
             '';

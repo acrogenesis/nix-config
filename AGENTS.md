@@ -17,7 +17,7 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 
 ## Key learnings (2025-12-13)
 
-- When `zfs-root.boot.immutable = true`, the initrd rolls everything back to `rpool/nixos/empty@start` on every boot. Unless you refresh that `@start` snapshot whenever you rebuild, the machine keeps returning to the install state and you have to reapply the latest generation manually. Automate `zfs snapshot -r rpool/nixos/empty@start` from an activation script (or after each rebuild) so the next boot keeps the intended config.
+- When `zfs-root.boot.immutable = true`, the initrd rolls root back to `rpool/nixos/empty@start` on every boot. Previously that snapshot never got refreshed so boots would revert to the installer state. Add a short service that restarts on every boot (after `local-fs.target`) to destroy/recreate `rpool/nixos/empty@start` so the rollback snapshot always points to whatever generation actually booted last.
 
 ## Key learnings (2025-05-08)
 

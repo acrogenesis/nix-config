@@ -7,6 +7,31 @@
 
 let
   cfg = config.zfs-root.boot;
+  immutableRootSnapshotScript = ''
+    if ${pkgs.zfs}/bin/zfs list -H rpool/nixos/empty >/dev/null 2>&1; then
+      start="rpool/nixos/empty@start"
+      tmp="$start.tmp"
+      old="$start.old"
+
+      ${pkgs.zfs}/bin/zfs destroy -r "$tmp" >/dev/null 2>&1 || true
+      ${pkgs.zfs}/bin/zfs destroy -r "$old" >/dev/null 2>&1 || true
+
+      if ${pkgs.zfs}/bin/zfs snapshot -r "$tmp" >/dev/null 2>&1; then
+        if ${pkgs.zfs}/bin/zfs list -H "$start" >/dev/null 2>&1; then
+          ${pkgs.zfs}/bin/zfs rename -r "$start" "$old" >/dev/null 2>&1 || true
+        fi
+
+        if ${pkgs.zfs}/bin/zfs rename -r "$tmp" "$start" >/dev/null 2>&1; then
+          ${pkgs.zfs}/bin/zfs destroy -r "$old" >/dev/null 2>&1 || true
+        else
+          if ${pkgs.zfs}/bin/zfs list -H "$old" >/dev/null 2>&1; then
+            ${pkgs.zfs}/bin/zfs rename -r "$old" "$start" >/dev/null 2>&1 || true
+          fi
+          ${pkgs.zfs}/bin/zfs destroy -r "$tmp" >/dev/null 2>&1 || true
+        fi
+      fi
+    fi
+  '';
 in
 {
   options.zfs-root.boot = {
@@ -82,24 +107,22 @@ in
             description = "Rollback root fs";
             unitConfig.DefaultDependencies = "no";
             serviceConfig.Type = "oneshot";
-            script = "zfs rollback -r rpool/nixos/empty@start && echo '  >> >> rollback complete << <<'";
+            script = ''
+              if zfs list -H rpool/nixos/empty@start >/dev/null 2>&1; then
+                zfs rollback -r rpool/nixos/empty@start && echo '  >> >> rollback complete << <<'
+              else
+                echo '  >> >> rollback snapshot missing; skipping << <<'
+              fi
+            '';
           };
         };
+        system.activationScripts.immutableRootSnapshot = immutableRootSnapshotScript;
         systemd.services.immutable-root-snapshot = {
           description = "Refresh immutable root rollback snapshot";
           after = [ "local-fs.target" ];
           wantedBy = [ "multi-user.target" ];
-          serviceConfig = {
-            Type = "oneshot";
-            script = ''
-              if ${pkgs.zfs}/bin/zfs list -H rpool/nixos/empty >/dev/null 2>&1; then
-                if ${pkgs.zfs}/bin/zfs list -H rpool/nixos/empty@start >/dev/null 2>&1; then
-                  ${pkgs.zfs}/bin/zfs destroy -r rpool/nixos/empty@start >/dev/null 2>&1 || true
-                fi
-                ${pkgs.zfs}/bin/zfs snapshot -r rpool/nixos/empty@start
-              fi
-            '';
-          };
+          serviceConfig.Type = "oneshot";
+          script = immutableRootSnapshotScript;
         };
       })
       {

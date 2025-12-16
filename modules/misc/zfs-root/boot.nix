@@ -144,6 +144,7 @@ in
           zfs = {
             devNodes = cfg.devNodes;
             forceImportRoot = lib.mkDefault false;
+            extraPools = lib.mkBefore [ "bpool" ];
           };
           loader = {
             efi = {
@@ -153,6 +154,7 @@ in
             generationsDir.copyKernels = true;
             grub = {
               enable = true;
+              forceInstall = lib.mkIf cfg.removableEfi (lib.mkDefault true);
               mirroredBoots = map (diskName: {
                 devices = [ "nodev" ];
                 path = "/boot/efis/${diskName}${cfg.partitionScheme.efiBoot}";
@@ -184,6 +186,12 @@ in
             );
           };
         };
+        system.activationScripts.grubenv-reset = lib.mkIf config.boot.loader.grub.enable ''
+          if [ -e /boot/grub/grubenv ]; then
+            ${pkgs.grub2}/bin/grub-editenv /boot/grub/grubenv unset saved_entry >/dev/null 2>&1 || true
+            ${pkgs.grub2}/bin/grub-editenv /boot/grub/grubenv unset next_entry >/dev/null 2>&1 || true
+          fi
+        '';
       }
     ]
   );

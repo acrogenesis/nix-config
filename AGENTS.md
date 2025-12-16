@@ -19,6 +19,11 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 
 - When `zfs-root.boot.immutable = true`, the initrd rolls root back to `rpool/nixos/empty@start` on every boot. Previously that snapshot never got refreshed so boots would revert to the installer state. Add a short service that runs on every boot (after `local-fs.target`) to destroy/recreate `rpool/nixos/empty@start` so the rollback snapshot always points to whatever generation actually booted last.
 
+## Key learnings (2025-12-16)
+
+- With GRUB + ZFS `/boot` and `efiInstallAsRemovable`, a stale `/boot/grub/grubenv` (`saved_entry`/`next_entry`) can force booting an older generation even when `nixos-rebuild` switched to a newer one; clear those keys during activation and consider `boot.loader.grub.forceInstall = true` so each rebuild refreshes the EFI loader.
+- Ensure `boot.zfs.extraPools` includes `bpool` so `/boot` is reliably importable early and bootloader updates land on the intended pool.
+
 ## Key learnings (2025-05-08)
 
 - Always reconcile `modules/machines/*/secrets/default.nix` with any services you disable; lingering entries force nonexistent secrets.

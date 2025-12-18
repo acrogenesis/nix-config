@@ -163,8 +163,10 @@ in
       removableEfi = true;
     };
   };
+  # Ensure the ESP mount always targets the expected disk; disko uses by-partlabel
+  # here, which can become ambiguous if multiple disks share the same PARTLABEL.
   fileSystems."/boot/efis/${bootDeviceId}-part2".device =
-    lib.mkForce "/dev/disk/by-partlabel/disk-main-efi";
+    lib.mkForce "/dev/disk/by-id/${bootDeviceId}-part2";
   imports = [
     inputs.disko.nixosModules.disko
     ./disko.nix

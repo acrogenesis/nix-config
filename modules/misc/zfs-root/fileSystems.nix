@@ -39,9 +39,6 @@ in
         device = "${config.zfs-root.boot.devNodes}/${esp}";
         fsType = "vfat";
         options = [
-          "x-systemd.idle-timeout=1min"
-          "x-systemd.automount"
-          "noauto"
           "nofail"
           "noatime"
           "X-mount.mkdir"

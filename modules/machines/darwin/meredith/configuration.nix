@@ -86,7 +86,6 @@
     inputs.agenix.packages."${system}".default
     yt-dlp
     ffmpeg
-    discord
     git-filter-repo
     slack
     google-cloud-sdk

@@ -1,25 +1,5 @@
 {
   "nodes": {
-    "adios-bot": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1758977554,
-        "narHash": "sha256-nvRMRGF2hRFl+/NzbmRITks6po32Q1CFjZorkcT+zTE=",
-        "owner": "notthebee",
-        "repo": "adiosbot",
-        "rev": "aeacc0bcbcd2c185674e6d4cafc72861d2044122",
-        "type": "github"
-      },
-      "original": {
-        "owner": "notthebee",
-        "repo": "adiosbot",
-        "type": "github"
-      }
-    },
     "agenix": {
       "inputs": {
         "darwin": "darwin",
@@ -512,7 +492,6 @@
     },
     "root": {
       "inputs": {
-        "adios-bot": "adios-bot",
         "agenix": "agenix",
         "alga": "alga",
         "autoaspm": "autoaspm",

@@ -38,7 +38,7 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     autoaspm = {
-      url = "github:notthebee/AutoASPM";
+      url = "git+https://git.notthebe.ee/notthebee/AutoASPM";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     agenix = {

@@ -56,15 +56,15 @@
       "locked": {
         "lastModified": 1759050207,
         "narHash": "sha256-WnEKYqj0xs92DZscGVMmLytHOQlUWg3ZtZRdgCoTgQw=",
-        "owner": "notthebee",
-        "repo": "AutoASPM",
+        "ref": "refs/heads/main",
         "rev": "0c73e0ed98e7bb3f6854bab9505e79a7f61654bd",
-        "type": "github"
+        "revCount": 10,
+        "type": "git",
+        "url": "https://git.notthebe.ee/notthebee/AutoASPM"
       },
       "original": {
-        "owner": "notthebee",
-        "repo": "AutoASPM",
-        "type": "github"
+        "type": "git",
+        "url": "https://git.notthebe.ee/notthebee/AutoASPM"
       }
     },
     "darwin": {

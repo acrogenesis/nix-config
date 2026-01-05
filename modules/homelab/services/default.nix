@@ -107,6 +107,7 @@
     ./monitoring/prometheus/exporters/shelly_plug_exporter
     ./navidrome
     ./nextcloud
+    ./phoenix-app
     ./smarthome/homeassistant
     ./smarthome/matter-server
     ./smarthome/raspberrymatic

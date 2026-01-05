@@ -80,6 +80,11 @@ in
             ''
           );
       });
+      mstpd = prev.mstpd.overrideAttrs (old: {
+        NIX_CFLAGS_COMPILE = lib.toList (old.NIX_CFLAGS_COMPILE or [ ]) ++ [
+          "-Wno-error=old-style-definition"
+        ];
+      });
     })
   ];
   boot = {

@@ -136,7 +136,17 @@ in
       sabnzbd.enable = true;
       sonarr.enable = true;
       radarr.enable = true;
-      unpackerr.enable = true;
+      unpackerr = {
+        enable = true;
+        environmentFile = config.age.secrets.unpackerrEnvironmentFile.path;
+        configText = ''
+          [[sonarr]]
+          url = "http://127.0.0.1:8989"
+
+          [[radarr]]
+          url = "http://127.0.0.1:7878"
+        '';
+      };
       audiobookrequest = {
         enable = true;
         url = "abr.${hl.baseDomain}";

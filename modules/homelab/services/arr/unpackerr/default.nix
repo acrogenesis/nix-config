@@ -30,6 +30,11 @@ in
       default = "/etc/unpackerr/unpackerr.conf";
       description = "Path to the ${service} configuration file.";
     };
+    configText = lib.mkOption {
+      type = lib.types.nullOr lib.types.lines;
+      default = null;
+      description = "Managed ${service} configuration content for ${service}.configFile.";
+    };
     environmentFile = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
       default = null;
@@ -42,33 +47,40 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    systemd.tmpfiles.rules = [
-      "d ${cfg.configDir} 0750 ${homelab.user} ${homelab.group} - -"
-    ];
+  config = lib.mkIf cfg.enable (
+    lib.mkMerge [
+      {
+        systemd.tmpfiles.rules = [
+          "d ${cfg.configDir} 0750 ${homelab.user} ${homelab.group} - -"
+        ];
 
-    systemd.services.${service} = {
-      description = "Unpackerr service";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network-online.target" ];
-      wants = [ "network-online.target" ];
-      environment = {
-        HOME = cfg.configDir;
-      };
-      serviceConfig = {
-        Type = "simple";
-        User = homelab.user;
-        Group = homelab.group;
-        WorkingDirectory = cfg.configDir;
-        ExecStart = "${lib.getExe cfg.package} -c ${cfg.configFile}";
-        Restart = "on-failure";
-        RestartSec = "5s";
-        NoNewPrivileges = true;
-        PrivateTmp = true;
+        systemd.services.${service} = {
+          description = "Unpackerr service";
+          wantedBy = [ "multi-user.target" ];
+          after = [ "network-online.target" ];
+          wants = [ "network-online.target" ];
+          environment = {
+            HOME = cfg.configDir;
+          };
+          serviceConfig = {
+            Type = "simple";
+            User = homelab.user;
+            Group = homelab.group;
+            WorkingDirectory = cfg.configDir;
+            ExecStart = "${lib.getExe cfg.package} -c ${cfg.configFile}";
+            Restart = "on-failure";
+            RestartSec = "5s";
+            NoNewPrivileges = true;
+            PrivateTmp = true;
+          }
+          // lib.optionalAttrs (cfg.environmentFile != null) {
+            EnvironmentFile = cfg.environmentFile;
+          };
+        };
       }
-      // lib.optionalAttrs (cfg.environmentFile != null) {
-        EnvironmentFile = cfg.environmentFile;
-      };
-    };
-  };
+      (lib.mkIf (cfg.configText != null) {
+        environment.etc."unpackerr/unpackerr.conf".text = cfg.configText;
+      })
+    ]
+  );
 }

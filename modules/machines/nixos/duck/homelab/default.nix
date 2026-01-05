@@ -136,6 +136,7 @@ in
       sabnzbd.enable = true;
       sonarr.enable = true;
       radarr.enable = true;
+      unpackerr.enable = true;
       audiobookrequest = {
         enable = true;
         url = "abr.${hl.baseDomain}";

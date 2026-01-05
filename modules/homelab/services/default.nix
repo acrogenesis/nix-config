@@ -89,6 +89,7 @@
     ./arr/jellyseerr
     ./arr/sonarr
     ./arr/radarr
+    ./arr/unpackerr
     ./arr/flaresolverr
     #./arr/lidarr
     ./audiobookrequest

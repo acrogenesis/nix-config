@@ -185,6 +185,23 @@ in
           credentialsFile = config.age.secrets.microbinCloudflared.path;
         };
       };
+      phoenix-app = {
+        enable = true;
+        url = "rfccheck.nextgenapi.com";
+        caddy.enable = false;
+        port = 4000;
+        configDir = "/var/lib/rfccheck";
+        execStart = "${hl.mounts.config}/rfccheck/bin/rfccheck start";
+        environmentFile = config.age.secrets.rfccheckEnv.path;
+        cloudflared = {
+          tunnelId = "2210594d-6ded-4b1d-9f3b-db1403589bcb";
+          credentialsFile = config.age.secrets.rfccheckCloudflared.path;
+        };
+        homepage = {
+          name = "RFCCheck";
+          description = "Phoenix app";
+        };
+      };
       miniflux = {
         enable = false;
         cloudflared = {

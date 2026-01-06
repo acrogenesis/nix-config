@@ -53,6 +53,11 @@ in
       default = [ ];
       description = "Additional hostnames that should serve the app.";
     };
+    caddy.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Whether to expose the app through Caddy.";
+    };
     port = lib.mkOption {
       type = lib.types.port;
       default = 4000;
@@ -159,17 +164,19 @@ in
             Restart = "on-failure";
             PrivateTmp = true;
             NoNewPrivileges = true;
+          }
+          // lib.optionalAttrs (cfg.environmentFile != null) {
+            EnvironmentFile = cfg.environmentFile;
           };
         };
-        systemd.services.${service}.serviceConfig.EnvironmentFile = lib.mkIf (
-          cfg.environmentFile != null
-        ) cfg.environmentFile;
-        services.caddy.virtualHosts = lib.genAttrs hostnames (_: {
-          useACMEHost = homelab.baseDomain;
-          extraConfig = ''
-            reverse_proxy ${upstream}
-          '';
-        });
+        services.caddy.virtualHosts = lib.mkIf cfg.caddy.enable (
+          lib.genAttrs hostnames (_: {
+            useACMEHost = homelab.baseDomain;
+            extraConfig = ''
+              reverse_proxy ${upstream}
+            '';
+          })
+        );
       }
       (lib.mkIf (cfg.cloudflared.credentialsFile != null && cfg.cloudflared.tunnelId != null) {
         services.cloudflared = {

@@ -26,6 +26,8 @@
     nextcloudAdminPassword.file = "${inputs.secrets}/nextcloudAdminPassword.age";
     vaultwardenCloudflared.file = "${inputs.secrets}/vaultwardenCloudflared.age";
     microbinCloudflared.file = "${inputs.secrets}/microbinCloudflared.age";
+    rfccheckCloudflared.file = "${inputs.secrets}/rfccheckCloudflared.age";
+    rfccheckEnv.file = "${inputs.secrets}/rfccheckEnv.age";
     audiobookshelfCloudflared.file = "${inputs.secrets}/audiobookshelfCloudflared.age";
     minifluxAdminPassword.file = "${inputs.secrets}/minifluxAdminPassword.age";
     minifluxCloudflared.file = "${inputs.secrets}/minifluxCloudflared.age";

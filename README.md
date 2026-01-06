@@ -40,6 +40,7 @@ Very much a work in progress.
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/png/microbin.png' width=32 height=32>|Microbin|A minimal pastebin|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/nextcloud.svg' width=32 height=32>|Nextcloud|Enterprise File Storage and Collaboration|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/paperless.svg' width=32 height=32>|Paperless-ngx|Document management system|Services|
+|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/phoenix-framework.svg' width=32 height=32>|RFCCheck|Phoenix app|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/prowlarr.svg' width=32 height=32>|Prowlarr|PVR indexer|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/radarr.svg' width=32 height=32>|Radarr|Movie collection manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sabnzbd.svg' width=32 height=32>|SABnzbd|The free and easy binary newsreader|Downloads|

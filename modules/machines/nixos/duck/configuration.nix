@@ -241,6 +241,17 @@ in
   services.autoaspm.enable = true;
   powerManagement.powertop.enable = true;
 
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      stdenv.cc.cc
+      zlib
+      openssl
+      ncurses
+      libuuid
+    ];
+  };
+
   environment.systemPackages = with pkgs; [
     pciutils
     glances

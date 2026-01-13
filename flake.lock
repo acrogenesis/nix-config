@@ -34,11 +34,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1768034069,
-        "narHash": "sha256-Jxz9Hn6YwDBSb1QyRDEBPTk2MIXsxYpjKZFeA9TtnJc=",
+        "lastModified": 1768204594,
+        "narHash": "sha256-TZIZYnNv58IpikltSevX2hkt3hCmSoX/rveqieQWWg8=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "a1ac9585f763205206aa54b13cb974b331558f13",
+        "rev": "76d1fcb284ec017c913c915777331bbed732f03f",
         "type": "github"
       },
       "original": {
@@ -214,11 +214,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1768068402,
-        "narHash": "sha256-bAXnnJZKJiF7Xr6eNW6+PhBf1lg2P1aFUO9+xgWkXfA=",
+        "lastModified": 1768271922,
+        "narHash": "sha256-zmFw7AtcmfMxW3vR7AiGeQQeHhdrd2x7a3hxzd6vJYI=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "8bc5473b6bc2b6e1529a9c4040411e1199c43b4c",
+        "rev": "fbd566923adcfa67be512a14a79467e2ab8a5777",
         "type": "github"
       },
       "original": {
@@ -617,11 +617,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767152253,
-        "narHash": "sha256-xxuRsew0pedwptVnhfru01xbe+dDhI+OY1kCFDMxBUs=",
+        "lastModified": 1767701098,
+        "narHash": "sha256-CJhKZnWb3gumR9oTRjFvCg/6lYTGbZRU7xtvcyWIRwU=",
         "owner": "pyproject-nix",
         "repo": "uv2nix",
-        "rev": "7a3eb140416318349ec58d2d4e81afe071bc9f03",
+        "rev": "9d357f0d2ce6f5f35ec7959d7e704452352eb4da",
         "type": "github"
       },
       "original": {

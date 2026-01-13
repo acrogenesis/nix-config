@@ -29,6 +29,7 @@
     rfccheckCloudflared.file = "${inputs.secrets}/rfccheckCloudflared.age";
     rfccheckEnv.file = "${inputs.secrets}/rfccheckEnv.age";
     audiobookshelfCloudflared.file = "${inputs.secrets}/audiobookshelfCloudflared.age";
+    jellyfinCloudflared.file = "${inputs.secrets}/jellyfinCloudflared.age";
     minifluxAdminPassword.file = "${inputs.secrets}/minifluxAdminPassword.age";
     minifluxCloudflared.file = "${inputs.secrets}/minifluxCloudflared.age";
     # duckDNSDomain.file = "${inputs.secrets}/duckDNSDomain.age";

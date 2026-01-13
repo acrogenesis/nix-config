@@ -128,7 +128,13 @@ in
       };
       homeassistant.enable = true;
       matter-server.enable = true;
-      jellyfin.enable = true;
+      jellyfin = {
+        enable = true;
+        cloudflared = {
+          tunnelId = "f6122529-a59a-4b62-976c-5f6745b7b05b";
+          credentialsFile = config.age.secrets.jellyfinCloudflared.path;
+        };
+      };
       paperless = {
         enable = true;
         passwordFile = config.age.secrets.paperlessPassword.path;

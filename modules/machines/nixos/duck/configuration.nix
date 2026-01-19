@@ -10,6 +10,8 @@ let
   lan = hl.networks.local.lan;
   duckIpAddress = lan.reservations.duck.Address;
   gatewayIpAddress = lan.cidr.v4;
+  duckIpv6Address = "2806:108e:2b:6771::20";
+  gatewayIpv6Address = "2806:108e:2b:6771::1";
   lanInterface = lan.interface;
   bootDeviceId = "nvme-Patriot_M.2_P300_512GB_P300WCBB24093006490";
   hardDrives = [
@@ -138,10 +140,20 @@ in
               prefixLength = 24;
             }
           ];
+          ipv6.addresses = [
+            {
+              address = duckIpv6Address;
+              prefixLength = 64;
+            }
+          ];
         };
       };
     defaultGateway = {
       address = gatewayIpAddress;
+      interface = bridgeInterface;
+    };
+    defaultGateway6 = {
+      address = gatewayIpv6Address;
       interface = bridgeInterface;
     };
     hostId = "0730ae51";

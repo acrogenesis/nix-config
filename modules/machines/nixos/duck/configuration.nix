@@ -10,8 +10,8 @@ let
   lan = hl.networks.local.lan;
   duckIpAddress = lan.reservations.duck.Address;
   gatewayIpAddress = lan.cidr.v4;
-  duckIpv6Address = "2806:108e:2b:6771::20";
-  gatewayIpv6Address = "2806:108e:2b:6771::1";
+  duckIpv6Address = "fd84:7b2c:3e5a:1::20";
+  gatewayIpv6Address = "fd84:7b2c:3e5a:1::1";
   lanInterface = lan.interface;
   bootDeviceId = "nvme-Patriot_M.2_P300_512GB_P300WCBB24093006490";
   hardDrives = [

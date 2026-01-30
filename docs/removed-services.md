@@ -6,6 +6,9 @@
 - **Readarr** (homelab Arr stack)
   Removed from the homelab stack; the module (`modules/homelab/services/arr/readarr`) and custom package overlay (`pkgs/readarr-faustvii`) were deleted. Recreate the module and package if you want Readarr again.
 
+- **Technitium DNS**
+  Removed from the homelab services; the module (`modules/homelab/services/technitium`) and duck service stanza were deleted. Re-add both (and any required DNS configuration) to bring it back.
+
 - **Keycloak**, **Nextcloud**, **Vaultwarden**, **Paperless**, **Navidrome**, **Miniflux**, **Microbin**, **Radicale**, **InvoicePlane**, **WireGuard netns**
   These homelab services are currently disabled. Their `.age` secrets are commented out; re-enable them only after you recreate the necessary secrets and infrastructure (Cloudflare tunnels, databases, etc.).
 

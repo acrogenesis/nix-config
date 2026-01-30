@@ -113,7 +113,6 @@
     ./smarthome/matter-server
     ./smarthome/raspberrymatic
     ./paperless-ngx
-    ./technitium
     ./radicale
     ./sabnzbd
     ./slskd

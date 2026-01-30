@@ -45,7 +45,6 @@ Very much a work in progress.
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/radarr.svg' width=32 height=32>|Radarr|Movie collection manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sabnzbd.svg' width=32 height=32>|SABnzbd|The free and easy binary newsreader|Downloads|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sonarr.svg' width=32 height=32>|Sonarr|TV show collection manager|Arr|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/ddns-updater.svg' width=32 height=32>|Technitium DNS|Self-hosted DNS server|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/bitwarden.svg' width=32 height=32>|Vaultwarden|Password manager|Services|
 
 

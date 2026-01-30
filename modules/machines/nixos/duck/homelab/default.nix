@@ -9,7 +9,6 @@ let
   wg = config.homelab.networks.external.spencer-wireguard;
   wgBase = lib.strings.removeSuffix ".1" wg.gateway;
   hl = config.homelab;
-  lanIp = hl.networks.local.lan.reservations.${config.networking.hostName}.Address;
 in
 {
   services.fail2ban-cloudflare = {
@@ -62,11 +61,6 @@ in
     };
     services = {
       enable = true;
-      technitium = {
-        enable = true;
-        dnsPort = 53;
-        dnsListenAddress = lanIp;
-      };
       slskd = {
         enable = false;
         environmentFile = config.age.secrets.slskdEnvironmentFile.path;

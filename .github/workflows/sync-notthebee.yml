@@ -51,7 +51,19 @@ jobs:
               author_name="$(git show -s --format='%an' "${commit}")"
               if [[ "${author_name}" =~ ${ALLOWED_AUTHOR_REGEX} ]]; then
                 echo "Cherry-picking ${commit} by ${author_name}"
-                git cherry-pick "${commit}"
+                if ! git cherry-pick "${commit}"; then
+                  if git diff --name-only --diff-filter=U | grep -q .; then
+                    echo "Cherry-pick conflict in ${commit}; aborting."
+                    exit 1
+                  fi
+                  if git diff --cached --quiet && git diff --quiet; then
+                    echo "Empty cherry-pick for ${commit}; skipping."
+                    git cherry-pick --skip
+                  else
+                    echo "Cherry-pick failed for ${commit}."
+                    exit 1
+                  fi
+                fi
               else
                 echo "Skipping ${commit} by ${author_name}"
               fi

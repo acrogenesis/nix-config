@@ -1,0 +1,146 @@
+name: notthebee-commit-report
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 5 * * *"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: notthebee-commit-report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    env:
+      UPSTREAM_REPO: https://git.notthebe.ee/notthebee/nix-config.git
+      UPSTREAM_BRANCH: main
+      BASE_BRANCH: main
+      AUTHOR_FILTER: Wolfgang
+      ISSUE_TITLE: "Upstream Wolfgang commits (notthebee)"
+      MARKER: "<!-- notthebee-commit-report -->"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Generate commit report
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if ! git remote get-url notthebee >/dev/null 2>&1; then
+            git remote add notthebee "${UPSTREAM_REPO}"
+          fi
+          git fetch --prune notthebee "${UPSTREAM_BRANCH}"
+          git fetch --prune origin "${BASE_BRANCH}"
+
+          export ISSUE_NUMBER="${issue_number}"
+          python - <<'PY'
+          import datetime
+          import os
+          import subprocess
+
+          author = os.environ["AUTHOR_FILTER"]
+          marker = os.environ["MARKER"]
+
+          base = f"origin/{os.environ['BASE_BRANCH']}"
+          log = subprocess.check_output(
+              [
+                  "git",
+                  "log",
+                  f"notthebee/{os.environ['UPSTREAM_BRANCH']}",
+                  f"--author={author}",
+                  "--pretty=format:%H%x00%h%x00%s",
+                  "--not",
+                  base,
+              ],
+              text=True,
+          )
+          entries = []
+          for line in log.splitlines():
+              if not line.strip():
+                  continue
+              full, short, subject = line.split("\x00", 2)
+              subject = subject.replace("\n", " ").strip()
+              url = f"https://git.notthebe.ee/notthebee/nix-config/commit/{full}"
+              entries.append(f"- {subject} - [{short}]({url})")
+
+          now = datetime.date.today().isoformat()
+          header = [
+              marker,
+              f"Upstream {author} commits on notthebee/main (generated {now}):",
+              "",
+          ]
+
+          max_chunk = 60000
+          chunks = []
+          current = header[:]
+          current_len = sum(len(line) + 1 for line in current)
+          for entry in entries:
+              entry_len = len(entry) + 1
+              if current_len + entry_len > max_chunk and current:
+                  chunks.append(current)
+                  current = [marker]
+                  current_len = len(marker) + 1
+              current.append(entry)
+              current_len += entry_len
+          if current:
+              chunks.append(current)
+
+          paths = []
+          for i, chunk in enumerate(chunks, 1):
+              if i > 1:
+                  chunk = [marker, f"Continued list (part {i}/{len(chunks)}):", ""] + chunk[1:]
+              path = f"/tmp/notthebee-commits-{i}.md"
+              with open(path, "w", encoding="utf-8") as f:
+                  f.write("\n".join(chunk) + "\n")
+              paths.append(path)
+
+          with open("/tmp/notthebee-commit-report-count.txt", "w", encoding="utf-8") as f:
+              f.write(str(len(paths)))
+          PY
+      - name: Upsert issue
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          issue_number="$(gh issue list -S "in:title \"${ISSUE_TITLE}\"" -L 1 --state all --json number -q '.[0].number')"
+          if [[ -z "${issue_number}" ]]; then
+            gh issue create -t "${ISSUE_TITLE}" -F /tmp/notthebee-commits-1.md >/tmp/notthebee-issue-url.txt
+            issue_number="$(sed -E 's#.*/issues/([0-9]+)$#\\1#' /tmp/notthebee-issue-url.txt)"
+          else
+            gh issue edit "${issue_number}" --body-file /tmp/notthebee-commits-1.md
+          fi
+
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          import sys
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          issue = os.environ["ISSUE_NUMBER"]
+          marker = os.environ["MARKER"]
+
+          comments = subprocess.check_output(
+              ["gh", "api", f"repos/{repo}/issues/{issue}/comments", "--paginate"],
+              text=True,
+          )
+          data = json.loads(comments)
+          for comment in data:
+              if marker in comment.get("body", ""):
+                  subprocess.check_call(["gh", "api", "--method", "DELETE", f"repos/{repo}/issues/comments/{comment['id']}"])
+          PY
+
+          part_count="$(cat /tmp/notthebee-commit-report-count.txt)"
+          if [[ "${part_count}" -gt 1 ]]; then
+            for i in $(seq 2 "${part_count}"); do
+              gh issue comment "${issue_number}" -F "/tmp/notthebee-commits-${i}.md"
+            done
+          fi

@@ -111,10 +111,14 @@ jobs:
 
           issue_number="$(gh issue list -S "in:title \"${ISSUE_TITLE}\"" -L 1 --state all --json number -q '.[0].number')"
           if [[ -z "${issue_number}" ]]; then
-            gh issue create -t "${ISSUE_TITLE}" -F /tmp/notthebee-commits-1.md >/tmp/notthebee-issue-url.txt
-            issue_number="$(sed -E 's#.*/issues/([0-9]+)$#\\1#' /tmp/notthebee-issue-url.txt)"
+            issue_number="$(gh issue create -t "${ISSUE_TITLE}" -F /tmp/notthebee-commits-1.md --json number -q '.number')"
           else
             gh issue edit "${issue_number}" --body-file /tmp/notthebee-commits-1.md
+          fi
+
+          if [[ -z "${issue_number}" ]]; then
+            echo "Failed to determine issue number."
+            exit 1
           fi
 
           export ISSUE_NUMBER="${issue_number}"

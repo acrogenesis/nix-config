@@ -38,7 +38,6 @@ jobs:
           git fetch --prune notthebee "${UPSTREAM_BRANCH}"
           git fetch --prune origin "${BASE_BRANCH}"
 
-          export ISSUE_NUMBER="${issue_number}"
           python - <<'PY'
           import datetime
           import os
@@ -118,6 +117,7 @@ jobs:
             gh issue edit "${issue_number}" --body-file /tmp/notthebee-commits-1.md
           fi
 
+          export ISSUE_NUMBER="${issue_number}"
           python - <<'PY'
           import json
           import os

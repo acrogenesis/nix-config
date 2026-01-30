@@ -53,7 +53,8 @@ jobs:
                   "log",
                   f"notthebee/{os.environ['UPSTREAM_BRANCH']}",
                   f"--author={author}",
-                  "--pretty=format:%H%x00%h%x00%s",
+                  "--date=short",
+                  "--pretty=format:%H%x00%h%x00%ad%x00%s",
                   "--not",
                   base,
               ],
@@ -63,10 +64,10 @@ jobs:
           for line in log.splitlines():
               if not line.strip():
                   continue
-              full, short, subject = line.split("\x00", 2)
+              full, short, date, subject = line.split("\x00", 3)
               subject = subject.replace("\n", " ").strip()
               url = f"https://git.notthebe.ee/notthebee/nix-config/commit/{full}"
-              entries.append(f"- {subject} - [{short}]({url})")
+              entries.append(f"- {date} - {subject} - [{short}]({url})")
 
           now = datetime.date.today().isoformat()
           header = [

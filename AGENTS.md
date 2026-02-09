@@ -12,7 +12,7 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 ## Key learnings (2026-02-09)
 
 - On Duck, `acme-order-renew-rebelduck.cc.service` can fail DNS-01 propagation checks even when Cloudflare's API shows `_acme-challenge.rebelduck.cc` TXT records were created. During failures, authoritative queries (`hugh.ns.cloudflare.com`) and recursive lookups (`1.1.1.1`) still return "no TXT record", and renew exits status `11`.
-- Mitigation in `modules/homelab/services/default.nix`: set `dnsPropagationCheck = false` and `extraLegoFlags = [ "--dns.propagation-wait" "5m" ]` for `security.acme.certs.${config.homelab.baseDomain}` so lego waits before validation instead of failing early on propagation checks.
+- Mitigation in `modules/homelab/services/default.nix`: keep `dnsPropagationCheck = true` and set `extraLegoFlags = [ "--dns.propagation-wait" "5m" ]` for `security.acme.certs.${config.homelab.baseDomain}` so lego uses a fixed wait before validation instead of failing early on local propagation checks.
 
 ## Key learnings (2025-11-10)
 

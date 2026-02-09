@@ -9,6 +9,11 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 - Keep `docs/removed-services.md` in sync with config changes (add items when disabling, remove when re-enabling).
 - Mention new secrets or hardware requirements in `nix-private/README.md`.
 
+## Key learnings (2026-02-09)
+
+- On Duck, `acme-order-renew-rebelduck.cc.service` can fail DNS-01 propagation checks even when Cloudflare's API shows `_acme-challenge.rebelduck.cc` TXT records were created. During failures, authoritative queries (`hugh.ns.cloudflare.com`) and recursive lookups (`1.1.1.1`) still return "no TXT record", and renew exits status `11`.
+- Mitigation in `modules/homelab/services/default.nix`: set `dnsPropagationCheck = false` and `extraLegoRunFlags = [ "--dns.propagation-wait=5m" ]` for `security.acme.certs.${config.homelab.baseDomain}` so lego waits before validation instead of failing early on propagation checks.
+
 ## Key learnings (2025-11-10)
 
 - hddfancontrol v2 *requires* at least one PWM path per instance in `<path>:<start>:<stop>` form. Leaving the list empty still emits `-p` without an argument, so the daemon bails out (systemd status code 2). Duck uses `/sys/devices/platform/nct6775.656/hwmon/hwmon7/pwm2:50:50` (nct6775 module).

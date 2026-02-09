@@ -24,7 +24,10 @@
         extraDomainNames = [ "*.${config.homelab.baseDomain}" ];
         dnsProvider = "cloudflare";
         dnsResolver = "1.1.1.1:53";
-        dnsPropagationCheck = true;
+        dnsPropagationCheck = false;
+        # Cloudflare API can report TXT records before they're visible from all
+        # DNS vantage points; use a fixed wait to avoid premature renew failures.
+        extraLegoRunFlags = [ "--dns.propagation-wait=5m" ];
         group = config.services.caddy.group;
         environmentFile = config.homelab.cloudflare.dnsCredentialsFile;
       };

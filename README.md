@@ -45,6 +45,7 @@ Very much a work in progress.
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/radarr.svg' width=32 height=32>|Radarr|Movie collection manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sabnzbd.svg' width=32 height=32>|SABnzbd|The free and easy binary newsreader|Downloads|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sonarr.svg' width=32 height=32>|Sonarr|TV show collection manager|Arr|
+|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/teslamate.svg' width=32 height=32>|TeslaMate|Self-hosted Tesla data logger|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/bitwarden.svg' width=32 height=32>|Vaultwarden|Password manager|Services|
 
 
@@ -70,6 +71,7 @@ Duck’s restic jobs are wired through `modules/homelab/backup`, which automatic
 - `/var/lib/sabnzbd`
 - `/var/lib/sonarr`
 - `/var/lib/slskd`
+- `/var/lib/teslamate`
 - `/var/lib/vaultwarden`
 
 Two restic targets are configured:
@@ -187,6 +189,7 @@ reboot
 This flake expects an accompanying secrets repository that provides encrypted payloads and shared network settings. A ready-made template lives in `./nix-private`.
 
 - Copy the `nix-private` directory, update each placeholder `.age` file with real secrets (see below), and edit `nix-private/networks.nix` to match your LAN.
+- TeslaMate requires `nix-private/teslamateEnv.age` containing `ENCRYPTION_KEY`, `DATABASE_PASS`, and `RELEASE_COOKIE`.
 - Point the flake input at your local copy by setting `secrets = { url = "path:./nix-private"; flake = false; };` in `flake.nix` and refreshing the lock file with `nix flake lock --update-input secrets`.
 - Keep the directory private (or push it to your own private Git remote) because it will eventually contain your credentials.
 - The fast tier lives on a standalone ZFS pool named `cache` (Samsung 980 PRO NVMe) mounted at `/mnt/cache`. If you ever swap that drive, recreate/import the pool before rebooting or the `fileSystems.${hl.mounts.fast}` mount will fail.

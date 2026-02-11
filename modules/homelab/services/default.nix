@@ -122,6 +122,7 @@
     ./radicale
     ./sabnzbd
     ./slskd
+    ./teslamate
     ./uptime-kuma
     ./vaultwarden
     ./wireguard-netns

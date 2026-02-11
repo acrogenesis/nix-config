@@ -133,6 +133,10 @@ in
         enable = true;
         passwordFile = config.age.secrets.paperlessPassword.path;
       };
+      teslamate = {
+        enable = true;
+        secretsFile = config.age.secrets.teslamateEnv.path;
+      };
       sabnzbd.enable = true;
       sonarr.enable = true;
       radarr.enable = true;

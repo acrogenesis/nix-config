@@ -2,7 +2,6 @@
   config,
   inputs,
   lib,
-  pkgs,
   ...
 }:
 let
@@ -54,12 +53,23 @@ in
       secretsFile = cfg.secretsFile;
       listenAddress = "127.0.0.1";
       virtualHost = cfg.url;
-      postgres = {
-        enable_server = true;
-        # Immich currently expects PostgreSQL < 17 when vectors are enabled.
-        package = pkgs.postgresql_16;
-      };
+      postgres.enable_server = false;
     };
+    # Use the host's shared PostgreSQL instance instead of changing its package.
+    services.postgresql = {
+      enable = true;
+      ensureDatabases = [ "teslamate" ];
+      ensureUsers = [
+        {
+          name = "teslamate";
+          ensureDBOwnership = true;
+          ensureClauses.login = true;
+        }
+      ];
+    };
+    # TeslaMate upstream module does not expose DATABASE_SOCKET_DIR directly.
+    # Inject it so we can use the local unix socket without enabling TCP.
+    systemd.services.teslamate.environment.DATABASE_SOCKET_DIR = "/run/postgresql";
 
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = hl.baseDomain;

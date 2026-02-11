@@ -69,7 +69,7 @@
       url = "github:Tenzer/alga";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    teslamate.url = "github:teslamate-org/teslamate/main";
+    teslamate.url = "github:teslamate-org/teslamate/v2.2.0";
   };
 
   outputs =

@@ -11,6 +11,23 @@ let
   hl = config.homelab;
 in
 {
+  # Keep PostgreSQL modern for TeslaMate while remaining compatible with
+  # the current Immich (pgvecto-rs) setup.
+  services.postgresql = {
+    package = pkgs.postgresql_16;
+    dataDir = "/var/lib/postgresql/16";
+  };
+
+  # Safety guard: prevent accidentally initializing an empty v16 cluster while
+  # the existing v14 cluster still exists and has not been migrated.
+  systemd.services.postgresql.preStart = lib.mkBefore ''
+    if [ ! -e "${config.services.postgresql.dataDir}/PG_VERSION" ] && [ -e "/var/lib/postgresql/14/PG_VERSION" ]; then
+      echo "Refusing to initialize a new PostgreSQL cluster at ${config.services.postgresql.dataDir} while /var/lib/postgresql/14 still exists."
+      echo "Run pg_upgrade (with a backup) before switching."
+      exit 1
+    fi
+  '';
+
   services.fail2ban-cloudflare = {
     enable = true;
     apiKeyFile = config.age.secrets.cloudflareFirewallApiKey.path;

@@ -115,7 +115,7 @@ in
             basicAuth = false;
             withCredentials = false;
             isDefault = false;
-            secureJsonData.password = "\${DATABASE_PASS}";
+            secureJsonData.password = "$__env{DATABASE_PASS}";
             jsonData = {
               postgresVersion = 1500;
               sslmode = "disable";

@@ -29,6 +29,11 @@ in
       type = lib.types.str;
       default = "teslamate.${hl.baseDomain}";
     };
+    port = lib.mkOption {
+      type = lib.types.port;
+      default = 4001;
+      description = "Local listen port for TeslaMate.";
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "TeslaMate";
@@ -52,6 +57,7 @@ in
       enable = true;
       secretsFile = cfg.secretsFile;
       listenAddress = "127.0.0.1";
+      port = cfg.port;
       virtualHost = cfg.url;
       postgres.enable_server = false;
     };

@@ -70,6 +70,7 @@ in
           name = "teslamate";
           ensureDBOwnership = true;
           ensureClauses.login = true;
+          ensureClauses.superuser = true;
         }
       ];
     };

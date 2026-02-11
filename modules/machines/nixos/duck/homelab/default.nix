@@ -137,6 +137,7 @@ in
         #   }
         # ];
       };
+      grafana.enable = true;
       homeassistant.enable = true;
       matter-server.enable = true;
       jellyfin = {
@@ -153,6 +154,7 @@ in
       teslamate = {
         enable = true;
         secretsFile = config.age.secrets.teslamateEnv.path;
+        grafana.enable = true;
       };
       sabnzbd.enable = true;
       sonarr.enable = true;

@@ -137,7 +137,10 @@ in
         #   }
         # ];
       };
-      grafana.enable = true;
+      grafana = {
+        enable = true;
+        secretKeyFile = config.age.secrets.grafanaSecretKey.path;
+      };
       homeassistant.enable = true;
       matter-server.enable = true;
       jellyfin = {

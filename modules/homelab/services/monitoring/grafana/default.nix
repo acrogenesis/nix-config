@@ -17,6 +17,10 @@ in
       type = lib.types.str;
       default = "monitor.${homelab.baseDomain}";
     };
+    secretKeyFile = lib.mkOption {
+      type = lib.types.path;
+      description = "Path to file containing the Grafana secret key.";
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "Grafana";
@@ -50,6 +54,9 @@ in
           http_addr = "127.0.0.1";
           http_port = 3000;
           domain = cfg.url;
+        };
+        security = {
+          secret_key = "$__file{${cfg.secretKeyFile}}";
         };
       };
     };

@@ -32,6 +32,10 @@
     jellyfinCloudflared.file = "${inputs.secrets}/jellyfinCloudflared.age";
     minifluxAdminPassword.file = "${inputs.secrets}/minifluxAdminPassword.age";
     minifluxCloudflared.file = "${inputs.secrets}/minifluxCloudflared.age";
+    grafanaSecretKey = {
+      file = "${inputs.secrets}/grafanaSecretKey.age";
+      owner = "grafana";
+    };
     teslamateEnv.file = "${inputs.secrets}/teslamateEnv.age";
     # duckDNSDomain.file = "${inputs.secrets}/duckDNSDomain.age";
     # duckDNSToken.file = "${inputs.secrets}/duckDNSToken.age";

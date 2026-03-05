@@ -59,18 +59,6 @@ in
   };
   services.xserver.videoDrivers = [ "nvidia" ];
   nixpkgs.overlays = [
-    (final: prev: {
-      # autodocsumm 0.2.14 requires sphinx<9.0 but nixpkgs-unstable ships sphinx 9.1.0.
-      # Override the Python package to skip the runtime deps check so beets can build.
-      python3 = prev.python3.override {
-        packageOverrides = _pyFinal: pyPrev: {
-          autodocsumm = pyPrev.autodocsumm.overrideAttrs (_: {
-            dontUsePythonRuntimeDepsCheckHook = true;
-          });
-        };
-      };
-      python3Packages = final.python3.pkgs;
-    })
     (_final: prev: {
       btop = prev.btop.overrideAttrs (old: {
         nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ prev.makeWrapper ];
@@ -98,6 +86,15 @@ in
         NIX_CFLAGS_COMPILE = lib.toList (old.NIX_CFLAGS_COMPILE or [ ]) ++ [
           "-Wno-error=old-style-definition"
         ];
+      });
+      # autodocsumm 0.2.14 requires sphinx<9.0 but nixpkgs-unstable ships sphinx 9.1.0.
+      # Drop the doc output and the sphinx nativeBuildInputs so beets builds without docs.
+      beets = prev.beets.overrideAttrs (old: {
+        outputs = builtins.filter (o: o != "doc") old.outputs;
+        nativeBuildInputs = builtins.filter (p:
+          let pname = p.pname or ""; in
+          pname != "sphinxHook" && pname != "sphinx-toolbox"
+        ) (old.nativeBuildInputs or [ ]);
       });
     })
   ];

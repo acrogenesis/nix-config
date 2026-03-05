@@ -88,12 +88,20 @@ in
         ];
       });
       # autodocsumm 0.2.14 requires sphinx<9.0 but nixpkgs-unstable ships sphinx 9.1.0.
-      # Drop doc/man outputs and all sphinx nativeBuildInputs so beets builds without docs.
+      # Drop doc/man outputs, clear sphinxBuilders so the Python builder doesn't re-add
+      # sphinxHook, and strip all sphinx-related nativeBuildInputs.
       beets = prev.beets.overrideAttrs (old: {
         outputs = builtins.filter (o: o != "doc" && o != "man") old.outputs;
+        sphinxBuilders = [ ];
+        preInstallSphinx = "";
         nativeBuildInputs = builtins.filter (p:
           let pname = p.pname or ""; in
-          pname != "sphinxHook" && pname != "sphinx-toolbox" && pname != "sphinx"
+          pname != "sphinxHook" &&
+          pname != "sphinx-toolbox" &&
+          pname != "sphinx" &&
+          pname != "sphinx-design" &&
+          pname != "sphinx-copybutton" &&
+          pname != "pydata-sphinx-theme"
         ) (old.nativeBuildInputs or [ ]);
       });
     })

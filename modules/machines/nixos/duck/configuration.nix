@@ -88,12 +88,12 @@ in
         ];
       });
       # autodocsumm 0.2.14 requires sphinx<9.0 but nixpkgs-unstable ships sphinx 9.1.0.
-      # Drop the doc output and the sphinx nativeBuildInputs so beets builds without docs.
+      # Drop doc/man outputs and all sphinx nativeBuildInputs so beets builds without docs.
       beets = prev.beets.overrideAttrs (old: {
-        outputs = builtins.filter (o: o != "doc") old.outputs;
+        outputs = builtins.filter (o: o != "doc" && o != "man") old.outputs;
         nativeBuildInputs = builtins.filter (p:
           let pname = p.pname or ""; in
-          pname != "sphinxHook" && pname != "sphinx-toolbox"
+          pname != "sphinxHook" && pname != "sphinx-toolbox" && pname != "sphinx"
         ) (old.nativeBuildInputs or [ ]);
       });
     })

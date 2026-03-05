@@ -59,6 +59,18 @@ in
   };
   services.xserver.videoDrivers = [ "nvidia" ];
   nixpkgs.overlays = [
+    (final: prev: {
+      # autodocsumm 0.2.14 requires sphinx<9.0 but nixpkgs-unstable ships sphinx 9.1.0.
+      # Override the Python package to skip the runtime deps check so beets can build.
+      python3 = prev.python3.override {
+        packageOverrides = _pyFinal: pyPrev: {
+          autodocsumm = pyPrev.autodocsumm.overrideAttrs (_: {
+            dontUsePythonRuntimeDepsCheckHook = true;
+          });
+        };
+      };
+      python3Packages = final.python3.pkgs;
+    })
     (_final: prev: {
       btop = prev.btop.overrideAttrs (old: {
         nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ prev.makeWrapper ];

@@ -88,21 +88,18 @@ in
         ];
       });
       # autodocsumm 0.2.14 requires sphinx<9.0 but nixpkgs-unstable ships sphinx 9.1.0.
-      # Drop doc/man outputs, clear sphinxBuilders so the Python builder doesn't re-add
-      # sphinxHook, and strip all sphinx-related nativeBuildInputs.
+      # Remove sphinx-toolbox from nativeBuildInputs (so autodocsumm is never needed)
+      # and patch docs/conf.py to drop the single sphinx_toolbox extension reference
+      # (confirmed unused in any .rst file so the docs build cleanly without it).
       beets = prev.beets.overrideAttrs (old: {
-        outputs = builtins.filter (o: o != "doc" && o != "man") old.outputs;
-        sphinxBuilders = [ ];
-        preInstallSphinx = "";
         nativeBuildInputs = builtins.filter (p:
-          let pname = p.pname or ""; in
-          pname != "sphinxHook" &&
-          pname != "sphinx-toolbox" &&
-          pname != "sphinx" &&
-          pname != "sphinx-design" &&
-          pname != "sphinx-copybutton" &&
-          pname != "pydata-sphinx-theme"
+          (p.pname or p.name or "") != "sphinx-toolbox"
         ) (old.nativeBuildInputs or [ ]);
+        postPatch = (old.postPatch or "") + ''
+          if [ -f docs/conf.py ]; then
+            sed -i '/"sphinx_toolbox/d' docs/conf.py
+          fi
+        '';
       });
     })
   ];

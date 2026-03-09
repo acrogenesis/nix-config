@@ -98,7 +98,7 @@
     mkcert
     karabiner-elements
     devenv
-    nixfmt-rfc-style
+    nixfmt
     opentofu
   ];
 

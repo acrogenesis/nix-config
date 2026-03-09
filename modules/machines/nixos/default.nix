@@ -39,7 +39,6 @@ in
         name:
         lib.nameValuePair name (
           (myNixosSystem name) {
-            system = "x86_64-linux";
             specialArgs = {
               inherit (self) inputs;
               self = {
@@ -48,6 +47,7 @@ in
             };
 
             modules = [
+              { nixpkgs.hostPlatform = "x86_64-linux"; }
               ../../homelab
               ../../misc/email
               ../../misc/tg-notify

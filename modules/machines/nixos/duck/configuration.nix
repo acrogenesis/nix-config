@@ -244,8 +244,9 @@ in
 
   virtualisation.docker = {
     storageDriver = "overlay2";
-    enableNvidia = true;
   };
+
+  hardware.nvidia-container-toolkit.enable = true;
 
   system.autoUpgrade.enable = true;
 

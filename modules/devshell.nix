@@ -15,7 +15,6 @@
           "secrets/*"
         ];
         programs.nixfmt.enable = true;
-        programs.nixfmt.package = pkgs.nixfmt-rfc-style;
         programs.deadnix.enable = true;
         programs.shellcheck.enable = true;
       };

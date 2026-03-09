@@ -12,10 +12,13 @@
       dates = [ "daily" ];
     };
 
-    settings.experimental-features = lib.mkDefault [
-      "nix-command"
-      "flakes"
-    ];
+    settings = {
+      experimental-features = lib.mkDefault [
+        "nix-command"
+        "flakes"
+      ];
+      download-buffer-size = 128 * 1024 * 1024;
+    };
   };
 
   nixpkgs = {

@@ -30,7 +30,6 @@ in
       name:
       lib.nameValuePair name (
         self.inputs.nix-darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
           specialArgs = {
             inherit (self) inputs;
             self = {
@@ -39,6 +38,7 @@ in
           };
 
           modules = [
+            { nixpkgs.hostPlatform = "aarch64-darwin"; }
             self.inputs.agenix.darwinModules.default
             self.inputs.home-manager.darwinModules.home-manager
             (./. + "/_common/default.nix")

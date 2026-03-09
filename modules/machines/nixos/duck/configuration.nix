@@ -246,7 +246,6 @@ in
     storageDriver = "overlay2";
   };
 
-  hardware.nvidia-container-toolkit.enable = true;
 
   system.autoUpgrade.enable = true;
 

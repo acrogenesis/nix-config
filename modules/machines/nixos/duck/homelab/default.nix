@@ -211,8 +211,13 @@ in
           credentialsFile = config.age.secrets.microbinCloudflared.path;
         };
       };
-      phoenix-app = {
+      coolify = {
         enable = true;
+        environmentFile = config.age.secrets.coolifyEnv.path;
+      };
+
+      phoenix-app = {
+        enable = false;
         url = "rfccheck.nextgenapi.com";
         caddy.enable = false;
         port = 4000;

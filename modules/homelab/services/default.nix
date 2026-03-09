@@ -90,6 +90,7 @@
   };
 
   imports = [
+    ./coolify
     ./arr/prowlarr
     ./arr/bazarr
     ./arr/jellyseerr

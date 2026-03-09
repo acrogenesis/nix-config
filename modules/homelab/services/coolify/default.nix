@@ -90,7 +90,7 @@ in
 
     port = lib.mkOption {
       type = lib.types.port;
-      default = 8000;
+      default = 8880;
       description = "Port the Coolify dashboard listens on.";
     };
 

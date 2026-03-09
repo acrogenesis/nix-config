@@ -72,7 +72,7 @@
     git-crypt
     iperf3
     eza
-    neofetch
+    fastfetch
     tmux
     rsync
     nmap

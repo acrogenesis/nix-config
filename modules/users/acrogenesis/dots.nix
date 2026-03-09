@@ -20,7 +20,7 @@ in
   imports = [
     ../../dots/zsh/default.nix
     ../../dots/nvim/default.nix
-    ../../dots/neofetch/default.nix
+    ../../dots/fastfetch/default.nix
     ./gitconfig.nix
   ];
 

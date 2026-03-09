@@ -166,8 +166,8 @@ in
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStart = "${pkgs.docker}/bin/docker compose -p coolify -f ${composeFile} --project-directory ${cfg.dataDir} up -d --remove-orphans --wait";
-        ExecStop = "${pkgs.docker}/bin/docker compose -p coolify -f ${composeFile} --project-directory ${cfg.dataDir} down";
+        ExecStart = "${pkgs.docker}/bin/docker compose -p coolify --env-file ${cfg.environmentFile} -f ${composeFile} --project-directory ${cfg.dataDir} up -d --remove-orphans --wait";
+        ExecStop = "${pkgs.docker}/bin/docker compose -p coolify --env-file ${cfg.environmentFile} -f ${composeFile} --project-directory ${cfg.dataDir} down";
       };
     };
 

@@ -771,11 +771,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1773438984,
-        "narHash": "sha256-7UrG0m69igGkc3dUmsUgGcAK0oiW07T97FU82Vr+6LA=",
+        "lastModified": 1773439706,
+        "narHash": "sha256-QwF3X9QTKENxIcip+au7UrXD+nzjgZjU3qpIaSMdGXc=",
         "owner": "acrogenesis",
         "repo": "rfccheck",
-        "rev": "da5b993081f949f57f744b963492057ab6d38cb8",
+        "rev": "fd2bb5582b628df78a406b75a2b99400c204f2a2",
         "type": "github"
       },
       "original": {

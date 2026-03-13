@@ -773,15 +773,15 @@
       "locked": {
         "lastModified": 1773433629,
         "narHash": "sha256-UvrPtFIGHyvM58RBvqTtAhShfHjCZq7vQWnSYSP/yig=",
-        "ref": "refs/heads/main",
+        "owner": "acrogenesis",
+        "repo": "rfccheck",
         "rev": "b20fa16f0564025c2f41e65dbbaa21b32d0928f8",
-        "revCount": 8,
-        "type": "git",
-        "url": "ssh://git@github.com/acrogenesis/rfccheck.git"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/acrogenesis/rfccheck.git"
+        "owner": "acrogenesis",
+        "repo": "rfccheck",
+        "type": "github"
       }
     },
     "root": {
@@ -808,11 +808,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1773021457,
-        "narHash": "sha256-uBiRAWuw5jabBjXT2TSXd/huf93lbQQR/BLJYyIHubQ=",
+        "lastModified": 1773435303,
+        "narHash": "sha256-JDCLdnHHq2AdLkUiw+4BMeRrK9RB2kN7oKNxyNyuGlI=",
         "ref": "refs/heads/main",
-        "rev": "9de5bf3d56163ab2ee619d34c955d0aa5c6d45fa",
-        "revCount": 20,
+        "rev": "cc2a8e5aeb999a3bb1aead890fb84ebce6bf5567",
+        "revCount": 21,
         "type": "git",
         "url": "ssh://git@github.com/acrogenesis/nix-private.git"
       },

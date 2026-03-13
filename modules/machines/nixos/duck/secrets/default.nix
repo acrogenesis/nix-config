@@ -46,5 +46,6 @@
       file = "${inputs.secrets}/resticPassword.age";
       owner = "restic";
     };
+    nixAccessTokens.file = "${inputs.secrets}/nixAccessTokens.age";
   };
 }

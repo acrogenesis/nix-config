@@ -247,6 +247,10 @@ in
   };
 
 
+  nix.extraOptions = ''
+    !include ${config.age.secrets.nixAccessTokens.path}
+  '';
+
   system.autoUpgrade.enable = true;
 
   services.withings2intervals = {

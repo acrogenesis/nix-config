@@ -70,7 +70,7 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     teslamate.url = "github:teslamate-org/teslamate/v2.2.0";
-    rfccheck.url = "git+ssh://git@github.com/acrogenesis/rfccheck.git";
+    rfccheck.url = "github:acrogenesis/rfccheck";
   };
 
   outputs =

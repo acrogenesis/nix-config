@@ -217,7 +217,8 @@ in
         caddy.enable = false;
         port = 4000;
         configDir = "/var/lib/rfccheck";
-        execStart = "${hl.mounts.config}/rfccheck/bin/rfccheck start";
+        package = inputs.rfccheck.packages.${pkgs.system}.default;
+        releaseName = "rfccheck";
         environmentFile = config.age.secrets.rfccheckEnv.path;
         cloudflared = {
           tunnelId = "2210594d-6ded-4b1d-9f3b-db1403589bcb";

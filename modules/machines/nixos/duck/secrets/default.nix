@@ -46,6 +46,7 @@
       file = "${inputs.secrets}/resticPassword.age";
       owner = "restic";
     };
+    refunEnv.file = "${inputs.secrets}/refunEnv.age";
     nixAccessTokens.file = "${inputs.secrets}/nixAccessTokens.age";
   };
 }

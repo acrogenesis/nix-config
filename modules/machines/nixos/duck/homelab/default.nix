@@ -211,6 +211,11 @@ in
           credentialsFile = config.age.secrets.microbinCloudflared.path;
         };
       };
+      refun = {
+        enable = true;
+        package = inputs.refun.packages.${pkgs.system}.default;
+        environmentFile = config.age.secrets.refunEnv.path;
+      };
       phoenix-app = {
         enable = true;
         url = "rfccheck.nextgenapi.com";

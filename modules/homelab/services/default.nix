@@ -115,6 +115,7 @@
     ./navidrome
     ./nextcloud
     ./phoenix-app
+    ./refun
     ./smarthome/homeassistant
     ./smarthome/matter-server
     ./smarthome/raspberrymatic

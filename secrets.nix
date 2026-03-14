@@ -62,6 +62,8 @@ let
     "../nix-private/nixAccessTokens.age"
     "../nix-private/refunEnv.age"
     "../nix-private/refunCredentials.age"
+    "../nix-private/refunEfirmaCer.age"
+    "../nix-private/refunEfirmaKey.age"
     "../nix-private/vaultwardenCloudflared.age"
     # "../nix-private/wireguardCredentials.age"
     # "../nix-private/wireguardPrivateKeySpencer.age"

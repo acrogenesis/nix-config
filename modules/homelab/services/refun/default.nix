@@ -62,6 +62,7 @@ in
 
     systemd.tmpfiles.rules = [
       "d ${cfg.configDir} 0750 ${homelab.user} ${homelab.group} - -"
+      "d ${cfg.configDir}/efirma 0750 ${homelab.user} ${homelab.group} - -"
     ];
 
     systemd.services.${service} = {

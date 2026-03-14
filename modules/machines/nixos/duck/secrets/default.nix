@@ -52,6 +52,16 @@
       owner = "share";
       path = "/var/lib/refun/credentials.json";
     };
+    refunEfirmaCer = {
+      file = "${inputs.secrets}/refunEfirmaCer.age";
+      owner = "share";
+      path = "/var/lib/refun/efirma/fiel.cer";
+    };
+    refunEfirmaKey = {
+      file = "${inputs.secrets}/refunEfirmaKey.age";
+      owner = "share";
+      path = "/var/lib/refun/efirma/fiel.key";
+    };
     nixAccessTokens.file = "${inputs.secrets}/nixAccessTokens.age";
   };
 }

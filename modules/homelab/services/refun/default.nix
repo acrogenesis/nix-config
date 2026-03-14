@@ -55,7 +55,7 @@ in
     # Grant the homelab user ownership of the refun database
     # (ensureDBOwnership requires user == dbname, but we use "share")
     systemd.services.postgresql.postStart = lib.mkAfter ''
-      $PSQL -tAc "ALTER DATABASE ${service} OWNER TO ${dbUser};"
+      ${config.services.postgresql.package}/bin/psql -tAc "ALTER DATABASE ${service} OWNER TO ${dbUser};"
     '';
 
     systemd.tmpfiles.rules = [
@@ -78,6 +78,7 @@ in
         User = homelab.user;
         Group = homelab.group;
         WorkingDirectory = cfg.configDir;
+        ExecStartPre = "${cfg.package}/bin/${service} eval 'Refun.Release.migrate()'";
         ExecStart = "${cfg.package}/bin/${service} start";
         Restart = "on-failure";
         PrivateTmp = true;

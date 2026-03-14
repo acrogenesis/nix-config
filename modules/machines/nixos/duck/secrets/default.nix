@@ -47,6 +47,11 @@
       owner = "restic";
     };
     refunEnv.file = "${inputs.secrets}/refunEnv.age";
+    refunCredentials = {
+      file = "${inputs.secrets}/refunCredentials.age";
+      owner = "share";
+      path = "/var/lib/refun/credentials.json";
+    };
     nixAccessTokens.file = "${inputs.secrets}/nixAccessTokens.age";
   };
 }

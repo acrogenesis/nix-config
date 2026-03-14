@@ -20,7 +20,7 @@ in
     };
     port = lib.mkOption {
       type = lib.types.port;
-      default = 4001;
+      default = 4002;
     };
     listenAddress = lib.mkOption {
       type = lib.types.str;
@@ -54,8 +54,10 @@ in
 
     # Grant the homelab user ownership of the refun database
     # (ensureDBOwnership requires user == dbname, but we use "share")
-    systemd.services.postgresql.postStart = lib.mkAfter ''
-      ${config.services.postgresql.package}/bin/psql -tAc "ALTER DATABASE ${service} OWNER TO ${dbUser};"
+    # In NixOS 26.05+, ensureDatabases/ensureUsers run in postgresql-setup.service,
+    # so we append our ALTER after that service completes.
+    systemd.services.postgresql-setup.postStart = lib.mkAfter ''
+      ${config.services.postgresql.package}/bin/psql -tAc "ALTER DATABASE \"${service}\" OWNER TO \"${dbUser}\";"
     '';
 
     systemd.tmpfiles.rules = [
@@ -64,7 +66,7 @@ in
 
     systemd.services.${service} = {
       description = "Refun Phoenix application";
-      after = [ "network.target" "postgresql.service" ];
+      after = [ "network.target" "postgresql-setup.service" ];
       wantedBy = [ "multi-user.target" ];
       environment = {
         MIX_ENV = "prod";

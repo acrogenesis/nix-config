@@ -69,6 +69,7 @@ in
       description = "Refun Phoenix application";
       after = [ "network.target" "postgresql-setup.service" ];
       wantedBy = [ "multi-user.target" ];
+      path = [ pkgs.openssl ];
       environment = {
         MIX_ENV = "prod";
         PHX_HOST = cfg.url;

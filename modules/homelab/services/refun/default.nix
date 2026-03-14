@@ -8,6 +8,7 @@ let
   service = "refun";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
+  dbUser = homelab.user;
   upstream = "http://${cfg.listenAddress}:${toString cfg.port}";
 in
 {
@@ -45,12 +46,17 @@ in
       ensureDatabases = [ service ];
       ensureUsers = [
         {
-          name = service;
-          ensureDBOwnership = true;
+          name = dbUser;
           ensureClauses.login = true;
         }
       ];
     };
+
+    # Grant the homelab user ownership of the refun database
+    # (ensureDBOwnership requires user == dbname, but we use "share")
+    systemd.services.postgresql.postStart = lib.mkAfter ''
+      $PSQL -tAc "ALTER DATABASE ${service} OWNER TO ${dbUser};"
+    '';
 
     systemd.tmpfiles.rules = [
       "d ${cfg.configDir} 0750 ${homelab.user} ${homelab.group} - -"
@@ -65,7 +71,7 @@ in
         PHX_HOST = cfg.url;
         PHX_SERVER = "true";
         PORT = toString cfg.port;
-        DATABASE_URL = "ecto://${service}@localhost/${service}";
+        DATABASE_URL = "ecto://${dbUser}@localhost/${service}?socket_dir=/run/postgresql";
       };
       serviceConfig = {
         Type = "simple";

@@ -10,11 +10,11 @@ jobs:
     environment: production
     steps:
       - name: Access private repository
-        uses: webfactory/ssh-agent@master
+        uses: webfactory/ssh-agent@v0.10.0
         with:
           ssh-private-key: ${{ secrets.GH_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@v19
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v21
       - name: Run the Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@v13
       - run: git config --global --add safe.directory "${PWD}"
@@ -25,16 +25,16 @@ jobs:
     environment: production
     steps:
       - name: Access private repository
-        uses: webfactory/ssh-agent@master
+        uses: webfactory/ssh-agent@v0.10.0
         with:
           ssh-private-key: ${{ secrets.GH_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@v19
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v21
       - name: Run the Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@v13
       - run: mkdir newreadme
       - run: (grep -B 99999 "BEGIN SERVICE LIST" README.md && nix eval --offline --raw --file bin/generateServicesTable.nix && grep -A 99999 "END SERVICE LIST" README.md) > newreadme/README.md
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: new-readme
           path: newreadme
@@ -46,8 +46,8 @@ jobs:
       - lint
       - generate-readme
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v8
         with:
           name: new-readme
           path: newreadme

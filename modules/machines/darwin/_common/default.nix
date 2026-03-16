@@ -1,5 +1,4 @@
-{ ... }:
-{
+{ ... }: {
   nixpkgs = {
     config = {
       allowUnfree = true;
@@ -24,11 +23,7 @@
   nix = {
     settings = {
       max-jobs = "auto";
-      trusted-users = [
-        "root"
-        "acrogenesis"
-        "@admin"
-      ];
+      trusted-users = [ "root" "acrogenesis" "@admin" ];
     };
   };
 }

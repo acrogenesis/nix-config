@@ -1,11 +1,4 @@
-{
-  inputs,
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-{
+{ inputs, config, pkgs, lib, ... }: {
 
   programs.ssh = {
     knownHosts = {
@@ -31,20 +24,13 @@
   system.autoUpgrade = {
     enable = true;
     flake = "/etc/nixos#${config.networking.hostName}";
-    flags = [
-      "-L"
-      "--accept-flake-config"
-    ];
+    flags = [ "-L" "--accept-flake-config" ];
     dates = "Sat *-*-* 02:30:00";
     allowReboot = true;
   };
 
-  imports = [
-    ./filesystems
-    ./nix
-    ./monitoring
-    "${inputs.secrets}/networks.nix"
-  ];
+  imports =
+    [ ./filesystems ./nix ./monitoring "${inputs.secrets}/networks.nix" ];
 
   time.timeZone = "America/Monterrey";
 
@@ -88,9 +74,7 @@
   };
 
   age = {
-    identityPaths = [
-      "/persist/ssh/ssh_host_ed25519_key"
-    ];
+    identityPaths = [ "/persist/ssh/ssh_host_ed25519_key" ];
     secrets = {
       hashedUserPassword.file = "${inputs.secrets}/hashedUserPassword.age";
       # smtpPassword = {
@@ -122,7 +106,8 @@
   homelab.motd.enable = true;
 
   # Ensure Ghostty terminfo is available at login time for SSH clients.
-  environment.sessionVariables.TERMINFO_DIRS = "/etc/terminfo:/run/current-system/sw/share/terminfo";
+  environment.sessionVariables.TERMINFO_DIRS =
+    "/etc/terminfo:/run/current-system/sw/share/terminfo";
 
   environment.systemPackages = with pkgs; [
     wget

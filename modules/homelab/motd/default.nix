@@ -1,28 +1,17 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 let
-  enabledNixosServices = lib.attrsets.mapAttrsToList (name: _value: name) (
-    lib.attrsets.filterAttrs (
-      name: value:
-      value != "enable" && name != "backup" && value ? configDir && value ? enable && value.enable
-    ) config.homelab.services
-  );
-  monitoredServices = lib.lists.flatten (
-    lib.lists.forEach enabledNixosServices (
-      x:
-      let
-        svc = config.homelab.services.${x};
-      in
-      if (svc ? monitoredServices) then svc.monitoredServices else [ x ]
-    )
-  );
+  enabledNixosServices = lib.attrsets.mapAttrsToList (name: _value: name)
+    (lib.attrsets.filterAttrs (name: value:
+      value != "enable" && name != "backup" && value ? configDir && value
+      ? enable && value.enable) config.homelab.services);
+  monitoredServices = lib.lists.flatten (lib.lists.forEach enabledNixosServices
+    (x:
+      let svc = config.homelab.services.${x};
+      in if (svc ? monitoredServices) then svc.monitoredServices else [ x ]));
 
   networkInterface =
-    if lib.attrsets.hasAttrByPath [ config.networking.hostName ] config.homelab.networks.external then
+    if lib.attrsets.hasAttrByPath [ config.networking.hostName ]
+    config.homelab.networks.external then
       config.homelab.networks.external.${config.networking.hostName}.interface
     else
       "";
@@ -59,26 +48,21 @@ let
 
     printf "$BOLD Welcome to $(hostname)!$ENDCOLOR\n"
     printf "\n"
-    ${lib.strings.concatMapStrings (x: "${x}\n") (
-      lib.lists.forEach config.homelab.motd.networkInterfaces (
-        x:
-        lib.strings.concatMapStrings (x: "${x}\n") ([
-          (
-            if x == "" then
-              ''
-                NETDEV=$(ip -o route get 8.8.8.8 | cut -f 5 -d " ")
-              ''
-            else
-              ''
-                NETDEV=${x}
-              ''
-          )
-          ''
-            printf "$BOLD  * %-20s$ENDCOLOR %s\n" "IPv4 $NETDEV" "$(ip -4 addr show $NETDEV | grep -oP '(?<=inet\s)\d+(\.\d+){3}')"
-          ''
-        ])
-      )
-    )}
+    ${lib.strings.concatMapStrings (x: ''
+      ${x}
+    '') (lib.lists.forEach config.homelab.motd.networkInterfaces (x:
+      lib.strings.concatMapStrings (x: ''
+        ${x}
+      '') ([
+        (if x == "" then ''
+          NETDEV=$(ip -o route get 8.8.8.8 | cut -f 5 -d " ")
+        '' else ''
+          NETDEV=${x}
+        '')
+        ''
+          printf "$BOLD  * %-20s$ENDCOLOR %s\n" "IPv4 $NETDEV" "$(ip -4 addr show $NETDEV | grep -oP '(?<=inet\s)\d+(\.\d+){3}')"
+        ''
+      ])))}
     printf "$BOLD  * %-20s$ENDCOLOR %s\n" "Release" "$PRETTY_NAME"
     printf "$BOLD  * %-20s$ENDCOLOR %s\n" "Kernel" "$(uname -rs)"
     printf "\n"
@@ -98,14 +82,13 @@ let
         printf "$YELLOW• $ENDCOLOR%-50s $YELLOW[unknown]$ENDCOLOR\n" "$1"
       fi
     }
-    ${lib.strings.concatStrings (lib.lists.forEach monitoredServices (x: "get_service_status ${x}\n"))}
+    ${lib.strings.concatStrings (lib.lists.forEach monitoredServices (x: ''
+      get_service_status ${x}
+    ''))}
   '';
-in
-{
+in {
   options.homelab.motd = {
-    enable = lib.mkEnableOption {
-      description = "motd Greeting";
-    };
+    enable = lib.mkEnableOption { description = "motd Greeting"; };
     networkInterfaces = lib.mkOption {
       description = "Network interfaces to monitor";
       type = lib.types.listOf lib.types.str;

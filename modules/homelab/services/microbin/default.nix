@@ -1,31 +1,27 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 let
   nordHighlight = builtins.toFile "nord.css" (builtins.readFile ./nord.css);
   nordUi = builtins.toFile "nord_ui.css" (builtins.readFile ./nord_ui.css);
   highlightJsNix = pkgs.fetchurl {
-    url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/nix.min.js";
+    url =
+      "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/nix.min.js";
     hash = "sha256-j4dmtrr8qUODoICuOsgnj1ojTAmxbKe00mE5sfElC/I=";
   };
   highlightJs = pkgs.fetchurl {
-    url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js";
+    url =
+      "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js";
     hash = "sha256-xKOZ3W9Ii8l6NUbjR2dHs+cUyZxXuUcxVMb7jSWbk4E=";
   };
   service = "microbin";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
   hostnames = [ cfg.url ];
-  upstream = "http://${config.services.microbin.settings.MICROBIN_BIND}:${toString config.services.microbin.settings.MICROBIN_PORT}";
-in
-{
+  upstream = "http://${config.services.microbin.settings.MICROBIN_BIND}:${
+      toString config.services.microbin.settings.MICROBIN_PORT
+    }";
+in {
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/microbin";
@@ -75,10 +71,10 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    nixpkgs.overlays = with pkgs; [
-      (_final: prev: {
-        microbin = prev.microbin.overrideAttrs (
-          _finalAttrs: _previousAttrs: {
+    nixpkgs.overlays = with pkgs;
+      [
+        (_final: prev: {
+          microbin = prev.microbin.overrideAttrs (_finalAttrs: _previousAttrs: {
             postPatch = ''
               cp ${nordHighlight} templates/assets/highlight/highlight.min.css
               cp ${highlightJs} templates/assets/highlight/highlight.min.js
@@ -88,10 +84,9 @@ in
               sed -i "s#<option value=\"auto\">#<option value=\"auto\" selected>#" templates/index.html
               sed -i "s#highlight.min.js\"></script>#highlight.min.js\"></script><script type=\"text/javascript\" src=\"{{ args.public_path_as_str() }}/static/highlight/nix.min.js\"></script>#" templates/upload.html
             '';
-          }
-        );
-      })
-    ];
+          });
+        })
+      ];
     services = {
       ${service} = {
         enable = true;
@@ -106,8 +101,7 @@ in
           MICROBIN_HIDE_HEADER = true;
           MICROBIN_HIDE_FOOTER = true;
         };
-      }
-      // lib.attrsets.optionalAttrs (cfg.passwordFile != "") {
+      } // lib.attrsets.optionalAttrs (cfg.passwordFile != "") {
         passwordFile = cfg.passwordFile;
       };
       cloudflared = {

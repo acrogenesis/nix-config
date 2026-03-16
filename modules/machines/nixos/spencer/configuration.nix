@@ -1,15 +1,9 @@
 { modulesPath, config, ... }:
-let
-  net = config.homelab.networks.external.spencer;
-in
-{
+let net = config.homelab.networks.external.spencer;
+in {
   boot.loader.grub.device = "/dev/sda";
-  boot.initrd.availableKernelModules = [
-    "ata_piix"
-    "uhci_hcd"
-    "xen_blkfront"
-    "vmw_pvscsi"
-  ];
+  boot.initrd.availableKernelModules =
+    [ "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" ];
   boot.initrd.kernelModules = [ "nvme" ];
   fileSystems."/" = {
     device = "/dev/sda2";
@@ -18,12 +12,10 @@ in
 
   zramSwap.enable = true;
 
-  swapDevices = [
-    {
-      device = "/var/lib/swapfile";
-      size = 2048;
-    }
-  ];
+  swapDevices = [{
+    device = "/var/lib/swapfile";
+    size = 2048;
+  }];
 
   imports = [
     ../../../misc/notthebe.ee
@@ -37,22 +29,17 @@ in
 
   networking = {
     hostName = "spencer";
-    nameservers = [
-      "1.1.1.1"
-      "9.9.9.9"
-    ];
+    nameservers = [ "1.1.1.1" "9.9.9.9" ];
     defaultGateway = {
       address = net.gateway;
       interface = net.interface;
     };
     interfaces = {
       "${net.interface}".ipv4 = {
-        addresses = [
-          {
-            address = net.address;
-            prefixLength = 25;
-          }
-        ];
+        addresses = [{
+          address = net.address;
+          prefixLength = 25;
+        }];
       };
     };
   };

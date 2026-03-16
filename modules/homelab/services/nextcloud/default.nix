@@ -1,19 +1,11 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 let
   service = "nextcloud";
   cfg = config.homelab.services.${service};
   hl = config.homelab;
-in
-{
+in {
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/${service}";
@@ -25,13 +17,12 @@ in
     aliases = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
-      description = "Additional hostnames that should serve the same Nextcloud instance.";
+      description =
+        "Additional hostnames that should serve the same Nextcloud instance.";
     };
     monitoredServices = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [
-        "phpfpm-nextcloud"
-      ];
+      default = [ "phpfpm-nextcloud" ];
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
@@ -74,73 +65,57 @@ in
       '';
     };
   };
-  config = lib.mkIf cfg.enable (
-    let
-      hostnames = [ cfg.url ] ++ cfg.aliases;
-      upstream = "http://127.0.0.1:8009";
-    in
-    {
-      services.nginx.virtualHosts."nix-nextcloud".listen = [
-        {
-          addr = "127.0.0.1";
-          port = 8009;
-        }
-      ];
-      services.cloudflared = {
-        enable = true;
-        tunnels.${cfg.cloudflared.tunnelId} = {
-          credentialsFile = cfg.cloudflared.credentialsFile;
-          default = "http_status:404";
-          ingress = lib.genAttrs hostnames (_: {
-            service = upstream;
-          });
-        };
+  config = lib.mkIf cfg.enable (let
+    hostnames = [ cfg.url ] ++ cfg.aliases;
+    upstream = "http://127.0.0.1:8009";
+  in {
+    services.nginx.virtualHosts."nix-nextcloud".listen = [{
+      addr = "127.0.0.1";
+      port = 8009;
+    }];
+    services.cloudflared = {
+      enable = true;
+      tunnels.${cfg.cloudflared.tunnelId} = {
+        credentialsFile = cfg.cloudflared.credentialsFile;
+        default = "http_status:404";
+        ingress = lib.genAttrs hostnames (_: { service = upstream; });
+      };
+    };
+
+    services.nextcloud = {
+      enable = true;
+      hostName = "nix-nextcloud";
+      package = pkgs.nextcloud33;
+      database.createLocally = true;
+      configureRedis = true;
+      maxUploadSize = "16G";
+      https = true;
+      autoUpdateApps.enable = true;
+      extraAppsEnable = true;
+      extraApps = with config.services.nextcloud.package.packages.apps; {
+        inherit calendar contacts mail notes tasks;
+
       };
 
-      services.nextcloud = {
-        enable = true;
-        hostName = "nix-nextcloud";
-        package = pkgs.nextcloud33;
-        database.createLocally = true;
-        configureRedis = true;
-        maxUploadSize = "16G";
-        https = true;
-        autoUpdateApps.enable = true;
-        extraAppsEnable = true;
-        extraApps = with config.services.nextcloud.package.packages.apps; {
-          inherit
-            calendar
-            contacts
-            mail
-            notes
-            tasks
-            ;
-
-        };
-
-        config = {
-          dbtype = "pgsql";
-          adminuser = cfg.admin.username;
-          adminpassFile = cfg.admin.passwordFile;
-        };
-        settings = {
-          overwriteprotocol = "https";
-          default_phone_region = "MX";
-          trusted_domains = [
-            "nix-nextcloud"
-          ]
-          ++ hostnames;
-          overwritehost = cfg.url;
-        };
+      config = {
+        dbtype = "pgsql";
+        adminuser = cfg.admin.username;
+        adminpassFile = cfg.admin.passwordFile;
       };
+      settings = {
+        overwriteprotocol = "https";
+        default_phone_region = "MX";
+        trusted_domains = [ "nix-nextcloud" ] ++ hostnames;
+        overwritehost = cfg.url;
+      };
+    };
 
-      services.caddy.virtualHosts = lib.genAttrs hostnames (_: {
-        useACMEHost = hl.baseDomain;
-        extraConfig = ''
-          reverse_proxy ${upstream}
-        '';
-      });
+    services.caddy.virtualHosts = lib.genAttrs hostnames (_: {
+      useACMEHost = hl.baseDomain;
+      extraConfig = ''
+        reverse_proxy ${upstream}
+      '';
+    });
 
-    }
-  );
+  });
 }

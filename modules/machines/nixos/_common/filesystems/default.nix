@@ -1,16 +1,17 @@
 { config, lib, ... }:
 let
-  zfsFilesystems = lib.attrsets.filterAttrs (_n: v: v.fsType == "zfs") config.fileSystems;
+  zfsFilesystems =
+    lib.attrsets.filterAttrs (_n: v: v.fsType == "zfs") config.fileSystems;
   zfsEnabled = zfsFilesystems != { };
-in
-{
+in {
   imports = [ ./snapraid.nix ];
   services = lib.mkIf zfsEnabled {
     zfs = {
       autoScrub.enable = true;
       zed.settings = {
         ZED_DEBUG_LOG = "/tmp/zed.debug.log";
-        ZED_EMAIL_ADDR = lib.lists.optionals (config ? email) [ config.email.toAddress ];
+        ZED_EMAIL_ADDR =
+          lib.lists.optionals (config ? email) [ config.email.toAddress ];
         ZED_EMAIL_PROG = "/run/current-system/sw/bin/tg-notify";
         ZED_EMAIL_OPTS = "-t '@SUBJECT@' -m";
 

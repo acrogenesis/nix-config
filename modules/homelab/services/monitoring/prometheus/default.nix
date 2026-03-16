@@ -1,19 +1,14 @@
-{
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   service = "prometheus";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
-  prometheusUrl = "http://${config.services.prometheus.listenAddress}:${toString config.services.prometheus.port}";
-in
-{
+  prometheusUrl = "http://${config.services.prometheus.listenAddress}:${
+      toString config.services.prometheus.port
+    }";
+in {
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     url = lib.mkOption {
       type = lib.types.str;
       default = "prometheus.${homelab.baseDomain}";
@@ -56,15 +51,13 @@ in
     services.grafana = {
       provision = {
         enable = true;
-        datasources.settings.datasources = [
-          {
-            name = "Prometheus";
-            type = "prometheus";
-            url = prometheusUrl;
-            isDefault = true;
-            editable = false;
-          }
-        ];
+        datasources.settings.datasources = [{
+          name = "Prometheus";
+          type = "prometheus";
+          url = prometheusUrl;
+          isDefault = true;
+          editable = false;
+        }];
       };
     };
     services.prometheus = {

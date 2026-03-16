@@ -3,12 +3,9 @@ let
   service = "audiobookshelf";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
-in
-{
+in {
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/${service}";
@@ -50,27 +47,26 @@ in
       description = "Cloudflare tunnel ID used to expose the service.";
     };
   };
-  config = lib.mkIf cfg.enable (
-    let
-      port = 8113;
-      upstream = "http://127.0.0.1:${toString port}";
-    in
-    lib.mkMerge [
-      {
-        services.${service} = {
-          enable = true;
-          user = homelab.user;
-          group = homelab.group;
-          inherit port;
-        };
-        services.caddy.virtualHosts."${cfg.url}" = {
-          useACMEHost = homelab.baseDomain;
-          extraConfig = ''
-            reverse_proxy ${upstream}
-          '';
-        };
-      }
-      (lib.mkIf (cfg.cloudflared.credentialsFile != null && cfg.cloudflared.tunnelId != null) {
+  config = lib.mkIf cfg.enable (let
+    port = 8113;
+    upstream = "http://127.0.0.1:${toString port}";
+  in lib.mkMerge [
+    {
+      services.${service} = {
+        enable = true;
+        user = homelab.user;
+        group = homelab.group;
+        inherit port;
+      };
+      services.caddy.virtualHosts."${cfg.url}" = {
+        useACMEHost = homelab.baseDomain;
+        extraConfig = ''
+          reverse_proxy ${upstream}
+        '';
+      };
+    }
+    (lib.mkIf (cfg.cloudflared.credentialsFile != null
+      && cfg.cloudflared.tunnelId != null) {
         services.cloudflared = {
           enable = true;
           tunnels.${cfg.cloudflared.tunnelId} = {
@@ -80,6 +76,5 @@ in
           };
         };
       })
-    ]
-  );
+  ]);
 }

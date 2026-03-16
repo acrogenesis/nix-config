@@ -1,20 +1,12 @@
-{
-  pkgs,
-  config,
-  ...
-}:
+{ pkgs, config, ... }:
 let
   domain = "notthebe.ee";
   fqdn = "chat.${domain}";
   baseUrl = "https://${fqdn}";
   serverConfig."m.server" = "${fqdn}:443";
   clientConfig."m.homeserver".base_url = baseUrl;
-in
-{
-  networking.firewall.allowedTCPPorts = [
-    80
-    443
-  ];
+in {
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
   users.users.matrix-synapse = {
     isSystemUser = true;
     createHome = true;
@@ -49,33 +41,22 @@ in
   };
   services.matrix-synapse = {
     enable = true;
-    extraConfigFiles = [
-      config.age.secrets.matrixRegistrationSecret.path
-    ];
+    extraConfigFiles = [ config.age.secrets.matrixRegistrationSecret.path ];
     settings = {
       server_name = domain;
       public_baseurl = baseUrl;
-      listeners = [
-        {
-          port = 8008;
-          bind_addresses = [ "::1" ];
-          type = "http";
-          tls = false;
-          x_forwarded = true;
-          resources = [
-            {
-              names = [
-                "client"
-                "federation"
-              ];
-              compress = true;
-            }
-          ];
-        }
-      ];
-      secondary_directory_servers = [
-        "matrix.org"
-      ];
+      listeners = [{
+        port = 8008;
+        bind_addresses = [ "::1" ];
+        type = "http";
+        tls = false;
+        x_forwarded = true;
+        resources = [{
+          names = [ "client" "federation" ];
+          compress = true;
+        }];
+      }];
+      secondary_directory_servers = [ "matrix.org" ];
     };
   };
 }

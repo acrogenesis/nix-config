@@ -1,9 +1,7 @@
 { config, lib, ... }:
 
-let
-  cfg = config.zfs-root.fileSystems;
-in
-{
+let cfg = config.zfs-root.fileSystems;
+in {
   options.zfs-root.fileSystems = {
     datasets = lib.mkOption {
       description = "Set mountpoint for datasets";
@@ -26,41 +24,28 @@ in
       default = { };
     };
   };
-  config.fileSystems = lib.mkMerge (
-    lib.mapAttrsToList (dataset: mountpoint: {
-      "${mountpoint}" = {
-        device = "${dataset}";
-        fsType = "zfs";
-        neededForBoot = true;
-      };
-    }) cfg.datasets
-    ++ map (esp: {
-      "/boot/efis/${esp}" = {
-        device = "${config.zfs-root.boot.devNodes}/${esp}";
-        fsType = "vfat";
-        options = [
-          "nofail"
-          "noatime"
-          "X-mount.mkdir"
-        ];
-      };
-    }) cfg.efiSystemPartitions
-    ++ lib.mapAttrsToList (bindsrc: mountpoint: {
-      "${mountpoint}" = {
-        device = "${bindsrc}";
-        fsType = "none";
-        options = [
-          "bind"
-          "X-mount.mkdir"
-          "noatime"
-        ];
-      };
-    }) cfg.bindmounts
-    ++ lib.lists.optional cfg.enableDockerZvol {
-      "/var/lib/containers" = {
-        device = "/dev/zvol/rpool/docker";
-        fsType = "ext4";
-      };
-    }
-  );
+  config.fileSystems = lib.mkMerge (lib.mapAttrsToList (dataset: mountpoint: {
+    "${mountpoint}" = {
+      device = "${dataset}";
+      fsType = "zfs";
+      neededForBoot = true;
+    };
+  }) cfg.datasets ++ map (esp: {
+    "/boot/efis/${esp}" = {
+      device = "${config.zfs-root.boot.devNodes}/${esp}";
+      fsType = "vfat";
+      options = [ "nofail" "noatime" "X-mount.mkdir" ];
+    };
+  }) cfg.efiSystemPartitions ++ lib.mapAttrsToList (bindsrc: mountpoint: {
+    "${mountpoint}" = {
+      device = "${bindsrc}";
+      fsType = "none";
+      options = [ "bind" "X-mount.mkdir" "noatime" ];
+    };
+  }) cfg.bindmounts ++ lib.lists.optional cfg.enableDockerZvol {
+    "/var/lib/containers" = {
+      device = "/dev/zvol/rpool/docker";
+      fsType = "ext4";
+    };
+  });
 }

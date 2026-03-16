@@ -1,19 +1,8 @@
-{
-  config,
-  pkgs,
-  ...
-}:
-let
-  coc = import ./coc.nix;
-in
-{
+{ config, pkgs, ... }:
+let coc = import ./coc.nix;
+in {
 
-  home.packages = with pkgs; [
-    figlet
-    nodejs
-    ripgrep
-    terraform-ls
-  ];
+  home.packages = with pkgs; [ figlet nodejs ripgrep terraform-ls ];
 
   programs.neovim = {
     viAlias = true;
@@ -23,12 +12,10 @@ in
 
   xdg.configFile = {
     "nvim/coc-settings.json" = {
-      source = pkgs.writeText "coc-settings.json" (
-        builtins.toJSON (coc {
-          homeDir = config.xdg.configHome;
-          pkgs = pkgs;
-        })
-      );
+      source = pkgs.writeText "coc-settings.json" (builtins.toJSON (coc {
+        homeDir = config.xdg.configHome;
+        pkgs = pkgs;
+      }));
     };
   };
 
@@ -43,23 +30,15 @@ in
     };
     plugins = {
       notify.enable = true;
-      web-devicons = {
-        enable = true;
-      };
+      web-devicons = { enable = true; };
       barbecue.enable = true;
-      project-nvim = {
-        enable = true;
-      };
-      telescope = {
-        enable = true;
-      };
+      project-nvim = { enable = true; };
+      telescope = { enable = true; };
       alpha = {
         enable = true;
         theme = "startify";
       };
-      fugitive = {
-        enable = true;
-      };
+      fugitive = { enable = true; };
       trim = {
         enable = true;
         settings = {
@@ -70,39 +49,19 @@ in
       lualine = {
         enable = true;
         settings = {
-          sections = {
-            lualine_x = [
-              "diagnostics"
-              "encoding"
-              "filetype"
-            ];
-          };
+          sections = { lualine_x = [ "diagnostics" "encoding" "filetype" ]; };
         };
       };
       indent-blankline = {
         enable = true;
-        settings = {
-          exclude.filetypes = [ "startify" ];
-        };
+        settings = { exclude.filetypes = [ "startify" ]; };
       };
-      barbar = {
-        enable = true;
-      };
-      gitgutter = {
-        enable = true;
-      };
-      vim-surround = {
-        enable = true;
-      };
-      colorizer = {
-        enable = true;
-      };
-      which-key = {
-        enable = true;
-      };
-      illuminate = {
-        enable = true;
-      };
+      barbar = { enable = true; };
+      gitgutter = { enable = true; };
+      vim-surround = { enable = true; };
+      colorizer = { enable = true; };
+      which-key = { enable = true; };
+      illuminate = { enable = true; };
     };
     extraPlugins = with pkgs.vimPlugins; [
       llm-nvim
@@ -140,8 +99,8 @@ in
       ci = true;
       wrap = true;
       backspace = "start,eol,indent";
-      path = "vim.opts.path \+ **";
-      wildignore = "vim.opts.wildignore \+ */node_modules/*";
+      path = "vim.opts.path + **";
+      wildignore = "vim.opts.wildignore + */node_modules/*";
       cursorline = true;
       exrc = true;
       mouse = "a";
@@ -150,10 +109,7 @@ in
 
     autoCmd = [
       {
-        event = [
-          "BufRead"
-          "BufNewFile"
-        ];
+        event = [ "BufRead" "BufNewFile" ];
         pattern = [ "*.tf" ];
         command = "setfiletype tf";
       }
@@ -161,21 +117,19 @@ in
       {
         event = [ "InsertEnter" ];
         pattern = [ "*" ];
-        command = "match EOLWS // | match EOLWSInsert /\\s\\+\\%#\\@<!$\\| \\+\\ze\\t/";
+        command =
+          "match EOLWS // | match EOLWSInsert /\\s\\+\\%#\\@<!$\\| \\+\\ze\\t/";
       }
       {
         event = [ "InsertLeave" ];
         pattern = [ "*" ];
-        command = "match EOLWS // | match EOLWSInsert /\\s\\+\\%#\\@<!$\\| \\+\\ze\\t/";
+        command =
+          "match EOLWS // | match EOLWSInsert /\\s\\+\\%#\\@<!$\\| \\+\\ze\\t/";
       }
       {
-        event = [
-          "WinEnter"
-          "BufWinEnter"
-          "WinNew"
-        ];
+        event = [ "WinEnter" "BufWinEnter" "WinNew" ];
         pattern = [ "*" ];
-        command = "match EOLWS /\\s\\+$\\| \\+\\ze\t/";
+        command = "match EOLWS /\\s\\+$\\| \\+\\ze	/";
       }
       {
         event = [ "WinEnter" ];
@@ -203,9 +157,7 @@ in
         fg = "#4c566a";
         bg = "#4c566a";
       };
-      BufferCurrentTarget = {
-        bg = "#434c5e";
-      };
+      BufferCurrentTarget = { bg = "#434c5e"; };
       BufferInactive = {
         fg = "#4c566a";
         bg = "none";
@@ -224,9 +176,7 @@ in
       };
     };
     globals = {
-      coc_filetype_map = {
-        "yaml.ansible" = "ansible";
-      };
+      coc_filetype_map = { "yaml.ansible" = "ansible"; };
       coc_global_extensions = [
         "coc-explorer"
         "@yaegassy/coc-ansible"
@@ -257,49 +207,37 @@ in
         mode = "n";
         key = "sf";
         action = "<cmd>CocCommand explorer<cr>";
-        options = {
-          silent = true;
-        };
+        options = { silent = true; };
       }
       {
         mode = "n";
         key = ";j";
         action = "<Cmd>BufferPrevious<CR>";
-        options = {
-          silent = true;
-        };
+        options = { silent = true; };
       }
       {
         mode = "n";
         key = ";k";
         action = "<Cmd>BufferNext<CR>";
-        options = {
-          silent = true;
-        };
+        options = { silent = true; };
       }
       {
         mode = "n";
         key = ";x";
         action = "<Cmd>BufferClose<CR>";
-        options = {
-          silent = true;
-        };
+        options = { silent = true; };
       }
       {
         mode = "n";
         key = ";xx";
         action = "<Cmd>BufferRestore<CR>";
-        options = {
-          silent = true;
-        };
+        options = { silent = true; };
       }
       {
         mode = "n";
         key = "p";
         action = "p`]<Esc>";
-        options = {
-          silent = true;
-        };
+        options = { silent = true; };
       }
       {
         mode = "n";
@@ -322,34 +260,29 @@ in
       {
         mode = "n";
         key = ";r";
-        action = ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').live_grep()<cr>";
-        options = {
-          silent = true;
-        };
+        action =
+          ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').live_grep()<cr>";
+        options = { silent = true; };
       }
       {
         mode = "n";
         key = ";f";
-        action = ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').find_files()<cr>";
-        options = {
-          silent = true;
-        };
+        action =
+          ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').find_files()<cr>";
+        options = { silent = true; };
       }
       {
         mode = "n";
         key = ";b";
-        action = ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').file_browser()<cr>";
-        options = {
-          silent = true;
-        };
+        action =
+          ":call CheckForExplorer()<CR> <cmd>lua require('telescope.builtin').file_browser()<cr>";
+        options = { silent = true; };
       }
       {
         mode = "n";
         key = ";;";
         action = ":call CheckForExplorer()<CR> <cmd>Telescope buffers<cr>";
-        options = {
-          silent = true;
-        };
+        options = { silent = true; };
       }
     ];
   };

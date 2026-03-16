@@ -5,8 +5,7 @@ let
     homeDirectory = "/home/acrogenesis";
     stateVersion = "23.11";
   };
-in
-{
+in {
   nixpkgs = {
     overlays = [ ];
     config = {

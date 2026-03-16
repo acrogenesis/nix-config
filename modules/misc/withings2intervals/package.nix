@@ -1,9 +1,4 @@
-{
-  python3Packages,
-  python3,
-  fetchFromGitHub,
-  ...
-}:
+{ python3Packages, python3, fetchFromGitHub, ... }:
 python3Packages.buildPythonApplication {
   pname = "withings2intervals";
   version = "0.1.1";
@@ -17,10 +12,7 @@ python3Packages.buildPythonApplication {
   };
   build-system = [ python3Packages.poetry-core ];
 
-  dependencies = with python3.pkgs; [
-    requests
-    colorama
-  ];
+  dependencies = with python3.pkgs; [ requests colorama ];
 
   installPhase = ''
     runHook preInstall
@@ -30,14 +22,11 @@ python3Packages.buildPythonApplication {
     runHook postInstall
   '';
   meta = {
-    description = "A Python script to sync wellness data from Withings to Intervals.icu";
+    description =
+      "A Python script to sync wellness data from Withings to Intervals.icu";
     homepage = "https://github.com/stezz/withings_syncer";
-    platforms = [
-      "x86_64-darwin"
-      "x86_64-linux"
-      "aarch64-darwin"
-      "aarch64-linux"
-    ];
+    platforms =
+      [ "x86_64-darwin" "x86_64-linux" "aarch64-darwin" "aarch64-linux" ];
     mainProgram = "withings2intervals.py";
   };
 }

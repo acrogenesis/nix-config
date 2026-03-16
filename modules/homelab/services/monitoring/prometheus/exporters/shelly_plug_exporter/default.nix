@@ -1,13 +1,6 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-let
-  cfg = config.services.prometheus.exporters.shellyplug;
-in
-{
+{ config, pkgs, lib, ... }:
+let cfg = config.services.prometheus.exporters.shellyplug;
+in {
   options.services.prometheus.exporters.shellyplug = {
     enable = lib.mkEnableOption {
       description = "Enable Shelly Plug Prometheus exporter";
@@ -50,10 +43,7 @@ in
         ProtectKernelTunables = true;
         ProtectSystem = lib.mkDefault "strict";
         RemoveIPC = true;
-        RestrictAddressFamilies = [
-          "AF_INET"
-          "AF_INET6"
-        ];
+        RestrictAddressFamilies = [ "AF_INET" "AF_INET6" ];
         RestrictNamespaces = true;
         RestrictRealtime = true;
         RestrictSUIDSGID = true;

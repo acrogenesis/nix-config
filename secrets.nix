@@ -71,5 +71,4 @@ let
     # "../nix-private/withings2intervals_authcode.age"
     # "../nix-private/work.nix"
   ];
-in
-builtins.listToAttrs secrets
+in builtins.listToAttrs secrets

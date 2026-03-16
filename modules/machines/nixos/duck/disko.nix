@@ -3,8 +3,7 @@ let
   bootDevice = builtins.head config.zfs-root.boot.bootDevices;
   partitionScheme = config.zfs-root.boot.partitionScheme;
   efiMount = "/boot/efis/${bootDevice}${partitionScheme.efiBoot}";
-in
-{
+in {
   disko.devices = {
     disk = {
       main = {

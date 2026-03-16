@@ -1,30 +1,21 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 let
   hl = config.homelab;
   cfg = hl.samba;
   ext = hl.networks.external;
   int = hl.networks.local;
-  smb_networks =
-    if ext ? config.networking.hostName then
-      lib.lists.singleton "${ext.${config.networking.hostName}.gateway}/24"
-    else
-      lib.mapAttrsToList (_: val: "${val.cidr.v4}/24") (lib.attrsets.filterAttrs (_: v: v.trusted) int);
-in
-{
+  smb_networks = if ext ? config.networking.hostName then
+    lib.lists.singleton "${ext.${config.networking.hostName}.gateway}/24"
+  else
+    lib.mapAttrsToList (_: val: "${val.cidr.v4}/24")
+    (lib.attrsets.filterAttrs (_: v: v.trusted) int);
+in {
   options.homelab.samba = {
-    enable = lib.mkEnableOption {
-      description = "Samba shares for the homelab";
-    };
+    enable =
+      lib.mkEnableOption { description = "Samba shares for the homelab"; };
     example = lib.mkOption {
-      default = lib.attrsets.mapAttrs (
-        _name: value: _name:
-        value.settings
-      ) cfg.shares;
+      default =
+        lib.attrsets.mapAttrs (_name: value: _name: value.settings) cfg.shares;
     };
     passwordFile = lib.mkOption {
       type = lib.types.path;
@@ -50,8 +41,7 @@ in
         "security" = "user";
         "invalid users" = [ "root" ];
       };
-      apply =
-        old:
+      apply = old:
         lib.attrsets.mergeAttrsList [
           {
             "preserve case" = "yes";
@@ -81,22 +71,25 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    services.samba-wsdd.enable = true; # make shares visible for windows 10 clients
+    services.samba-wsdd.enable =
+      true; # make shares visible for windows 10 clients
 
     environment.systemPackages = [ config.services.samba.package ];
 
     systemd.tmpfiles.rules = [
       "d /var/lock/samba 0755 root root - -"
       "d /var/lib/samba/private 0750 root root - -"
-    ]
-    ++ (map (x: "d ${x.path} 0775 ${hl.user} ${hl.group} - -") (lib.attrValues cfg.shares));
+    ] ++ (map (x: "d ${x.path} 0775 ${hl.user} ${hl.group} - -")
+      (lib.attrValues cfg.shares));
 
     system.activationScripts.samba_user_create = lib.mkAfter ''
       install -d -m0755 -o root -g root /run/lock
       install -d -m0755 -o root -g root /run/lock/samba
       install -d -m0750 -o root -g root /var/lib/samba/private
       smb_password=$(cat "${config.age.secrets.sambaPassword.path}")
-      echo -e "$smb_password\n$smb_password\n" | ${lib.getExe' pkgs.samba "smbpasswd"} -a -s ${hl.user}
+      echo -e "$smb_password\n$smb_password\n" | ${
+        lib.getExe' pkgs.samba "smbpasswd"
+      } -a -s ${hl.user}
     '';
 
     networking.firewall = {
@@ -115,15 +108,16 @@ in
             "netbios name" = lib.mkDefault config.networking.hostName;
             "security" = lib.mkDefault "user";
             "invalid users" = [ "root" ];
-            "hosts allow" = lib.mkDefault (lib.strings.concatStringsSep " " smb_networks);
+            "hosts allow" =
+              lib.mkDefault (lib.strings.concatStringsSep " " smb_networks);
             "guest account" = lib.mkDefault "nobody";
             "map to guest" = lib.mkDefault "bad user";
             "passdb backend" = lib.mkDefault "tdbsam";
           }
           cfg.globalSettings
         ];
-      }
-      // builtins.mapAttrs (_name: value: value // cfg.commonSettings) cfg.shares;
+      } // builtins.mapAttrs (_name: value: value // cfg.commonSettings)
+        cfg.shares;
     };
     services.avahi = {
       enable = true;

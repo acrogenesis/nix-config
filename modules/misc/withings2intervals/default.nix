@@ -1,16 +1,11 @@
-{
-  lib,
-  config,
-  pkgs,
-  ...
-}:
+{ lib, config, pkgs, ... }:
 let
   cfg = config.services.withings2intervals;
   withings2intervals = pkgs.callPackage ./package.nix { };
-in
-{
+in {
   options.services.withings2intervals = {
-    enable = lib.mkEnableOption "Sync wellness data from Withings to Intervals.icu";
+    enable =
+      lib.mkEnableOption "Sync wellness data from Withings to Intervals.icu";
     authCodeFile = lib.mkOption {
       description = "Path to withings2intervals auth code";
       type = lib.types.str;
@@ -66,7 +61,9 @@ in
         };
         script = ''
           export W2I_AUTHCODE=$(systemd-creds cat W2I_AUTHCODE_FILE)
-          ${lib.getExe withings2intervals} --config ${cfg.configFile} --auth-code $W2I_AUTHCODE
+          ${
+            lib.getExe withings2intervals
+          } --config ${cfg.configFile} --auth-code $W2I_AUTHCODE
         '';
       };
     };

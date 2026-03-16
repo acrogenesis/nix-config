@@ -3,12 +3,9 @@ let
   service = "vaultwarden";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
-in
-{
+in {
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/bitwarden_rs";
@@ -51,53 +48,50 @@ in
       default = "Services";
     };
   };
-  config = lib.mkIf cfg.enable (
-    let
-      hostnames = [ cfg.url ] ++ cfg.aliases;
-      upstream = "http://${config.services.${service}.config.ROCKET_ADDRESS}:${
+  config = lib.mkIf cfg.enable (let
+    hostnames = [ cfg.url ] ++ cfg.aliases;
+    upstream = "http://${config.services.${service}.config.ROCKET_ADDRESS}:${
         toString config.services.${service}.config.ROCKET_PORT
       }";
-    in
-    {
-      services = {
-        fail2ban-cloudflare = lib.mkIf config.services.fail2ban-cloudflare.enable {
+  in {
+    services = {
+      fail2ban-cloudflare =
+        lib.mkIf config.services.fail2ban-cloudflare.enable {
           jails = {
             vaultwarden = {
               serviceName = "vaultwarden";
-              failRegex = "^.*Username or password is incorrect. Try again. IP: <HOST>. Username: <F-USER>.*</F-USER>.$";
+              failRegex =
+                "^.*Username or password is incorrect. Try again. IP: <HOST>. Username: <F-USER>.*</F-USER>.$";
             };
           };
         };
-        ${service} = {
-          enable = true;
-          config = {
-            DOMAIN = "https://${cfg.url}";
-            SIGNUPS_ALLOWED = false;
-            ROCKET_ADDRESS = "127.0.0.1";
-            ROCKET_PORT = 8222;
-            EXTENDED_LOGGING = true;
-            LOG_LEVEL = "warn";
-            IP_HEADER = "CF-Connecting-IP";
-          };
+      ${service} = {
+        enable = true;
+        config = {
+          DOMAIN = "https://${cfg.url}";
+          SIGNUPS_ALLOWED = false;
+          ROCKET_ADDRESS = "127.0.0.1";
+          ROCKET_PORT = 8222;
+          EXTENDED_LOGGING = true;
+          LOG_LEVEL = "warn";
+          IP_HEADER = "CF-Connecting-IP";
         };
-        cloudflared = {
-          enable = true;
-          tunnels.${cfg.cloudflared.tunnelId} = {
-            credentialsFile = cfg.cloudflared.credentialsFile;
-            default = "http_status:404";
-            ingress = lib.genAttrs hostnames (_: {
-              service = upstream;
-            });
-          };
-        };
-        caddy.virtualHosts = lib.genAttrs hostnames (_: {
-          useACMEHost = homelab.baseDomain;
-          extraConfig = ''
-            reverse_proxy ${upstream}
-          '';
-        });
       };
-    }
-  );
+      cloudflared = {
+        enable = true;
+        tunnels.${cfg.cloudflared.tunnelId} = {
+          credentialsFile = cfg.cloudflared.credentialsFile;
+          default = "http_status:404";
+          ingress = lib.genAttrs hostnames (_: { service = upstream; });
+        };
+      };
+      caddy.virtualHosts = lib.genAttrs hostnames (_: {
+        useACMEHost = homelab.baseDomain;
+        extraConfig = ''
+          reverse_proxy ${upstream}
+        '';
+      });
+    };
+  });
 
 }

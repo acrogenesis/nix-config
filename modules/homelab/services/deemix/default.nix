@@ -3,13 +3,10 @@ let
   service = "deemix";
   cfg = config.homelab.services.${service};
   hl = config.homelab;
-in
-{
+in {
   imports = [ ./service.nix ];
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     dataDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/${service}";

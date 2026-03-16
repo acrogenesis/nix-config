@@ -1,8 +1,4 @@
-{
-  stdenv,
-  pkgs,
-  ...
-}:
+{ stdenv, pkgs, ... }:
 stdenv.mkDerivation {
   pname = "ryzen-undervolting";
   version = "0.1";

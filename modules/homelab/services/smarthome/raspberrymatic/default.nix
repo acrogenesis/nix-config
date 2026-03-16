@@ -1,18 +1,10 @@
-{
-  lib,
-  config,
-  pkgs,
-  ...
-}:
+{ lib, config, pkgs, ... }:
 let
   cfg = config.homelab.services.raspberrymatic;
   homelab = config.homelab;
-in
-{
+in {
   options.homelab.services.raspberrymatic = {
-    enable = lib.mkEnableOption {
-      description = "Enable RaspberryMatic";
-    };
+    enable = lib.mkEnableOption { description = "Enable RaspberryMatic"; };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/persist/opt/services/ccu";
@@ -39,7 +31,8 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    systemd.tmpfiles.rules = [ "d ${cfg.configDir} 0775 ${homelab.user} ${homelab.group} - -" ];
+    systemd.tmpfiles.rules =
+      [ "d ${cfg.configDir} 0775 ${homelab.user} ${homelab.group} - -" ];
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''

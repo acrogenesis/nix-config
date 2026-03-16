@@ -1,19 +1,10 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-{
+{ config, lib, pkgs, ... }: {
   options.homelab.services = {
     enable = lib.mkEnableOption "Settings and services for the homelab";
   };
 
   config = lib.mkIf config.homelab.services.enable {
-    networking.firewall.allowedTCPPorts = [
-      80
-      443
-    ];
+    networking.firewall.allowedTCPPorts = [ 80 443 ];
     environment.etc."caddy/errors".source = ../../../assets/errors;
     security.acme = {
       acceptTerms = true;
@@ -27,10 +18,7 @@
         dnsPropagationCheck = true;
         # Cloudflare API can report TXT records before they're visible from all
         # DNS vantage points; use a fixed wait to avoid premature renew failures.
-        extraLegoFlags = [
-          "--dns.propagation-wait"
-          "5m"
-        ];
+        extraLegoFlags = [ "--dns.propagation-wait" "5m" ];
         group = config.services.caddy.group;
         environmentFile = config.homelab.cloudflare.dnsCredentialsFile;
       };
@@ -71,21 +59,15 @@
 
       };
     };
-    nixpkgs.config.permittedInsecurePackages = [
-      "dotnet-sdk-6.0.428"
-      "aspnetcore-runtime-6.0.36"
-    ];
+    nixpkgs.config.permittedInsecurePackages =
+      [ "dotnet-sdk-6.0.428" "aspnetcore-runtime-6.0.36" ];
     virtualisation.podman = {
       dockerCompat = true;
       autoPrune.enable = true;
       extraPackages = [ pkgs.zfs ];
-      defaultNetwork.settings = {
-        dns_enabled = true;
-      };
+      defaultNetwork.settings = { dns_enabled = true; };
     };
-    virtualisation.oci-containers = {
-      backend = "podman";
-    };
+    virtualisation.oci-containers = { backend = "podman"; };
 
   };
 

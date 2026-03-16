@@ -1,8 +1,4 @@
-{
-  pkgs,
-  ...
-}:
-{
+{ pkgs, ... }: {
   home.packages = with pkgs; [ grc ];
   # age.secrets = lib.mkIf (pkgs.system == "aarch64-darwin") {
   #   bwSession.file = "${inputs.secrets}/bwSession.age";
@@ -31,12 +27,8 @@
       enable = true;
       settings = {
         add_newline = false;
-        gcloud = {
-          detect_env_vars = [ "GOOGLE_CLOUD" ];
-        };
-        aws = {
-          disabled = true;
-        };
+        gcloud = { detect_env_vars = [ "GOOGLE_CLOUD" ]; };
+        aws = { disabled = true; };
       };
     };
     zoxide = {
@@ -68,13 +60,18 @@
         df = "df -h";
         du = "du -ch";
         ipp = "curl ipinfo.io/ip";
-        yh = "yt-dlp --continue --no-check-certificate --format=bestvideo+bestaudio --exec='ffmpeg -i {} -c:a copy -c:v copy {}.mkv && rm {}'";
-        yd = "yt-dlp --continue --no-check-certificate --format=bestvideo+bestaudio --exec='ffmpeg -i {} -c:v prores_ks -profile:v 1 -vf fps=25/1 -pix_fmt yuv422p -c:a pcm_s16le {}.mov && rm {}'";
-        ya = "yt-dlp --continue --no-check-certificate --format=bestaudio -x --audio-format wav";
-        aspm = "sudo lspci -vv | awk '/ASPM/{print $0}' RS= | grep --color -P '(^[a-z0-9:.]+|ASPM )'";
+        yh =
+          "yt-dlp --continue --no-check-certificate --format=bestvideo+bestaudio --exec='ffmpeg -i {} -c:a copy -c:v copy {}.mkv && rm {}'";
+        yd =
+          "yt-dlp --continue --no-check-certificate --format=bestvideo+bestaudio --exec='ffmpeg -i {} -c:v prores_ks -profile:v 1 -vf fps=25/1 -pix_fmt yuv422p -c:a pcm_s16le {}.mov && rm {}'";
+        ya =
+          "yt-dlp --continue --no-check-certificate --format=bestaudio -x --audio-format wav";
+        aspm =
+          "sudo lspci -vv | awk '/ASPM/{print $0}' RS= | grep --color -P '(^[a-z0-9:.]+|ASPM )'";
         mkdir = "mkdir -p";
         # Only do `nix flake update` if flake.lock hasn't been updated within an hour
-        deploy-nix = "f() { if [[ $(find . -mmin -60 -type f -name flake.lock | wc -c) -eq 0 ]]; then nix flake update; fi && deploy .#$1 --remote-build -s --auto-rollback false && rsync -ax --delete ./ $1:/etc/nixos/ };f";
+        deploy-nix =
+          "f() { if [[ $(find . -mmin -60 -type f -name flake.lock | wc -c) -eq 0 ]]; then nix flake update; fi && deploy .#$1 --remote-build -s --auto-rollback false && rsync -ax --delete ./ $1:/etc/nixos/ };f";
       };
 
       initContent = ''

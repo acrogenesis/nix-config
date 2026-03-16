@@ -3,12 +3,9 @@ let
   service = "paperless";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
-in
-{
+in {
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     mediaDir = lib.mkOption {
       type = lib.types.str;
       default = "${homelab.mounts.merged}/Documents/Paperless/Documents";
@@ -17,9 +14,7 @@ in
       type = lib.types.str;
       default = "${homelab.mounts.merged}/Documents/Paperless/Import";
     };
-    passwordFile = lib.mkOption {
-      type = lib.types.path;
-    };
+    passwordFile = lib.mkOption { type = lib.types.path; };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/${service}";
@@ -66,10 +61,7 @@ in
         consumptionDirIsPublic = true;
         settings = {
           PAPERLESS_URL = "https://${cfg.url}";
-          PAPERLESS_CONSUMER_IGNORE_PATTERN = [
-            ".DS_STORE/*"
-            "desktop.ini"
-          ];
+          PAPERLESS_CONSUMER_IGNORE_PATTERN = [ ".DS_STORE/*" "desktop.ini" ];
           PAPERLESS_OCR_LANGUAGE = "deu+eng";
           PAPERLESS_OCR_USER_ARGS = {
             optimize = 1;
@@ -80,7 +72,9 @@ in
       caddy.virtualHosts."${cfg.url}" = {
         useACMEHost = homelab.baseDomain;
         extraConfig = ''
-          reverse_proxy http://127.0.0.1:${toString config.services.${service}.port}
+          reverse_proxy http://127.0.0.1:${
+            toString config.services.${service}.port
+          }
         '';
       };
     };
@@ -92,14 +86,9 @@ in
       install -d -m 0770 -o ${homelab.user} -g ${homelab.group} ${cfg.mediaDir}
       install -d -m 0770 -o ${homelab.user} -g ${homelab.group} ${cfg.consumptionDir}
     '';
-    systemd.services = lib.listToAttrs (
-      map (svc: {
-        name = svc;
-        value.unitConfig.RequiresMountsFor = [
-          cfg.mediaDir
-          cfg.consumptionDir
-        ];
-      }) cfg.monitoredServices
-    );
+    systemd.services = lib.listToAttrs (map (svc: {
+      name = svc;
+      value.unitConfig.RequiresMountsFor = [ cfg.mediaDir cfg.consumptionDir ];
+    }) cfg.monitoredServices);
   };
 }

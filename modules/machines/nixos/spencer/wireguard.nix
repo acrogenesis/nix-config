@@ -1,20 +1,12 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 let
   wg = config.homelab.networks.external.spencer-wireguard;
   wgBase = lib.strings.removeSuffix ".1" wg.gateway;
-in
-{
+in {
   networking.nat.enable = true;
   networking.nat.externalInterface = config.networking.defaultGateway.interface;
   networking.nat.internalInterfaces = [ wg.interface ];
-  networking.firewall = {
-    allowedUDPPorts = [ 51820 ];
-  };
+  networking.firewall = { allowedUDPPorts = [ 51820 ]; };
 
   networking.wireguard.interfaces = {
     wg0 = {
@@ -29,13 +21,11 @@ in
 
       privateKeyFile = config.age.secrets.wireguardPrivateKeySpencer.path;
 
-      peers = [
-        {
-          name = "duck";
-          publicKey = "npTrLwAIJZ3m4XqdmQpP/KIi0C6urjBQHoCuA1vOOTc=";
-          allowedIPs = [ "${wgBase}.2/32" ];
-        }
-      ];
+      peers = [{
+        name = "duck";
+        publicKey = "npTrLwAIJZ3m4XqdmQpP/KIi0C6urjBQHoCuA1vOOTc=";
+        allowedIPs = [ "${wgBase}.2/32" ];
+      }];
     };
   };
 

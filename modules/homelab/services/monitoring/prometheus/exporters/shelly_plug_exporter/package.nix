@@ -1,9 +1,4 @@
-{
-  jre,
-  fetchFromGitHub,
-  makeWrapper,
-  maven,
-}:
+{ jre, fetchFromGitHub, makeWrapper, maven, }:
 
 maven.buildMavenPackage rec {
   pname = "prometheus-shellyplug-exporter";

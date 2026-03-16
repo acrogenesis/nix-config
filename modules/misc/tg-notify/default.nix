@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 let
   cfg = config.tg-notify;
   tg-notify = pkgs.writeShellScriptBin "tg-notify" ''
@@ -70,8 +65,7 @@ let
             https://api.telegram.org/$API_KEY/sendMessage
 
   '';
-in
-{
+in {
   options.tg-notify = {
     enable = lib.mkEnableOption {
       description = "Send a Telegram notification on service failure";

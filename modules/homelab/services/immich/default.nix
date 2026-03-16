@@ -1,15 +1,11 @@
-{
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.homelab.services.immich;
   homelab = config.homelab;
-in
-{
+in {
   options.homelab.services.immich = {
-    enable = lib.mkEnableOption "Self-hosted photo and video management solution";
+    enable =
+      lib.mkEnableOption "Self-hosted photo and video management solution";
     user = lib.mkOption {
       default = "immich";
       type = lib.types.str;
@@ -63,10 +59,7 @@ in
       "d ${cfg.mediaDir}/encoded-video 0775 ${cfg.user} ${homelab.group} - -"
       "f ${cfg.mediaDir}/encoded-video/.immich 0664 ${cfg.user} ${homelab.group} - -"
     ];
-    users.users.${cfg.user}.extraGroups = lib.mkBefore [
-      "video"
-      "render"
-    ];
+    users.users.${cfg.user}.extraGroups = lib.mkBefore [ "video" "render" ];
     services.immich = {
       user = cfg.user;
       group = homelab.group;
@@ -85,14 +78,15 @@ in
         "/dev/nvidia-modeset"
       ];
       immich-server.serviceConfig.PrivateDevices = lib.mkForce false;
-      immich-machine-learning.serviceConfig.Environment = [
-        "MPLCONFIGDIR=/var/cache/immich-machine-learning/matplotlib"
-      ];
+      immich-machine-learning.serviceConfig.Environment =
+        [ "MPLCONFIGDIR=/var/cache/immich-machine-learning/matplotlib" ];
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
-        reverse_proxy http://${config.services.immich.host}:${toString config.services.immich.port}
+        reverse_proxy http://${config.services.immich.host}:${
+          toString config.services.immich.port
+        }
       '';
     };
   };

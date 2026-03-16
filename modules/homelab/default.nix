@@ -1,10 +1,9 @@
 { lib, config, ... }:
-let
-  cfg = config.homelab;
-in
-{
+let cfg = config.homelab;
+in {
   options.homelab = {
-    enable = lib.mkEnableOption "The homelab services and configuration variables";
+    enable =
+      lib.mkEnableOption "The homelab services and configuration variables";
     mounts.slow = lib.mkOption {
       default = "/mnt/mergerfs_slow";
       type = lib.types.path;
@@ -61,23 +60,13 @@ in
         Base domain name to be used to access the homelab services via Caddy reverse proxy
       '';
     };
-    cloudflare.dnsCredentialsFile = lib.mkOption {
-      type = lib.types.path;
-    };
+    cloudflare.dnsCredentialsFile = lib.mkOption { type = lib.types.path; };
   };
-  imports = [
-    ./backup
-    ./services
-    ./samba
-    ./networks
-    ./motd
-    ./fail2ban-cloudflare
-  ];
+  imports =
+    [ ./backup ./services ./samba ./networks ./motd ./fail2ban-cloudflare ];
   config = lib.mkIf cfg.enable {
     users = {
-      groups.${cfg.group} = {
-        gid = 993;
-      };
+      groups.${cfg.group} = { gid = 993; };
       users.${cfg.user} = {
         uid = 994;
         isSystemUser = true;

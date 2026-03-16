@@ -1,22 +1,11 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 let
   cfg = config.services.mover;
   inherit (builtins) toString map readFile;
-  inherit (lib)
-    mkIf
-    mkEnableOption
-    types
-    mkOption
-    concatStringsSep
-    ;
-  mergerfs-uncache = pkgs.writeScriptBin "mergerfs-uncache" (readFile ./mergerfs-uncache.py);
-in
-{
+  inherit (lib) mkIf mkEnableOption types mkOption concatStringsSep;
+  mergerfs-uncache =
+    pkgs.writeScriptBin "mergerfs-uncache" (readFile ./mergerfs-uncache.py);
+in {
   options.services.mover = {
     enable = mkEnableOption "mergerfs-uncache mover script";
     cacheArray = mkOption {
@@ -36,7 +25,8 @@ in
       default = 50;
     };
     excludedPaths = mkOption {
-      description = "List of paths (relative to cacheArray) that should be excluded from moving";
+      description =
+        "List of paths (relative to cacheArray) that should be excluded from moving";
       type = types.listOf types.str;
       default = [ ];
     };
@@ -54,29 +44,25 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [
-      mergerfs-uncache
-    ];
+    environment.systemPackages = [ mergerfs-uncache ];
 
-    security.sudo.extraRules = [
-      {
-        users = [ cfg.user ];
-        commands = [
-          {
-            command = "/run/current-system/sw/bin/journalctl";
-            options = [ "NOPASSWD" ];
-          }
-          {
-            command = "/run/current-system/sw/bin/chown";
-            options = [ "NOPASSWD" ];
-          }
-          {
-            command = "/run/current-system/sw/bin/chmod";
-            options = [ "NOPASSWD" ];
-          }
-        ];
-      }
-    ];
+    security.sudo.extraRules = [{
+      users = [ cfg.user ];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/journalctl";
+          options = [ "NOPASSWD" ];
+        }
+        {
+          command = "/run/current-system/sw/bin/chown";
+          options = [ "NOPASSWD" ];
+        }
+        {
+          command = "/run/current-system/sw/bin/chmod";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }];
 
     systemd = {
       services.mergerfs-uncache = {
@@ -89,32 +75,32 @@ in
           pkgs.gawk
           mergerfs-uncache
         ];
-        serviceConfig =
-          let
-            excludeArgs =
-              if cfg.excludedPaths == [ ] then
-                ""
-              else
-                "--exclude ${concatStringsSep " " (map (path: "${cfg.cacheArray}/${path}") cfg.excludedPaths)}";
-            runner = pkgs.writeShellScript "run-mergerfs-uncache" ''
-              exec ${lib.getExe mergerfs-uncache} \
-                -s ${config.services.mover.cacheArray} \
-                -d ${config.services.mover.backingArray} \
-                -t ${config.services.mover.percentageFree} \
-                ${excludeArgs} \
-                -u ${config.services.mover.user} \
-                -g ${config.services.mover.group}
-            '';
-          in
-          {
-            Type = "oneshot";
-            ExecStart = runner;
-            User = config.services.mover.user;
-            Group = config.services.mover.group;
-          };
-        onFailure = lib.lists.optionals (config ? tg-notify && config.tg-notify.enable) [
-          "tg-notify@%i.service"
-        ];
+        serviceConfig = let
+          excludeArgs = if cfg.excludedPaths == [ ] then
+            ""
+          else
+            "--exclude ${
+              concatStringsSep " "
+              (map (path: "${cfg.cacheArray}/${path}") cfg.excludedPaths)
+            }";
+          runner = pkgs.writeShellScript "run-mergerfs-uncache" ''
+            exec ${lib.getExe mergerfs-uncache} \
+              -s ${config.services.mover.cacheArray} \
+              -d ${config.services.mover.backingArray} \
+              -t ${config.services.mover.percentageFree} \
+              ${excludeArgs} \
+              -u ${config.services.mover.user} \
+              -g ${config.services.mover.group}
+          '';
+        in {
+          Type = "oneshot";
+          ExecStart = runner;
+          User = config.services.mover.user;
+          Group = config.services.mover.group;
+        };
+        onFailure =
+          lib.lists.optionals (config ? tg-notify && config.tg-notify.enable)
+          [ "tg-notify@%i.service" ];
       };
       timers.mergerfs-uncache = {
         wantedBy = [ "multi-user.target" ];

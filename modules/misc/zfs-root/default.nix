@@ -1,8 +1,1 @@
-{ ... }:
-{
-  imports = [
-    ./boot.nix
-    ./monitoring.nix
-    ./fileSystems.nix
-  ];
-}
+{ ... }: { imports = [ ./boot.nix ./monitoring.nix ./fileSystems.nix ]; }

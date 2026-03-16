@@ -1,16 +1,8 @@
-{
-  config,
-  pkgs,
-  ...
-}:
-let
-  hl = config.homelab;
-in
-{
+{ config, pkgs, ... }:
+let hl = config.homelab;
+in {
 
-  imports = [
-    ./snapraid.nix
-  ];
+  imports = [ ./snapraid.nix ];
 
   programs.fuse.userAllowOther = true;
 
@@ -86,11 +78,10 @@ in
 
   services.smartd = {
     enable = true;
-    defaults.autodetected = "-a -o on -S on -s (S/../.././02|L/../../6/03) -n standby,q";
+    defaults.autodetected =
+      "-a -o on -S on -s (S/../.././02|L/../../6/03) -n standby,q";
     notifications = {
-      wall = {
-        enable = true;
-      };
+      wall = { enable = true; };
       mail = {
         enable = true;
         sender = config.email.fromAddress;

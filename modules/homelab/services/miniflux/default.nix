@@ -1,20 +1,13 @@
-{
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   service = "miniflux";
   hl = config.homelab;
   cfg = hl.services.${service};
   hostnames = [ cfg.url ];
   upstream = "http://${config.services.${service}.config.LISTEN_ADDR}";
-in
-{
+in {
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/${service}";
@@ -67,7 +60,8 @@ in
         OAUTH2_PROVIDER = "oidc";
         OAUTH2_CLIENT_ID = "miniflux";
         OAUTH2_REDIRECT_URL = "https://${cfg.url}/oauth2/oidc/callback";
-        OAUTH2_OIDC_DISCOVERY_ENDPOINT = "https://${hl.services.keycloak.url}/realms/master";
+        OAUTH2_OIDC_DISCOVERY_ENDPOINT =
+          "https://${hl.services.keycloak.url}/realms/master";
         OAUTH2_USER_CREATION = "1";
         DISABLE_LOCAL_AUTH = "true";
       };

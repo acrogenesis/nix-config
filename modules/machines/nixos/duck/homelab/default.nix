@@ -1,16 +1,9 @@
-{
-  config,
-  inputs,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, inputs, pkgs, lib, ... }:
 let
   wg = config.homelab.networks.external.spencer-wireguard;
   wgBase = lib.strings.removeSuffix ".1" wg.gateway;
   hl = config.homelab;
-in
-{
+in {
   # Keep PostgreSQL modern for TeslaMate while remaining compatible with
   # the current Immich (pgvecto-rs) setup.
   services.postgresql = {
@@ -37,7 +30,8 @@ in
   homelab = {
     enable = true;
     baseDomain = "rebelduck.cc";
-    cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
+    cloudflare.dnsCredentialsFile =
+      config.age.secrets.cloudflareDnsApiCredentials.path;
     timeZone = "America/Monterrey";
     mounts = {
       config = "/persist/opt/services";
@@ -49,21 +43,11 @@ in
       enable = true;
       passwordFile = config.age.secrets.sambaPassword.path;
       shares = {
-        Backups = {
-          path = "${hl.mounts.merged}/Backups";
-        };
-        Documents = {
-          path = "${hl.mounts.merged}/Documents";
-        };
-        Media = {
-          path = "${hl.mounts.merged}/Media";
-        };
-        Music = {
-          path = "${hl.mounts.merged}/Media/Music";
-        };
-        Misc = {
-          path = "${hl.mounts.merged}/Misc";
-        };
+        Backups = { path = "${hl.mounts.merged}/Backups"; };
+        Documents = { path = "${hl.mounts.merged}/Documents"; };
+        Media = { path = "${hl.mounts.merged}/Media"; };
+        Music = { path = "${hl.mounts.merged}/Media/Music"; };
+        Misc = { path = "${hl.mounts.merged}/Misc"; };
         TimeMachine = {
           path = "${hl.mounts.slow}/TimeMachine";
           "fruit:time machine" = "yes";
@@ -89,9 +73,7 @@ in
         s3.url = "https://s3.us-west-002.backblazeb2.com/acrogenesis-homelab";
         s3.environmentFile = config.age.secrets.resticBackblazeEnv.path;
         local.enable = true;
-        extraPaths = [
-          "${hl.mounts.merged}/Media/Photos"
-        ];
+        extraPaths = [ "${hl.mounts.merged}/Media/Photos" ];
       };
       keycloak = {
         enable = true;
@@ -109,9 +91,7 @@ in
         enable = true;
         mediaDir = "${hl.mounts.merged}/Media/Photos";
       };
-      invoiceplane = {
-        enable = false;
-      };
+      invoiceplane = { enable = false; };
       homepage = {
         enable = true;
         # misc = [
@@ -182,7 +162,8 @@ in
       prowlarr.enable = true;
       jellyseerr = {
         enable = true;
-        package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.jellyseerr;
+        package =
+          inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.jellyseerr;
       };
       nextcloud = {
         enable = true;

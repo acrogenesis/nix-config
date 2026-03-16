@@ -2,7 +2,8 @@
 stdenv.mkDerivation {
   name = "invoiceplane-template-notthebee";
   src = pkgs.fetchurl {
-    url = "https://github.com/InvoicePlane/InvoicePlane/raw/refs/tags/v1.6.3/application/views/invoice_templates/pdf/InvoicePlane.php";
+    url =
+      "https://github.com/InvoicePlane/InvoicePlane/raw/refs/tags/v1.6.3/application/views/invoice_templates/pdf/InvoicePlane.php";
     hash = "sha256-x8xssyOtriKozCPG1JiJWXrFaf57Wyab9aZQn8WBreY=";
   };
   dontUnpack = true;

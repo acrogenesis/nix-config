@@ -1,18 +1,11 @@
-{
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   service = "homepage-dashboard";
   cfg = config.homelab.services.homepage;
   homelab = config.homelab;
-in
-{
+in {
   options.homelab.services.homepage = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/etc/homepage-dashboard";
@@ -20,26 +13,14 @@ in
     };
     misc = lib.mkOption {
       default = [ ];
-      type = lib.types.listOf (
-        lib.types.attrsOf (
-          lib.types.submodule {
-            options = {
-              description = lib.mkOption {
-                type = lib.types.str;
-              };
-              href = lib.mkOption {
-                type = lib.types.str;
-              };
-              siteMonitor = lib.mkOption {
-                type = lib.types.str;
-              };
-              icon = lib.mkOption {
-                type = lib.types.str;
-              };
-            };
-          }
-        )
-      );
+      type = lib.types.listOf (lib.types.attrsOf (lib.types.submodule {
+        options = {
+          description = lib.mkOption { type = lib.types.str; };
+          href = lib.mkOption { type = lib.types.str; };
+          siteMonitor = lib.mkOption { type = lib.types.str; };
+          icon = lib.mkOption { type = lib.types.str; };
+        };
+      }));
     };
   };
   config = lib.mkIf cfg.enable {
@@ -109,95 +90,81 @@ in
         statusStyle = "dot";
         hideVersion = "true";
       };
-      services =
-        let
-          homepageCategories = [
-            "Arr"
-            "Media"
-            "Downloads"
-            "Services"
-            "Observability"
-            "Smart Home"
-          ];
-          hl = config.homelab.services;
-          homepageServices =
-            x:
-            (lib.attrsets.filterAttrs (
-              _name: value: value ? homepage && value.homepage.category == x
-            ) homelab.services);
-        in
-        lib.lists.forEach homepageCategories (cat: {
-          "${cat}" =
-            lib.lists.forEach (lib.attrsets.mapAttrsToList (name: _value: name) (homepageServices "${cat}"))
-              (x: {
-                "${hl.${x}.homepage.name}" = {
-                  icon = hl.${x}.homepage.icon;
-                  description = hl.${x}.homepage.description;
-                  href = "https://${hl.${x}.url}";
-                  siteMonitor = "https://${hl.${x}.url}";
-                };
-              });
-        })
-        ++ [ { Misc = cfg.misc; } ]
-        ++ [
+      services = let
+        homepageCategories =
+          [ "Arr" "Media" "Downloads" "Services" "Observability" "Smart Home" ];
+        hl = config.homelab.services;
+        homepageServices = x:
+          (lib.attrsets.filterAttrs
+            (_name: value: value ? homepage && value.homepage.category == x)
+            homelab.services);
+      in lib.lists.forEach homepageCategories (cat: {
+        "${cat}" = lib.lists.forEach
+          (lib.attrsets.mapAttrsToList (name: _value: name)
+            (homepageServices "${cat}")) (x: {
+              "${hl.${x}.homepage.name}" = {
+                icon = hl.${x}.homepage.icon;
+                description = hl.${x}.homepage.description;
+                href = "https://${hl.${x}.url}";
+                siteMonitor = "https://${hl.${x}.url}";
+              };
+            });
+      }) ++ [{ Misc = cfg.misc; }] ++ [{
+        Glances = let port = toString config.services.glances.port;
+        in [
           {
-            Glances =
-              let
-                port = toString config.services.glances.port;
-              in
-              [
-                {
-                  Info = {
-                    widget = {
-                      type = "glances";
-                      url = "http://localhost:${port}";
-                      metric = "info";
-                      chart = false;
-                      version = 4;
-                    };
-                  };
-                }
-                {
-                  "CPU Temp" = {
-                    widget = {
-                      type = "glances";
-                      url = "http://localhost:${port}";
-                      metric = "sensor:Composite";
-                      chart = false;
-                      version = 4;
-                    };
-                  };
-                }
-                {
-                  Processes = {
-                    widget = {
-                      type = "glances";
-                      url = "http://localhost:${port}";
-                      metric = "process";
-                      chart = false;
-                      version = 4;
-                    };
-                  };
-                }
-                {
-                  Network = {
-                    widget = {
-                      type = "glances";
-                      url = "http://localhost:${port}";
-                      metric = "network:enp2s0";
-                      chart = false;
-                      version = 4;
-                    };
-                  };
-                }
-              ];
+            Info = {
+              widget = {
+                type = "glances";
+                url = "http://localhost:${port}";
+                metric = "info";
+                chart = false;
+                version = 4;
+              };
+            };
+          }
+          {
+            "CPU Temp" = {
+              widget = {
+                type = "glances";
+                url = "http://localhost:${port}";
+                metric = "sensor:Composite";
+                chart = false;
+                version = 4;
+              };
+            };
+          }
+          {
+            Processes = {
+              widget = {
+                type = "glances";
+                url = "http://localhost:${port}";
+                metric = "process";
+                chart = false;
+                version = 4;
+              };
+            };
+          }
+          {
+            Network = {
+              widget = {
+                type = "glances";
+                url = "http://localhost:${port}";
+                metric = "network:enp2s0";
+                chart = false;
+                version = 4;
+              };
+            };
           }
         ];
+      }];
     };
     services.caddy.virtualHosts."${homelab.baseDomain}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
-        reverse_proxy http://127.0.0.1:${toString config.services.${service}.listenPort}
+        reverse_proxy http://127.0.0.1:${
+          toString config.services.${service}.listenPort
+        }
       '';
     };
   };

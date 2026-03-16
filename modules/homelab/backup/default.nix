@@ -1,18 +1,13 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 let
   cfg = config.homelab.services.backup;
   hl = config.homelab;
-in
 
-{
+in {
   options.homelab.services.backup = {
     enable = lib.mkEnableOption {
-      description = "Enable backups for application state folders and/or Paperless documents";
+      description =
+        "Enable backups for application state folders and/or Paperless documents";
     };
     state.enable = lib.mkOption {
       description = "Enable backups for application state folders";
@@ -20,7 +15,8 @@ in
       default = false;
     };
     configDir = lib.mkOption {
-      description = "Folder with database dump backups (called configDir for compatibility reasons)";
+      description =
+        "Folder with database dump backups (called configDir for compatibility reasons)";
       type = lib.types.str;
       default = "/var/backup";
     };
@@ -30,7 +26,8 @@ in
       default = false;
     };
     extraPaths = lib.mkOption {
-      description = "Additional absolute directories that should be shipped to Restic.";
+      description =
+        "Additional absolute directories that should be shipped to Restic.";
       type = lib.types.listOf lib.types.str;
       default = [ ];
     };
@@ -70,141 +67,115 @@ in
       type = lib.types.path;
     };
   };
-  config =
-    let
-      enabledServices = lib.attrsets.filterAttrs (
-        _name: value: value ? enable && value.enable && (value ? configDir || value ? dataDir)
-      ) hl.services;
-      stateDirList = lib.concatMap (
-        x:
-        let
-          attrs = enabledServices.${x};
-          dir =
-            if attrs ? configDir then
-              attrs.configDir
-            else if attrs ? dataDir then
-              attrs.dataDir
-            else
-              null;
-        in
-        lib.optionals (dir != null && dir != false) [ dir ]
-      ) (lib.attrsets.mapAttrsToList (name: _value: name) enabledServices);
-      backupPaths = lib.lists.unique (stateDirList ++ cfg.extraPaths);
-    in
-    lib.mkIf (cfg.enable && backupPaths != [ ]) {
-      systemd.tmpfiles.rules = lib.lists.optionals cfg.local.enable [
-        "d ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -"
-      ];
-      users.users.restic.createHome = lib.mkForce false;
-      systemd.services.restic-rest-server.serviceConfig = lib.attrsets.optionalAttrs cfg.local.enable {
+  config = let
+    enabledServices = lib.attrsets.filterAttrs (_name: value:
+      value ? enable && value.enable && (value ? configDir || value ? dataDir))
+      hl.services;
+    stateDirList = lib.concatMap (x:
+      let
+        attrs = enabledServices.${x};
+        dir = if attrs ? configDir then
+          attrs.configDir
+        else if attrs ? dataDir then
+          attrs.dataDir
+        else
+          null;
+      in lib.optionals (dir != null && dir != false) [ dir ])
+      (lib.attrsets.mapAttrsToList (name: _value: name) enabledServices);
+    backupPaths = lib.lists.unique (stateDirList ++ cfg.extraPaths);
+  in lib.mkIf (cfg.enable && backupPaths != [ ]) {
+    systemd.tmpfiles.rules = lib.lists.optionals cfg.local.enable
+      [ "d ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -" ];
+    users.users.restic.createHome = lib.mkForce false;
+    systemd.services.restic-rest-server.serviceConfig =
+      lib.attrsets.optionalAttrs cfg.local.enable {
         User = lib.mkForce hl.user;
         Group = lib.mkForce hl.group;
       };
-      services.postgresqlBackup = {
-        enable = config.services.postgresql.enable;
-        databases = config.services.postgresql.ensureDatabases;
+    services.postgresqlBackup = {
+      enable = config.services.postgresql.enable;
+      databases = config.services.postgresql.ensureDatabases;
+    };
+    services.mysqlBackup = {
+      enable = config.services.mysql.enable;
+      databases = config.services.mysql.ensureDatabases;
+    };
+    services.restic = {
+      server = lib.attrsets.optionalAttrs cfg.local.enable {
+        enable = true;
+        dataDir = cfg.local.targetDir;
+        extraFlags = [ "--no-auth" ];
       };
-      services.mysqlBackup = {
-        enable = config.services.mysql.enable;
-        databases = config.services.mysql.ensureDatabases;
-      };
-      services.restic = {
-        server = lib.attrsets.optionalAttrs cfg.local.enable {
-          enable = true;
-          dataDir = cfg.local.targetDir;
-          extraFlags = [
-            "--no-auth"
-          ];
+      backups = lib.attrsets.optionalAttrs cfg.local.enable {
+        appdata-local = {
+          timerConfig = {
+            OnCalendar = "Mon..Sat *-*-* 05:00:00";
+            Persistent = true;
+          };
+          repository =
+            "rest:http://localhost:8000/appdata-local-${config.networking.hostName}";
+          initialize = true;
+          passwordFile = cfg.passwordFile;
+          pruneOpts = [ "--keep-last 5" ];
+          exclude = [ ];
+          paths = backupPaths;
+          backupPrepareCommand = let
+            restic =
+              "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-local.repository}' -p ${cfg.passwordFile}";
+          in ''
+            ${restic} stats || ${restic} init
+            ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 5
+            ${restic} unlock
+          '';
         };
-        backups =
-          lib.attrsets.optionalAttrs cfg.local.enable {
-            appdata-local = {
+      } // lib.attrsets.optionalAttrs cfg.s3.enable {
+        appdata-s3 = let backupFolder = "appdata-${config.networking.hostName}";
+        in {
+          timerConfig = {
+            OnCalendar = "Sun *-*-* 05:00:00";
+            Persistent = true;
+          };
+          environmentFile = cfg.s3.environmentFile;
+          repository = "s3:${cfg.s3.url}/${backupFolder}";
+          initialize = true;
+          passwordFile = cfg.passwordFile;
+          pruneOpts = [ "--keep-last 3" ];
+          exclude = [ ];
+          paths = backupPaths;
+          backupPrepareCommand = let
+            restic =
+              "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-s3.repository}'";
+          in ''
+            ${restic} stats || ${restic} init
+            ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 3
+            ${restic} unlock
+          '';
+        };
+      } // lib.attrsets.optionalAttrs
+        (cfg.s3.enable && hl.services.paperless.enable) {
+          paperless-s3 =
+            let backupFolder = "paperless-${config.networking.hostName}";
+            in {
               timerConfig = {
-                OnCalendar = "Mon..Sat *-*-* 05:00:00";
+                OnCalendar = "Sun *-*-* 05:00:00";
                 Persistent = true;
               };
-              repository = "rest:http://localhost:8000/appdata-local-${config.networking.hostName}";
+              environmentFile = cfg.s3.environmentFile;
+              repository = "s3:${cfg.s3.url}/${backupFolder}";
               initialize = true;
               passwordFile = cfg.passwordFile;
-              pruneOpts = [
-                "--keep-last 5"
-              ];
-              exclude = [
-              ];
-              paths = backupPaths;
-              backupPrepareCommand =
-                let
-                  restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-local.repository}' -p ${cfg.passwordFile}";
-                in
-                ''
-                  ${restic} stats || ${restic} init
-                  ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 5
-                  ${restic} unlock
-                '';
+              pruneOpts = [ "--keep-last 5" ];
+              paths = [ hl.services.paperless.mediaDir ];
+              backupPrepareCommand = let
+                restic =
+                  "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.paperless-s3.repository}'";
+              in ''
+                ${restic} stats || ${restic} init
+                ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 3
+                ${restic} unlock
+              '';
             };
-          }
-          // lib.attrsets.optionalAttrs cfg.s3.enable {
-            appdata-s3 =
-              let
-                backupFolder = "appdata-${config.networking.hostName}";
-              in
-              {
-                timerConfig = {
-                  OnCalendar = "Sun *-*-* 05:00:00";
-                  Persistent = true;
-                };
-                environmentFile = cfg.s3.environmentFile;
-                repository = "s3:${cfg.s3.url}/${backupFolder}";
-                initialize = true;
-                passwordFile = cfg.passwordFile;
-                pruneOpts = [
-                  "--keep-last 3"
-                ];
-                exclude = [
-                ];
-                paths = backupPaths;
-                backupPrepareCommand =
-                  let
-                    restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-s3.repository}'";
-                  in
-                  ''
-                    ${restic} stats || ${restic} init
-                    ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 3
-                    ${restic} unlock
-                  '';
-              };
-          }
-          // lib.attrsets.optionalAttrs (cfg.s3.enable && hl.services.paperless.enable) {
-            paperless-s3 =
-              let
-                backupFolder = "paperless-${config.networking.hostName}";
-              in
-              {
-                timerConfig = {
-                  OnCalendar = "Sun *-*-* 05:00:00";
-                  Persistent = true;
-                };
-                environmentFile = cfg.s3.environmentFile;
-                repository = "s3:${cfg.s3.url}/${backupFolder}";
-                initialize = true;
-                passwordFile = cfg.passwordFile;
-                pruneOpts = [
-                  "--keep-last 5"
-                ];
-                paths = [
-                  hl.services.paperless.mediaDir
-                ];
-                backupPrepareCommand =
-                  let
-                    restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.paperless-s3.repository}'";
-                  in
-                  ''
-                    ${restic} stats || ${restic} init
-                    ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 3
-                    ${restic} unlock
-                  '';
-              };
-          };
-      };
+        };
     };
+  };
 }

@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}:
+{ pkgs, lib, config, ... }:
 let
   cfg = config.services.deemix;
   nodejs = pkgs.nodejs_20;
@@ -18,19 +13,10 @@ let
   deemix = pkgs.stdenv.mkDerivation (finalAttrs: {
     inherit pname version src;
 
-    nativeBuildInputs = [
-      nodejs
-      pkgs.pnpm.configHook
-      pkgs.cacert
-      pkgs.turbo
-    ];
+    nativeBuildInputs = [ nodejs pkgs.pnpm.configHook pkgs.cacert pkgs.turbo ];
 
     pnpmDeps = pkgs.pnpm.fetchDeps {
-      inherit (finalAttrs)
-        pname
-        version
-        src
-        ;
+      inherit (finalAttrs) pname version src;
       hash = "sha256-7CEBFv85SngWekWhbKQhRRL7P/Llf6fQ3JSyu5+2SDc=";
     };
 
@@ -64,10 +50,10 @@ let
     '';
 
   });
-in
-{
+in {
   options.services.deemix = {
-    enable = lib.mkEnableOption "A web-based tool that facilitates downloading music from Deezer";
+    enable = lib.mkEnableOption
+      "A web-based tool that facilitates downloading music from Deezer";
     openFirewall = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -125,7 +111,8 @@ in
     };
 
     systemd.services.deemix = {
-      description = "Deemix is a web-based tool that facilitates downloading music from Deezer";
+      description =
+        "Deemix is a web-based tool that facilitates downloading music from Deezer";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       environment = {
@@ -146,9 +133,8 @@ in
       };
     };
 
-    networking.firewall = lib.mkIf cfg.openFirewall {
-      allowedTCPPorts = [ cfg.listenPort ];
-    };
+    networking.firewall =
+      lib.mkIf cfg.openFirewall { allowedTCPPorts = [ cfg.listenPort ]; };
 
     users.users = lib.mkIf (cfg.user == "deemix") {
       deemix = {
@@ -159,9 +145,7 @@ in
     };
 
     users.groups = lib.mkIf (cfg.group == "deemix") {
-      deemix = {
-        gid = config.ids.gids.deemix;
-      };
+      deemix = { gid = config.ids.gids.deemix; };
     };
   };
 }

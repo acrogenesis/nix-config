@@ -1,18 +1,11 @@
-{
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   service = "grafana";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
-in
-{
+in {
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     url = lib.mkOption {
       type = lib.types.str;
       default = "monitor.${homelab.baseDomain}";
@@ -46,24 +39,22 @@ in
   config = lib.mkIf cfg.enable {
     services.grafana = {
       enable = true;
-      provision = {
-        enable = true;
-      };
+      provision = { enable = true; };
       settings = {
         server = {
           http_addr = "127.0.0.1";
           http_port = 3000;
           domain = cfg.url;
         };
-        security = {
-          secret_key = "$__file{${cfg.secretKeyFile}}";
-        };
+        security = { secret_key = "$__file{${cfg.secretKeyFile}}"; };
       };
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
-        reverse_proxy http://${config.services.grafana.settings.server.http_addr}:${toString config.services.grafana.settings.server.http_port}
+        reverse_proxy http://${config.services.grafana.settings.server.http_addr}:${
+          toString config.services.grafana.settings.server.http_port
+        }
       '';
     };
   };

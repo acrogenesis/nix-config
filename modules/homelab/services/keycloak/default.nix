@@ -1,21 +1,15 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 let
   service = "keycloak";
   cfg = config.homelab.services.${service};
   hl = config.homelab;
   hostnames = [ cfg.url ];
-  upstream = "http://127.0.0.1:${toString config.services.${service}.settings.http-port}";
-in
-{
+  upstream = "http://127.0.0.1:${
+      toString config.services.${service}.settings.http-port
+    }";
+in {
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     url = lib.mkOption {
       type = lib.types.str;
       default = "login.${hl.baseDomain}";
@@ -41,9 +35,7 @@ in
       default = "/var/lib/keycloak";
       description = "Directory containing Keycloak state.";
     };
-    dbPasswordFile = lib.mkOption {
-      type = lib.types.path;
-    };
+    dbPasswordFile = lib.mkOption { type = lib.types.path; };
     cloudflared.credentialsFile = lib.mkOption {
       type = lib.types.str;
       example = lib.literalExpression ''
@@ -67,17 +59,16 @@ in
       };
     };
 
-    environment.systemPackages = [
-      pkgs.keycloak
-      pkgs.custom_keycloak_themes.notthebee
-    ];
+    environment.systemPackages =
+      [ pkgs.keycloak pkgs.custom_keycloak_themes.notthebee ];
     nixpkgs.overlays = [
       (_final: _prev: {
         custom_keycloak_themes = {
           notthebee = pkgs.callPackage ./theme.nix { };
         };
         custom_keycloak_plugins = {
-          keycloak_spi_trusted_device = pkgs.callPackage ./trusted-device.nix { };
+          keycloak_spi_trusted_device =
+            pkgs.callPackage ./trusted-device.nix { };
         };
       })
     ];
@@ -86,9 +77,7 @@ in
       enable = true;
       initialAdminPassword = "schneke123";
       database.passwordFile = cfg.dbPasswordFile;
-      themes = {
-        notthebee = pkgs.custom_keycloak_themes.notthebee;
-      };
+      themes = { notthebee = pkgs.custom_keycloak_themes.notthebee; };
       plugins = [ pkgs.custom_keycloak_plugins.keycloak_spi_trusted_device ];
       settings = {
         spi-theme-static-max-age = "-1";

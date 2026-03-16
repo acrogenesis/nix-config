@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 let
   service = "phoenix-app";
   cfg = config.homelab.services.${service};
@@ -11,16 +6,14 @@ let
   hostnames = [ cfg.url ] ++ cfg.aliases;
   phxHost = if cfg.phxHost != null then cfg.phxHost else cfg.url;
   upstream = "http://${cfg.listenAddress}:${toString cfg.port}";
-in
-{
+in {
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     package = lib.mkOption {
       type = lib.types.nullOr lib.types.package;
       default = null;
-      example = lib.literalExpression "inputs.my-phoenix-app.packages.${pkgs.system}.default";
+      example = lib.literalExpression
+        "inputs.my-phoenix-app.packages.${pkgs.system}.default";
       description = "Phoenix release package that provides bin/<releaseName>.";
     };
     releaseName = lib.mkOption {
@@ -37,7 +30,8 @@ in
     execStart = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;
-      description = "Override the systemd ExecStart command when not using a release package.";
+      description =
+        "Override the systemd ExecStart command when not using a release package.";
     };
     configDir = lib.mkOption {
       type = lib.types.str;
@@ -124,72 +118,61 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable (
-    let
-      execStart =
-        if cfg.execStart != null then
-          cfg.execStart
-        else if cfg.package != null && cfg.releaseName != null then
-          "${cfg.package}/bin/${cfg.releaseName} ${cfg.releaseCommand}"
-        else
-          throw "${service} requires either execStart or both package and releaseName.";
-      baseEnv = {
-        MIX_ENV = "prod";
-        PHX_HOST = phxHost;
-        PHX_SERVER = "true";
-        PORT = toString cfg.port;
-      };
-    in
-    lib.mkMerge [
-      {
-        systemd.tmpfiles.rules = [
-          "d ${cfg.configDir} 0750 ${homelab.user} ${homelab.group} - -"
-        ];
-        systemd.services.${service} = {
-          description = "Phoenix application service";
-          after = [ "network.target" ];
-          wantedBy = [ "multi-user.target" ];
-          environment = baseEnv // cfg.extraEnvironment;
-          path = [
-            pkgs.tesseract
-            pkgs.imagemagick
-          ]
-          ++ cfg.extraPackages;
-          serviceConfig = {
-            Type = "simple";
-            User = homelab.user;
-            Group = homelab.group;
-            WorkingDirectory = cfg.configDir;
-            ExecStart = execStart;
-            Restart = "on-failure";
-            PrivateTmp = true;
-            NoNewPrivileges = true;
-          }
-          // lib.optionalAttrs (cfg.environmentFile != null) {
-            EnvironmentFile = cfg.environmentFile;
-          };
+  config = lib.mkIf cfg.enable (let
+    execStart = if cfg.execStart != null then
+      cfg.execStart
+    else if cfg.package != null && cfg.releaseName != null then
+      "${cfg.package}/bin/${cfg.releaseName} ${cfg.releaseCommand}"
+    else
+      throw
+      "${service} requires either execStart or both package and releaseName.";
+    baseEnv = {
+      MIX_ENV = "prod";
+      PHX_HOST = phxHost;
+      PHX_SERVER = "true";
+      PORT = toString cfg.port;
+    };
+  in lib.mkMerge [
+    {
+      systemd.tmpfiles.rules =
+        [ "d ${cfg.configDir} 0750 ${homelab.user} ${homelab.group} - -" ];
+      systemd.services.${service} = {
+        description = "Phoenix application service";
+        after = [ "network.target" ];
+        wantedBy = [ "multi-user.target" ];
+        environment = baseEnv // cfg.extraEnvironment;
+        path = [ pkgs.tesseract pkgs.imagemagick ] ++ cfg.extraPackages;
+        serviceConfig = {
+          Type = "simple";
+          User = homelab.user;
+          Group = homelab.group;
+          WorkingDirectory = cfg.configDir;
+          ExecStart = execStart;
+          Restart = "on-failure";
+          PrivateTmp = true;
+          NoNewPrivileges = true;
+        } // lib.optionalAttrs (cfg.environmentFile != null) {
+          EnvironmentFile = cfg.environmentFile;
         };
-        services.caddy.virtualHosts = lib.mkIf cfg.caddy.enable (
-          lib.genAttrs hostnames (_: {
-            useACMEHost = homelab.baseDomain;
-            extraConfig = ''
-              reverse_proxy ${upstream}
-            '';
-          })
-        );
-      }
-      (lib.mkIf (cfg.cloudflared.credentialsFile != null && cfg.cloudflared.tunnelId != null) {
+      };
+      services.caddy.virtualHosts = lib.mkIf cfg.caddy.enable
+        (lib.genAttrs hostnames (_: {
+          useACMEHost = homelab.baseDomain;
+          extraConfig = ''
+            reverse_proxy ${upstream}
+          '';
+        }));
+    }
+    (lib.mkIf (cfg.cloudflared.credentialsFile != null
+      && cfg.cloudflared.tunnelId != null) {
         services.cloudflared = {
           enable = true;
           tunnels.${cfg.cloudflared.tunnelId} = {
             credentialsFile = cfg.cloudflared.credentialsFile;
             default = "http_status:404";
-            ingress = lib.genAttrs hostnames (_: {
-              service = upstream;
-            });
+            ingress = lib.genAttrs hostnames (_: { service = upstream; });
           };
         };
       })
-    ]
-  );
+  ]);
 }

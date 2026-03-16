@@ -2,12 +2,9 @@
 let
   homelab = config.homelab;
   cfg = config.homelab.services.homeassistant;
-in
-{
+in {
   options.homelab.services.homeassistant = {
-    enable = lib.mkEnableOption {
-      description = "Enable Home Assistant";
-    };
+    enable = lib.mkEnableOption { description = "Enable Home Assistant"; };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/persist/opt/services/homeassistant";
@@ -34,7 +31,8 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    systemd.tmpfiles.rules = [ "d ${cfg.configDir} 0775 ${homelab.user} ${homelab.group} - -" ];
+    systemd.tmpfiles.rules =
+      [ "d ${cfg.configDir} 0775 ${homelab.user} ${homelab.group} - -" ];
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
@@ -54,9 +52,7 @@ in
               "--cap-add=NET_ADMIN"
               "--network=host"
             ];
-            volumes = [
-              "${cfg.configDir}:/config"
-            ];
+            volumes = [ "${cfg.configDir}:/config" ];
             environment = {
               TZ = homelab.timeZone;
               PUID = toString config.users.users.${homelab.user}.uid;

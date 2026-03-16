@@ -1,8 +1,6 @@
 { config, ... }:
-let
-  domain = "notthebe.ee";
-in
-{
+let domain = "notthebe.ee";
+in {
   services.plausible = {
     enable = true;
     server = {
@@ -17,7 +15,9 @@ in
     enable = true;
     virtualHosts = {
       "numbers.${domain}".extraConfig = ''
-        reverse_proxy http://${config.services.plausible.server.listenAddress}:${toString config.services.plausible.server.port}
+        reverse_proxy http://${config.services.plausible.server.listenAddress}:${
+          toString config.services.plausible.server.port
+        }
       '';
     };
   };

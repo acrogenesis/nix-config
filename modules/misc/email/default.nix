@@ -1,13 +1,6 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-let
-  cfg = config.email;
-in
-{
+{ config, pkgs, lib, ... }:
+let cfg = config.email;
+in {
   options.email = {
     enable = lib.mkEnableOption "Email sending functionality";
     fromAddress = lib.mkOption {
@@ -45,7 +38,8 @@ in
         from = config.email.fromAddress;
         user = config.email.smtpUsername;
         tls = true;
-        passwordeval = "${pkgs.coreutils}/bin/cat ${config.email.smtpPasswordPath}";
+        passwordeval =
+          "${pkgs.coreutils}/bin/cat ${config.email.smtpPasswordPath}";
       };
     };
   };

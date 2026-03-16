@@ -1,10 +1,4 @@
-{
-  config,
-  inputs,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, inputs, lib, pkgs, ... }:
 let
   hl = config.homelab;
   lan = hl.networks.local.lan;
@@ -22,13 +16,9 @@ let
   primaryInterface = "enp5s0";
   secondaryInterface = lanInterface;
   bridgeInterface = "br0";
-  bridgeInterfaces = lib.unique [
-    primaryInterface
-    secondaryInterface
-  ];
+  bridgeInterfaces = lib.unique [ primaryInterface secondaryInterface ];
   duckMacAddress = lan.reservations.duck.MACAddress;
-in
-{
+in {
   services.prometheus.exporters.shellyplug.targets = [ ];
   services.udev.extraRules = ''
     SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="88:c9:b3:b3:4f:ab", NAME="${primaryInterface}"
@@ -61,40 +51,34 @@ in
   nixpkgs.overlays = [
     (_final: prev: {
       btop = prev.btop.overrideAttrs (old: {
-        nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ prev.makeWrapper ];
-        postFixup =
-          (old.postFixup or "")
-          + (
-            let
-              extraLibs =
-                lib.optionals (prev ? rocmPackages && prev.rocmPackages ? "rocm-smi") [
-                  prev.rocmPackages."rocm-smi"
-                ]
-                ++ lib.optionals (prev.stdenv.isLinux && prev ? linuxPackages && prev.linuxPackages ? nvidia_x11) [
-                  prev.linuxPackages.nvidia_x11
-                ];
-              extraLdPath =
-                lib.makeLibraryPath extraLibs + lib.optionalString (prev.stdenv.isLinux) ":/run/opengl-driver/lib";
-            in
-            ''
-              wrapProgram $out/bin/btop \
-                --prefix LD_LIBRARY_PATH : ${extraLdPath}
-            ''
-          );
+        nativeBuildInputs = (old.nativeBuildInputs or [ ])
+          ++ [ prev.makeWrapper ];
+        postFixup = (old.postFixup or "") + (let
+          extraLibs = lib.optionals
+            (prev ? rocmPackages && prev.rocmPackages ? "rocm-smi")
+            [ prev.rocmPackages."rocm-smi" ] ++ lib.optionals
+            (prev.stdenv.isLinux && prev ? linuxPackages && prev.linuxPackages
+              ? nvidia_x11) [ prev.linuxPackages.nvidia_x11 ];
+          extraLdPath = lib.makeLibraryPath extraLibs
+            + lib.optionalString (prev.stdenv.isLinux)
+            ":/run/opengl-driver/lib";
+        in ''
+          wrapProgram $out/bin/btop \
+            --prefix LD_LIBRARY_PATH : ${extraLdPath}
+        '');
       });
       mstpd = prev.mstpd.overrideAttrs (old: {
-        NIX_CFLAGS_COMPILE = lib.toList (old.NIX_CFLAGS_COMPILE or [ ]) ++ [
-          "-Wno-error=old-style-definition"
-        ];
+        NIX_CFLAGS_COMPILE = lib.toList (old.NIX_CFLAGS_COMPILE or [ ])
+          ++ [ "-Wno-error=old-style-definition" ];
       });
       # autodocsumm 0.2.14 requires sphinx<9.0 but nixpkgs-unstable ships sphinx 9.1.0.
       # Remove sphinx-toolbox from nativeBuildInputs (so autodocsumm is never needed)
       # and patch docs/conf.py to drop the single sphinx_toolbox extension reference
       # (confirmed unused in any .rst file so the docs build cleanly without it).
       beets = prev.beets.overrideAttrs (old: {
-        nativeBuildInputs = builtins.filter (p:
-          (p.pname or p.name or "") != "sphinx-toolbox"
-        ) (old.nativeBuildInputs or [ ]);
+        nativeBuildInputs =
+          builtins.filter (p: (p.pname or p.name or "") != "sphinx-toolbox")
+          (old.nativeBuildInputs or [ ]);
         postPatch = (old.postPatch or "") + ''
           if [ -f docs/conf.py ]; then
             sed -i '/"sphinx_toolbox/d' docs/conf.py
@@ -131,37 +115,24 @@ in
     useDHCP = false;
     networkmanager.enable = false;
     hostName = "duck";
-    nameservers = [
-      duckIpAddress
-      "1.1.1.1"
-      "8.8.8.8"
-      gatewayIpAddress
-    ];
+    nameservers = [ duckIpAddress "1.1.1.1" "8.8.8.8" gatewayIpAddress ];
     bridges.${bridgeInterface} = {
       interfaces = bridgeInterfaces;
       rstp = true;
     };
-    interfaces =
-      lib.genAttrs bridgeInterfaces (_: {
+    interfaces = lib.genAttrs bridgeInterfaces (_: { useDHCP = false; }) // {
+      ${bridgeInterface} = {
         useDHCP = false;
-      })
-      // {
-        ${bridgeInterface} = {
-          useDHCP = false;
-          ipv4.addresses = [
-            {
-              address = duckIpAddress;
-              prefixLength = 24;
-            }
-          ];
-          ipv6.addresses = [
-            {
-              address = duckIpv6Address;
-              prefixLength = 64;
-            }
-          ];
-        };
+        ipv4.addresses = [{
+          address = duckIpAddress;
+          prefixLength = 24;
+        }];
+        ipv6.addresses = [{
+          address = duckIpv6Address;
+          prefixLength = 64;
+        }];
       };
+    };
     defaultGateway = {
       address = gatewayIpAddress;
       interface = bridgeInterface;
@@ -174,23 +145,14 @@ in
     firewall = {
       enable = true;
       allowPing = true;
-      trustedInterfaces = [
-        bridgeInterface
-        "tailscale0"
-      ];
+      trustedInterfaces = [ bridgeInterface "tailscale0" ];
     };
   };
   zfs-root = {
     boot = {
       bootDevices = [ bootDeviceId ];
       immutable = true;
-      availableKernelModules = [
-        "xhci_pci"
-        "ahci"
-        "nvme"
-        "sd_mod"
-        "sr_mod"
-      ];
+      availableKernelModules = [ "xhci_pci" "ahci" "nvme" "sd_mod" "sr_mod" ];
       removableEfi = true;
     };
   };
@@ -220,12 +182,12 @@ in
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "simple";
-      ExecStart =
-        let
-          idleTime = toString 900;
-          hardDriveParameter = lib.strings.concatMapStringsSep " " (x: "-a ${x} -i ${idleTime}") hardDrives;
-        in
-        "${pkgs.hd-idle}/bin/hd-idle -i 0 ${hardDriveParameter}";
+      ExecStart = let
+        idleTime = toString 900;
+        hardDriveParameter =
+          lib.strings.concatMapStringsSep " " (x: "-a ${x} -i ${idleTime}")
+          hardDrives;
+      in "${pkgs.hd-idle}/bin/hd-idle -i 0 ${hardDriveParameter}";
     };
   };
 
@@ -234,18 +196,14 @@ in
     settings = {
       harddrives = {
         disks = hardDrives;
-        pwmPaths = [ "/sys/devices/platform/nct6775.656/hwmon/hwmon7/pwm2:25:25" ];
-        extraArgs = [
-          "-i 30sec"
-        ];
+        pwmPaths =
+          [ "/sys/devices/platform/nct6775.656/hwmon/hwmon7/pwm2:25:25" ];
+        extraArgs = [ "-i 30sec" ];
       };
     };
   };
 
-  virtualisation.docker = {
-    storageDriver = "overlay2";
-  };
-
+  virtualisation.docker = { storageDriver = "overlay2"; };
 
   nix.extraOptions = ''
     !include ${config.age.secrets.nixAccessTokens.path}
@@ -273,13 +231,7 @@ in
 
   programs.nix-ld = {
     enable = true;
-    libraries = with pkgs; [
-      stdenv.cc.cc
-      zlib
-      openssl
-      ncurses
-      libuuid
-    ];
+    libraries = with pkgs; [ stdenv.cc.cc zlib openssl ncurses libuuid ];
   };
 
   environment.systemPackages = with pkgs; [

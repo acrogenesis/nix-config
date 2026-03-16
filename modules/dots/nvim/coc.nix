@@ -1,5 +1,4 @@
-{ homeDir, pkgs }:
-{
+{ homeDir, pkgs }: {
   languageserver.terraform = {
     command = "terraform-ls";
     args = [ "serve" ];
@@ -61,7 +60,8 @@
   diagnostic.errorSign = "";
   diagnostic.infoSign = "";
   python.jediEnabled = false;
-  ansible.dev.serverPath = "${homeDir}/.nix-profile/bin/ansible-language-server";
+  ansible.dev.serverPath =
+    "${homeDir}/.nix-profile/bin/ansible-language-server";
   ansible.builtin.isWithYamllint = true;
   ansible.disableProgressNotification = false;
   explorer.icon.enableNerdfont = true;
@@ -69,32 +69,19 @@
   explorer.file.showHiddenFiles = true;
   explorer.openAction.strategy = "sourceWindow";
   explorer.root.customRules = {
-    vcs = {
-      patterns = [
-        ".git"
-        ".hg"
-        ".projections.json"
-      ];
-    };
+    vcs = { patterns = [ ".git" ".hg" ".projections.json" ]; };
     vcs-r = {
-      patterns = [
-        ".git"
-        ".hg"
-        ".projections.json"
-      ];
+      patterns = [ ".git" ".hg" ".projections.json" ];
       bottomUp = true;
     };
   };
-  explorer.root.strategies = [
-    "custom:vcs"
-    "workspace"
-    "cwd"
-  ];
+  explorer.root.strategies = [ "custom:vcs" "workspace" "cwd" ];
   explorer.quitOnOpen = true;
   explorer.buffer.root.template = "[icon & 1] OPEN EDITORS";
   explorer.file.reveal.auto = false;
   explorer.file.root.template = "[icon & 1] PROJECT ([root])";
-  explorer.file.child.template = "[git | 2] [selection | clip | 1] [indent][icon | 1] [diagnosticError & 1][filename omitCenter 1][modified][readonly] [linkIcon & 1][link growRight 1 omitCenter 5]";
+  explorer.file.child.template =
+    "[git | 2] [selection | clip | 1] [indent][icon | 1] [diagnosticError & 1][filename omitCenter 1][modified][readonly] [linkIcon & 1][link growRight 1 omitCenter 5]";
   explorer.keyMappings = {
     s = "open:vsplit";
     mm = "rename";

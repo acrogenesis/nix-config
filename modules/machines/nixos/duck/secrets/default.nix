@@ -1,11 +1,12 @@
-{ inputs, ... }:
-{
+{ inputs, ... }: {
   age.secrets = {
     # wireguardCredentials.file = "${inputs.secrets}/wireguardCredentials.age";
     # borgBackupKey.file = "${inputs.secrets}/borgBackupKey.age";
     # radicaleHtpasswd.file = "${inputs.secrets}/radicaleHtpasswd.age";
-    cloudflareFirewallApiKey.file = "${inputs.secrets}/cloudflareFirewallApiKey.age";
-    keycloakDbPasswordFile.file = "${inputs.secrets}/keycloakDbPasswordFile.age";
+    cloudflareFirewallApiKey.file =
+      "${inputs.secrets}/cloudflareFirewallApiKey.age";
+    keycloakDbPasswordFile.file =
+      "${inputs.secrets}/keycloakDbPasswordFile.age";
     keycloakCloudflared.file = "${inputs.secrets}/keycloakCloudflared.age";
     # adiosBotToken.file = "${inputs.secrets}/adiosBotToken.age";
     # borgBackupSSHKey.file = "${inputs.secrets}/borgBackupSSHKey.age";
@@ -23,12 +24,15 @@
     nextcloudCloudflared.file = "${inputs.secrets}/nextcloudCloudflared.age";
     navidromeCloudflared.file = "${inputs.secrets}/navidromeCloudflared.age";
     # navidromeEnv.file = "${inputs.secrets}/navidromeEnv.age";
-    nextcloudAdminPassword.file = "${inputs.secrets}/nextcloudAdminPassword.age";
-    vaultwardenCloudflared.file = "${inputs.secrets}/vaultwardenCloudflared.age";
+    nextcloudAdminPassword.file =
+      "${inputs.secrets}/nextcloudAdminPassword.age";
+    vaultwardenCloudflared.file =
+      "${inputs.secrets}/vaultwardenCloudflared.age";
     microbinCloudflared.file = "${inputs.secrets}/microbinCloudflared.age";
     rfccheckCloudflared.file = "${inputs.secrets}/rfccheckCloudflared.age";
     rfccheckEnv.file = "${inputs.secrets}/rfccheckEnv.age";
-    audiobookshelfCloudflared.file = "${inputs.secrets}/audiobookshelfCloudflared.age";
+    audiobookshelfCloudflared.file =
+      "${inputs.secrets}/audiobookshelfCloudflared.age";
     jellyfinCloudflared.file = "${inputs.secrets}/jellyfinCloudflared.age";
     minifluxAdminPassword.file = "${inputs.secrets}/minifluxAdminPassword.age";
     minifluxCloudflared.file = "${inputs.secrets}/minifluxCloudflared.age";

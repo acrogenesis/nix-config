@@ -1,21 +1,13 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 let
   service = "slskd";
   hl = config.homelab;
   cfg = hl.services.${service};
   ns = hl.services.wireguard-netns.namespace;
-in
-{
+in {
   imports = [ ./beets.nix ];
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/${service}";
@@ -36,9 +28,7 @@ in
       type = lib.types.str;
       default = "slskd.${hl.baseDomain}";
     };
-    beetsConfigFile = lib.mkOption {
-      type = lib.types.path;
-    };
+    beetsConfigFile = lib.mkOption { type = lib.types.path; };
     environmentFile = lib.mkOption {
       description = "File with slskd credentials";
       type = lib.types.path;
@@ -83,22 +73,19 @@ in
       domain = null;
       settings = {
         integration.scripts.slskd-import-files = {
-          on = [
-            "DownloadDirectoryComplete"
-            "DownloadFileComplete"
-          ];
-          run =
-            let
-              slskd-import-files = pkgs.writeScriptBin "slskd-import-files" ''
-                #!${lib.getExe pkgs.bash}
-                cd ${cfg.musicDir}/.beets
-                HOME=${cfg.musicDir}/.beets ${lib.getExe pkgs.beets} -c ${cfg.beetsConfigFile} import -m -A -q ${cfg.downloadDir}
-              '';
-            in
-            {
-              executable = "${lib.getExe pkgs.bash}";
-              command = "-c ${lib.getExe slskd-import-files}";
-            };
+          on = [ "DownloadDirectoryComplete" "DownloadFileComplete" ];
+          run = let
+            slskd-import-files = pkgs.writeScriptBin "slskd-import-files" ''
+              #!${lib.getExe pkgs.bash}
+              cd ${cfg.musicDir}/.beets
+              HOME=${cfg.musicDir}/.beets ${
+                lib.getExe pkgs.beets
+              } -c ${cfg.beetsConfigFile} import -m -A -q ${cfg.downloadDir}
+            '';
+          in {
+            executable = "${lib.getExe pkgs.bash}";
+            command = "-c ${lib.getExe slskd-import-files}";
+          };
         };
         directories = {
           downloads = cfg.downloadDir;
@@ -106,11 +93,7 @@ in
         };
         shares = {
           directories = [ cfg.musicDir ];
-          filters = [
-            "\.ini$"
-            "Thumbs.db$"
-            "\.DS_Store$"
-          ];
+          filters = [ ".ini$" "Thumbs.db$" ".DS_Store$" ];
         };
       };
     };
@@ -118,59 +101,48 @@ in
       "slskd-web-proxy" = {
         enable = true;
         description = "Socket for Proxy to slskd WebUI";
-        listenStreams = [ (toString config.services.${service}.settings.web.port) ];
+        listenStreams =
+          [ (toString config.services.${service}.settings.web.port) ];
         wantedBy = [ "sockets.target" ];
       };
     };
     systemd.services = {
       slskd = {
-        serviceConfig.ReadWritePaths = [
-          cfg.musicDir
-        ];
+        serviceConfig.ReadWritePaths = [ cfg.musicDir ];
         serviceConfig.ReadOnlyPaths = lib.mkForce [ ];
-        serviceConfig.NetworkNamespacePath = lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable [
-          "/var/run/netns/${ns}"
-        ];
-      }
-      // lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable {
+        serviceConfig.NetworkNamespacePath =
+          lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable
+          [ "/var/run/netns/${ns}" ];
+      } // lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable {
         bindsTo = [ "netns@${ns}.service" ];
-        environment = {
-          DOTNET_USE_POLLING_FILE_WATCHER = "true";
-        };
-        requires = [
-          "network-online.target"
-          "${ns}.service"
-        ];
+        environment = { DOTNET_USE_POLLING_FILE_WATCHER = "true"; };
+        requires = [ "network-online.target" "${ns}.service" ];
       };
-      "slskd-web-proxy" = lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable {
-        enable = true;
-        description = "Proxy to slskd WebUI in Network Namespace";
-        requires = [
-          "slskd.service"
-          "slskd-web-proxy.socket"
-        ];
-        after = [
-          "slskd.service"
-          "slskd-web-proxy.socket"
-        ];
-        unitConfig = {
-          JoinsNamespaceOf = "slskd.service";
+      "slskd-web-proxy" =
+        lib.attrsets.optionalAttrs hl.services.wireguard-netns.enable {
+          enable = true;
+          description = "Proxy to slskd WebUI in Network Namespace";
+          requires = [ "slskd.service" "slskd-web-proxy.socket" ];
+          after = [ "slskd.service" "slskd-web-proxy.socket" ];
+          unitConfig = { JoinsNamespaceOf = "slskd.service"; };
+          serviceConfig = {
+            User = config.services.slskd.user;
+            Group = config.services.slskd.group;
+            ExecStart =
+              "${pkgs.systemd}/lib/systemd/systemd-socket-proxyd --exit-idle-time=5min 127.0.0.1:${
+                toString config.services.${service}.settings.web.port
+              }";
+            PrivateNetwork = "yes";
+          };
         };
-        serviceConfig = {
-          User = config.services.slskd.user;
-          Group = config.services.slskd.group;
-          ExecStart = "${pkgs.systemd}/lib/systemd/systemd-socket-proxyd --exit-idle-time=5min 127.0.0.1:${
-            toString config.services.${service}.settings.web.port
-          }";
-          PrivateNetwork = "yes";
-        };
-      };
     };
 
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = hl.baseDomain;
       extraConfig = ''
-        reverse_proxy http://127.0.0.1:${toString config.services.${service}.settings.web.port}
+        reverse_proxy http://127.0.0.1:${
+          toString config.services.${service}.settings.web.port
+        }
       '';
     };
   };

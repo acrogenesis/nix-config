@@ -1,14 +1,9 @@
-{
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   service = "audiobookrequest";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
-in
-{
+in {
   options.homelab.services.${service} = {
     enable = lib.mkEnableOption "Enable ${service}";
     url = lib.mkOption {
@@ -49,7 +44,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    systemd.tmpfiles.rules = [ "d ${cfg.configDir} 0775 ${homelab.user} ${homelab.group} - -" ];
+    systemd.tmpfiles.rules =
+      [ "d ${cfg.configDir} 0775 ${homelab.user} ${homelab.group} - -" ];
 
     virtualisation.podman.enable = true;
     virtualisation.oci-containers.containers.${service} = {
@@ -62,9 +58,7 @@ in
         ABR_APP__CONFIG_DIR = "/config";
         TZ = homelab.timeZone;
       };
-      extraOptions = [
-        "--pull=newer"
-      ];
+      extraOptions = [ "--pull=newer" ];
     };
 
     services.caddy.virtualHosts."${cfg.url}" = {

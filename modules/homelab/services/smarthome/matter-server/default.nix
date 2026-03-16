@@ -1,16 +1,12 @@
-{
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   homelab = config.homelab;
   cfg = config.homelab.services.matter-server;
-in
-{
+in {
   options.homelab.services.matter-server = {
     enable = lib.mkEnableOption {
-      description = "Enable the standalone Matter Server used by Home Assistant";
+      description =
+        "Enable the standalone Matter Server used by Home Assistant";
     };
     configDir = lib.mkOption {
       type = lib.types.str;
@@ -20,7 +16,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    systemd.tmpfiles.rules = [ "d ${cfg.configDir} 0775 ${homelab.user} ${homelab.group} - -" ];
+    systemd.tmpfiles.rules =
+      [ "d ${cfg.configDir} 0775 ${homelab.user} ${homelab.group} - -" ];
 
     virtualisation = {
       podman.enable = true;
@@ -29,14 +26,9 @@ in
           matter-server = {
             image = "ghcr.io/home-assistant-libs/python-matter-server:stable";
             autoStart = true;
-            extraOptions = [
-              "--pull=newer"
-              "--network=host"
-            ];
+            extraOptions = [ "--pull=newer" "--network=host" ];
             volumes = [ "${cfg.configDir}:/data" ];
-            environment = {
-              TZ = homelab.timeZone;
-            };
+            environment = { TZ = homelab.timeZone; };
           };
         };
       };

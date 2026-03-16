@@ -1,17 +1,11 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   service = "refun";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
   dbUser = homelab.user;
   upstream = "http://${cfg.listenAddress}:${toString cfg.port}";
-in
-{
+in {
   options.homelab.services.${service} = {
     enable = lib.mkEnableOption "Refun Phoenix application";
     package = lib.mkOption {
@@ -32,7 +26,8 @@ in
     };
     environmentFile = lib.mkOption {
       type = lib.types.path;
-      description = "Path to environment file with SECRET_KEY_BASE, RELEASE_COOKIE, etc.";
+      description =
+        "Path to environment file with SECRET_KEY_BASE, RELEASE_COOKIE, etc.";
     };
     configDir = lib.mkOption {
       type = lib.types.str;
@@ -44,12 +39,10 @@ in
     services.postgresql = {
       enable = true;
       ensureDatabases = [ service ];
-      ensureUsers = [
-        {
-          name = dbUser;
-          ensureClauses.login = true;
-        }
-      ];
+      ensureUsers = [{
+        name = dbUser;
+        ensureClauses.login = true;
+      }];
     };
 
     # Grant the homelab user ownership of the refun database
@@ -74,14 +67,16 @@ in
         PHX_HOST = cfg.url;
         PHX_SERVER = "true";
         PORT = toString cfg.port;
-        DATABASE_URL = "ecto://${dbUser}@localhost/${service}?socket_dir=/run/postgresql";
+        DATABASE_URL =
+          "ecto://${dbUser}@localhost/${service}?socket_dir=/run/postgresql";
       };
       serviceConfig = {
         Type = "simple";
         User = homelab.user;
         Group = homelab.group;
         WorkingDirectory = cfg.configDir;
-        ExecStartPre = "${cfg.package}/bin/${service} eval 'Refun.Release.migrate()'";
+        ExecStartPre =
+          "${cfg.package}/bin/${service} eval 'Refun.Release.migrate()'";
         ExecStart = "${cfg.package}/bin/${service} start";
         Restart = "on-failure";
         PrivateTmp = true;

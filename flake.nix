@@ -13,9 +13,7 @@
     ];
   };
   inputs = {
-    nixpkgs = {
-      url = "github:nixos/nixpkgs/nixos-25.05";
-    };
+    nixpkgs = { url = "github:nixos/nixpkgs/nixos-25.05"; };
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -74,22 +72,15 @@
     refun.url = "github:acrogenesis/refun";
   };
 
-  outputs =
-    inputs@{ flake-parts, ... }:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } (
-      { ... }:
-      {
-        systems = [
-          "x86_64-linux"
-          "aarch64-darwin"
-        ];
-        imports = [
-          ./modules/machines/nixos
-          ./modules/machines/darwin
-          ./modules/devshell.nix
-        ];
-        _module.args.rootPath = ./.;
-      }
-    );
+  outputs = inputs@{ flake-parts, ... }:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } ({ ... }: {
+      systems = [ "x86_64-linux" "aarch64-darwin" ];
+      imports = [
+        ./modules/machines/nixos
+        ./modules/machines/darwin
+        ./modules/devshell.nix
+      ];
+      _module.args.rootPath = ./.;
+    });
 
 }

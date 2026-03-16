@@ -1,8 +1,4 @@
-{
-  lib,
-  fetchFromGitHub,
-  maven,
-}:
+{ lib, fetchFromGitHub, maven, }:
 
 maven.buildMavenPackage rec {
   pname = "keycloak-spi-trusted-device";
@@ -23,11 +19,9 @@ maven.buildMavenPackage rec {
 
   meta = with lib; {
     homepage = "https://github.com/wouterh-dev/keycloak-spi-trusted-device";
-    description = "Third party module that adds OTP trusted device functionality to Keycloak";
-    sourceProvenance = with sourceTypes; [
-      fromSource
-      binaryBytecode
-    ];
+    description =
+      "Third party module that adds OTP trusted device functionality to Keycloak";
+    sourceProvenance = with sourceTypes; [ fromSource binaryBytecode ];
     license = licenses.asl20;
     maintainers = with maintainers; [ notthebee ];
   };

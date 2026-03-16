@@ -1,14 +1,8 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
+{ pkgs, config, lib, ... }:
 let
   homelab = config.homelab;
   cfg = homelab.services.wireguard-netns;
-in
-{
+in {
   options.homelab.services.wireguard-netns = {
     enable = lib.mkEnableOption {
       description = "Enable Wireguard client network namespace";
@@ -20,7 +14,8 @@ in
     };
     configFile = lib.mkOption {
       type = lib.types.path;
-      description = "Path to a file with Wireguard config (not a wg-quick one!)";
+      description =
+        "Path to a file with Wireguard config (not a wg-quick one!)";
       example = lib.literalExpression ''
         pkgs.writeText "wg0.conf" '''
           [Interface]
@@ -32,12 +27,8 @@ in
         '''
       '';
     };
-    privateIP = lib.mkOption {
-      type = lib.types.str;
-    };
-    dnsIP = lib.mkOption {
-      type = lib.types.str;
-    };
+    privateIP = lib.mkOption { type = lib.types.str; };
+    dnsIP = lib.mkOption { type = lib.types.str; };
   };
   config = lib.mkIf cfg.enable {
     systemd.services."netns@" = {
@@ -50,7 +41,8 @@ in
         ExecStop = "${pkgs.iproute2}/bin/ip netns del %I";
       };
     };
-    environment.etc."netns/${cfg.namespace}/resolv.conf".text = "nameserver ${cfg.dnsIP}";
+    environment.etc."netns/${cfg.namespace}/resolv.conf".text =
+      "nameserver ${cfg.dnsIP}";
 
     systemd.services.${cfg.namespace} = {
       description = "${cfg.namespace} network interface";
@@ -61,8 +53,7 @@ in
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStart =
-          with pkgs;
+        ExecStart = with pkgs;
           writers.writeBash "wg-up" ''
             set -e
             ${iproute2}/bin/ip link add wg0 type wireguard
@@ -74,8 +65,7 @@ in
             ${iproute2}/bin/ip -n ${cfg.namespace} link set lo up
             ${iproute2}/bin/ip -n ${cfg.namespace} route add default dev wg0
           '';
-        ExecStop =
-          with pkgs;
+        ExecStop = with pkgs;
           writers.writeBash "wg-down" ''
             set -e
             ${iproute2}/bin/ip -n ${cfg.namespace} route del default dev wg0

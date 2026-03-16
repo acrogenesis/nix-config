@@ -1,16 +1,10 @@
-{
-  lib,
-  config,
-  pkgs,
-  inputs,
-  ...
-}:
+{ lib, config, pkgs, inputs, ... }:
 let
   cfg = config.services.lgtv;
 
   algaExec = "${lib.getExe pkgs.sudo} -u ${cfg.user} ${
-    lib.getExe inputs.alga.packages.${pkgs.stdenv.hostPlatform.system}.default
-  }";
+      lib.getExe inputs.alga.packages.${pkgs.stdenv.hostPlatform.system}.default
+    }";
 
   wolExec = "${lib.getExe pkgs.wol} --host ${cfg.ipAddress} ${cfg.macAddress}";
 
@@ -51,8 +45,7 @@ let
       fi
     done
   '';
-in
-{
+in {
   options.services.lgtv = {
     enable = lib.mkEnableOption "Enable the LG TV integration";
     ipAddress = lib.mkOption {
@@ -102,9 +95,7 @@ in
         pkgs.systemd
         lgtv-on
       ];
-      serviceConfig = {
-        Type = "oneshot";
-      };
+      serviceConfig = { Type = "oneshot"; };
       script = lib.getExe lgtv-on;
     };
   };

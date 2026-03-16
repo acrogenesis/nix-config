@@ -1,11 +1,6 @@
-{
-  config,
-  ...
-}:
-let
-  domain = "notthebe.ee";
-in
-{
+{ config, ... }:
+let domain = "notthebe.ee";
+in {
   systemd.tmpfiles.rules = [
     "d /var/www 0775 deploy deploy - -"
     "d /var/www/notthebe.ee 0775 deploy deploy - -"
@@ -24,9 +19,7 @@ in
     };
   };
 
-  users.groups = {
-    deploy = { };
-  };
+  users.groups = { deploy = { }; };
   users.users.deploy = {
     isNormalUser = true;
     home = "/var/www/notthebe.ee";
@@ -36,9 +29,6 @@ in
     ];
   };
 
-  networking.firewall.allowedTCPPorts = [
-    80
-    443
-  ];
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
 
 }

@@ -1,35 +1,23 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 let
   service = "invoiceplane";
   cfg = config.homelab.services.${service};
   hl = config.homelab;
-in
-{
+in {
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/${service}";
     };
-    dbPasswordFile = lib.mkOption {
-      type = lib.types.path;
-    };
+    dbPasswordFile = lib.mkOption { type = lib.types.path; };
     url = lib.mkOption {
       type = lib.types.str;
       default = "invoice.${hl.baseDomain}";
     };
     monitoredServices = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [
-        "phpfpm-invoiceplane-${cfg.url}"
-      ];
+      default = [ "phpfpm-invoiceplane-${cfg.url}" ];
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
@@ -52,10 +40,8 @@ in
     services.${service} = {
       sites.${cfg.url} = {
         invoiceTemplates =
-          let
-            acrogenesis = pkgs.callPackage ./template.nix { };
-          in
-          [ acrogenesis ];
+          let acrogenesis = pkgs.callPackage ./template.nix { };
+          in [ acrogenesis ];
         settings = {
           DISABLE_SETUP = true;
           SETUP_COMPLETED = true;
@@ -65,13 +51,10 @@ in
         };
       };
     };
-    services.caddy.virtualHosts."${cfg.url}" =
-      let
-        url = "http://${cfg.url}";
-      in
-      {
-        useACMEHost = hl.baseDomain;
-        extraConfig = config.services.caddy.virtualHosts.${url}.extraConfig;
-      };
+    services.caddy.virtualHosts."${cfg.url}" = let url = "http://${cfg.url}";
+    in {
+      useACMEHost = hl.baseDomain;
+      extraConfig = config.services.caddy.virtualHosts.${url}.extraConfig;
+    };
   };
 }

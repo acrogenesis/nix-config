@@ -1,8 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   service = "navidrome";
   hl = config.homelab;
@@ -11,12 +7,9 @@ let
   address = config.services.${service}.settings.Address or "127.0.0.1";
   port = config.services.${service}.settings.Port or 4533;
   upstream = "http://${address}:${toString port}";
-in
-{
+in {
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption { description = "Enable ${service}"; };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/${service}";
@@ -68,12 +61,10 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    systemd.tmpfiles.rules = [
-      "d ${cfg.musicDir} 0775 ${hl.user} ${hl.group} - -"
-    ];
-    systemd.services.navidrome.serviceConfig.EnvironmentFile = lib.mkIf (
-      cfg.environmentFile != null
-    ) cfg.environmentFile;
+    systemd.tmpfiles.rules =
+      [ "d ${cfg.musicDir} 0775 ${hl.user} ${hl.group} - -" ];
+    systemd.services.navidrome.serviceConfig.EnvironmentFile =
+      lib.mkIf (cfg.environmentFile != null) cfg.environmentFile;
     services.${service} = {
       enable = true;
       user = hl.user;

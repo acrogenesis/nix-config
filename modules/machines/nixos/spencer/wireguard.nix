@@ -35,11 +35,6 @@ in
           publicKey = "npTrLwAIJZ3m4XqdmQpP/KIi0C6urjBQHoCuA1vOOTc=";
           allowedIPs = [ "${wgBase}.2/32" ];
         }
-        {
-          name = "meredith";
-          publicKey = "qbSQWspWHmucDmU/BsrXpcVF+txPETo4c74/tGkE4C0=";
-          allowedIPs = [ "${wgBase}.3/32" ];
-        }
       ];
     };
   };

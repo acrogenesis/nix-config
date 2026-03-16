@@ -46,7 +46,7 @@ in
     services.glances.enable = true;
     services.${service} = {
       enable = true;
-      environmentFiles = [ (builtins.toFile "homepage.env" "HOMEPAGE_ALLOWED_HOSTS=${homelab.baseDomain}") ];
+      allowedHosts = homelab.baseDomain;
       customCSS = ''
         body, html {
           font-family: SF Pro Display, Helvetica, Arial, sans-serif !important;

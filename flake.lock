@@ -787,11 +787,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1773697304,
-        "narHash": "sha256-8P/IFoDSAuDfifCP+jjY43jb+y6qQOmr8B/5dsqRyl0=",
+        "lastModified": 1773714382,
+        "narHash": "sha256-k0P+QdPULVYEx633E7jdH8u+jAFE2QttdJOJzHIS19M=",
         "owner": "acrogenesis",
         "repo": "refun",
-        "rev": "89dd77e387393a76b43192008b9ec426cbff3c6b",
+        "rev": "f2d26c417804282c30ca01278d7eb1c2baa91056",
         "type": "github"
       },
       "original": {

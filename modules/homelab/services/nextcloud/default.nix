@@ -88,7 +88,7 @@ in {
       package = pkgs.nextcloud33;
       database.createLocally = true;
       configureRedis = true;
-      maxUploadSize = "16G";
+      maxUploadSize = "64G";
       https = true;
       autoUpdateApps.enable = true;
       extraAppsEnable = true;

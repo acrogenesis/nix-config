@@ -96,7 +96,6 @@
     ./monitoring/prometheus/exporters/shelly_plug_exporter
     ./navidrome
     ./nextcloud
-    ./phoenix-app
     ./refun
     ./smarthome/homeassistant
     ./smarthome/matter-server

@@ -38,8 +38,6 @@ let
     "../nix-private/jellyfinCloudflared.age"
     "../nix-private/minifluxAdminPassword.age"
     "../nix-private/minifluxCloudflared.age"
-    "../nix-private/rfccheckCloudflared.age"
-    "../nix-private/rfccheckEnv.age"
     "../nix-private/navidromeCloudflared.age"
     # "../nix-private/navidromeEnv.age"
     "../nix-private/networks.nix"

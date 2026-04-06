@@ -68,7 +68,6 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     teslamate.url = "github:teslamate-org/teslamate/v2.2.0";
-    rfccheck.url = "github:acrogenesis/rfccheck";
     refun.url = "github:acrogenesis/refun";
   };
 

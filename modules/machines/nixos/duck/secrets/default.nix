@@ -29,8 +29,6 @@
     vaultwardenCloudflared.file =
       "${inputs.secrets}/vaultwardenCloudflared.age";
     microbinCloudflared.file = "${inputs.secrets}/microbinCloudflared.age";
-    rfccheckCloudflared.file = "${inputs.secrets}/rfccheckCloudflared.age";
-    rfccheckEnv.file = "${inputs.secrets}/rfccheckEnv.age";
     audiobookshelfCloudflared.file =
       "${inputs.secrets}/audiobookshelfCloudflared.age";
     jellyfinCloudflared.file = "${inputs.secrets}/jellyfinCloudflared.age";

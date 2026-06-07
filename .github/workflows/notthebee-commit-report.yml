@@ -112,7 +112,7 @@ jobs:
 
           issue_number="$(gh issue list -S "in:title \"${ISSUE_TITLE}\"" -L 1 --state all --json number -q '.[0].number')"
           if [[ -z "${issue_number}" ]]; then
-            issue_number="$(gh issue create -t "${ISSUE_TITLE}" -F /tmp/notthebee-commits-1.md --json number -q '.number')"
+            issue_number="$(gh api --method POST "repos/${GITHUB_REPOSITORY}/issues" -f title="${ISSUE_TITLE}" -F body=@/tmp/notthebee-commits-1.md --jq '.number')"
           else
             gh issue edit "${issue_number}" --body-file /tmp/notthebee-commits-1.md
           fi

@@ -27,12 +27,12 @@ Very much a work in progress.
 ### duck
 |Icon|Name|Description|Category|
 |---|---|---|---|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/audiobookshelf.svg' width=32 height=32>|AudioBookRequest|Audiobook request manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/audiobookshelf.svg' width=32 height=32>|Audiobookshelf|Audiobook and podcast player|Media|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/bazarr.svg' width=32 height=32>|Bazarr|Subtitle manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/deluge.svg' width=32 height=32>|Deluge|Torrent client|Downloads|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/flaresolverr.svg' width=32 height=32>|FlareSolverr|Proxy server to bypass Cloudflare protection|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/grafana.svg' width=32 height=32>|Grafana|Platform for data analytics and monitoring|Observability|
+|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/bookstack.svg' width=32 height=32>|Grimmory|Self-hosted digital library|Media|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/home-assistant.svg' width=32 height=32>|Home Assistant|Home automation platform|Smart Home|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/immich.svg' width=32 height=32>|Immich|Self-hosted photo and video management solution|Media|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/jellyfin.svg' width=32 height=32>|Jellyfin|The Free Software Media System|Media|
@@ -44,6 +44,7 @@ Very much a work in progress.
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/prowlarr.svg' width=32 height=32>|Prowlarr|PVR indexer|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/radarr.svg' width=32 height=32>|Radarr|Movie collection manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sabnzbd.svg' width=32 height=32>|SABnzbd|The free and easy binary newsreader|Downloads|
+|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/bookstack.svg' width=32 height=32>|Shelfarr|Book and audiobook request manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sonarr.svg' width=32 height=32>|Sonarr|TV show collection manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/teslamate.svg' width=32 height=32>|TeslaMate|Self-hosted Tesla data logger|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/bitwarden.svg' width=32 height=32>|Vaultwarden|Password manager|Services|
@@ -56,10 +57,10 @@ Very much a work in progress.
 Duck’s restic jobs are wired through `modules/homelab/backup`, which automatically includes every enabled homelab service that declares a `configDir` or `dataDir`. For this host that resolves to the following application state directories:
 
 - `/var/lib/audiobookshelf`
-- `/var/lib/audiobookrequest`
 - `/var/lib/bazarr`
 - `/var/lib/deluge`
 - `/var/lib/flaresolverr`
+- `/var/lib/grimmory`
 - `/var/lib/jellyfin`
 - `/var/lib/jellyseerr`
 - `/var/lib/keycloak`
@@ -69,6 +70,7 @@ Duck’s restic jobs are wired through `modules/homelab/backup`, which automatic
 - `/var/lib/prowlarr`
 - `/var/lib/radarr`
 - `/var/lib/sabnzbd`
+- `/var/lib/shelfarr`
 - `/var/lib/sonarr`
 - `/var/lib/slskd`
 - `/var/lib/teslamate`

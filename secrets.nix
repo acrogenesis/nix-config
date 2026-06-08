@@ -23,6 +23,7 @@ let
     # "../nix-private/borgBackupSSHKey.age"
     # "../nix-private/bwSession.age"
     "../nix-private/grafanaSecretKey.age"
+    "../nix-private/grimmoryEnv.age"
     "../nix-private/cloudflareDnsApiCredentials.age"
     "../nix-private/cloudflareFirewallApiKey.age"
     # "../nix-private/duckDNSDomain.age"

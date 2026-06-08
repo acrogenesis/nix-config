@@ -80,10 +80,10 @@
     ./arr/unpackerr
     ./arr/flaresolverr
     #./arr/lidarr
-    ./audiobookrequest
     ./audiobookshelf
     ./deluge
     #./deemix
+    ./grimmory
     ./homepage
     ./immich
     ./invoiceplane
@@ -103,6 +103,7 @@
     ./paperless-ngx
     ./radicale
     ./sabnzbd
+    ./shelfarr
     ./slskd
     ./teslamate
     ./uptime-kuma

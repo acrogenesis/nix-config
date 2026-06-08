@@ -808,11 +808,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1780011914,
-        "narHash": "sha256-PhZX49IdSxaobvT48HehDkODbowMGstZ7Jkkdf/Y1Zo=",
+        "lastModified": 1780876944,
+        "narHash": "sha256-29ocLGj1uPA9hYTCS80TjtYZothMTdxfrZ/YIhTrLGU=",
         "ref": "refs/heads/main",
-        "rev": "69641ec0be7cb22df5e440f08058a46a0ab5d297",
-        "revCount": 30,
+        "rev": "bc3872f6e505072d2b50b7c58e90bf95306eb1b2",
+        "revCount": 31,
         "type": "git",
         "url": "ssh://git@github.com/acrogenesis/nix-private.git"
       },

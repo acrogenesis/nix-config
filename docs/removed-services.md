@@ -6,6 +6,9 @@
 - **Readarr** (homelab Arr stack)
   Removed from the homelab stack; the module (`modules/homelab/services/arr/readarr`) and custom package overlay (`pkgs/readarr-faustvii`) were deleted. Recreate the module and package if you want Readarr again.
 
+- **AudioBookRequest** (`modules/homelab/services/audiobookrequest`)
+  Replaced by Shelfarr for book/audiobook requests because ABR does not import, organize, or scan completed Audiobookshelf downloads.
+
 - **Technitium DNS**
   Removed from the homelab services; the module (`modules/homelab/services/technitium`) and duck service stanza were deleted. Re-add both (and any required DNS configuration) to bring it back.
 

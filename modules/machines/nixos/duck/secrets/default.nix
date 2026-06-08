@@ -38,6 +38,10 @@
       file = "${inputs.secrets}/grafanaSecretKey.age";
       owner = "grafana";
     };
+    grimmoryEnv = {
+      file = "${inputs.secrets}/grimmoryEnv.age";
+      owner = "share";
+    };
     teslamateEnv.file = "${inputs.secrets}/teslamateEnv.age";
     # duckDNSDomain.file = "${inputs.secrets}/duckDNSDomain.age";
     # duckDNSToken.file = "${inputs.secrets}/duckDNSToken.age";

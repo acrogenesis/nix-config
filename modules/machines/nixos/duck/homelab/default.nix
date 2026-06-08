@@ -153,9 +153,17 @@ in {
           url = "http://127.0.0.1:7878"
         '';
       };
-      audiobookrequest = {
+      shelfarr = {
         enable = true;
-        url = "abr.${hl.baseDomain}";
+        audiobookDir = "${hl.mounts.merged}/Media/Books/Audiobooks";
+        ebookDir = "${hl.mounts.merged}/Media/Books/Ebooks";
+        downloadDir = "${hl.mounts.merged}/Downloads.tmp/Shelfarr";
+      };
+      grimmory = {
+        enable = true;
+        booksDir = "${hl.mounts.merged}/Media/Books";
+        bookdropDir = "${hl.mounts.merged}/Media/Books/Bookdrop";
+        environmentFile = config.age.secrets.grimmoryEnv.path;
       };
       flaresolverr.enable = true;
       bazarr.enable = true;

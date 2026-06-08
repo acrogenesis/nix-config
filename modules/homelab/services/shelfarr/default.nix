@@ -71,7 +71,7 @@ in {
     virtualisation.oci-containers.containers.${service} = {
       inherit (cfg) image;
       autoStart = true;
-      ports = [ "${toString cfg.port}:80" ];
+      ports = [ "${toString cfg.port}:8080" ];
       volumes = [
         "${cfg.configDir}:/rails/storage"
         "${cfg.audiobookDir}:/audiobooks"
@@ -79,11 +79,12 @@ in {
         "${cfg.downloadDir}:/downloads"
       ];
       environment = {
+        HTTP_PORT = "8080";
         SOLID_QUEUE_IN_PUMA = "1";
         PUID = toString config.users.users.${homelab.user}.uid;
         PGID = toString config.users.groups.${homelab.group}.gid;
       };
-      extraOptions = [ "--pull=newer" ];
+      extraOptions = [ "--pull=newer" "--tmpfs=/rails/tmp:rw,mode=1777" ];
     };
 
     services.caddy.virtualHosts."${cfg.url}" = {

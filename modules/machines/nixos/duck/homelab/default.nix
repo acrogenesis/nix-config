@@ -155,9 +155,9 @@ in {
       };
       shelfarr = {
         enable = true;
-        audiobookDir = "${hl.mounts.merged}/Media/Books/Audiobooks";
-        ebookDir = "${hl.mounts.merged}/Media/Books/Ebooks";
-        downloadDir = "${hl.mounts.merged}/Downloads.tmp/Shelfarr";
+        audiobookDir = "${hl.mounts.merged}/Media/Books";
+        ebookDir = "${hl.mounts.merged}/Media/Books";
+        downloadDir = "${hl.mounts.merged}/Downloads.tmp";
       };
       grimmory = {
         enable = true;

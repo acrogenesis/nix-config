@@ -157,7 +157,7 @@ in {
         enable = true;
         audiobookDir = "${hl.mounts.merged}/Media/Books";
         ebookDir = "${hl.mounts.merged}/Media/Books";
-        downloadDir = "${hl.mounts.merged}/Downloads.tmp";
+        downloadDir = "${hl.mounts.merged}/Downloads.tmp/Shelfarr";
       };
       grimmory = {
         enable = true;

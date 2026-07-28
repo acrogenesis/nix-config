@@ -14,17 +14,7 @@ let
   teslamateReportsDashboards = lib.sources.sourceFilesBySuffices
     (inputs.teslamate + "/grafana/dashboards/reports") [ ".json" ];
 in {
-  imports = [
-    ({ config, lib, pkgs, ... }:
-      # TeslaMate 2.2 still reads the deprecated pkgs.system alias. Keep the
-      # pinned release while adapting its module to current nixpkgs.
-      (import (inputs.teslamate + "/nix/module.nix") {
-        self = inputs.teslamate;
-      }) {
-        inherit config lib;
-        pkgs = pkgs // { system = pkgs.stdenv.hostPlatform.system; };
-      })
-  ];
+  imports = [ inputs.teslamate.nixosModules.default ];
 
   options.homelab.services.${service} = {
     enable = lib.mkEnableOption { description = "Enable ${service}"; };

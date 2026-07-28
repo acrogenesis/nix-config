@@ -11,11 +11,12 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 
 ## Key learnings (2026-07-28)
 
-- The pinned TeslaMate `v2.2.0` NixOS module still reads the deprecated
-  `pkgs.system` alias. Import it through the compatibility wrapper in
-  `modules/homelab/services/teslamate/default.nix` until TeslaMate is upgraded;
-  the wrapper supplies `system = pkgs.stdenv.hostPlatform.system` without
-  changing the pinned TeslaMate release.
+- The TeslaMate input follows upstream's default branch rather than a release
+  tag. `flake.lock` still freezes the deployed revision; run
+  `nix flake update teslamate` to advance it.
+- TeslaMate 4 drops ARMv7 support, but Duck is x86_64 and is unaffected. The
+  NixOS unit runs database migrations in `ExecStartPre`; take a database backup
+  before deploying a major update.
 
 ## Key learnings (2026-02-09)
 

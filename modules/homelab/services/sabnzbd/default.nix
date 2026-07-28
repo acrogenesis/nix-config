@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, options, ... }:
 let
   service = "sabnzbd";
   cfg = config.homelab.services.${service};
@@ -36,6 +36,9 @@ in {
       enable = true;
       user = homelab.user;
       group = homelab.group;
+    } // lib.optionalAttrs (options.services.sabnzbd ? allowConfigWrite) {
+      configFile = null;
+      allowConfigWrite = true;
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;

@@ -36,7 +36,7 @@ Very much a work in progress.
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/home-assistant.svg' width=32 height=32>|Home Assistant|Home automation platform|Smart Home|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/immich.svg' width=32 height=32>|Immich|Self-hosted photo and video management solution|Media|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/jellyfin.svg' width=32 height=32>|Jellyfin|The Free Software Media System|Media|
-|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/jellyseerr.svg' width=32 height=32>|Jellyseerr|Media request and discovery manager|Arr|
+|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/seerr.svg' width=32 height=32>|Seerr|Media request and discovery manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/keycloak.svg' width=32 height=32>|Keycloak|Open Source Identity and Access Management|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/png/microbin.png' width=32 height=32>|Microbin|A minimal pastebin|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/nextcloud.svg' width=32 height=32>|Nextcloud|Enterprise File Storage and Collaboration|Services|

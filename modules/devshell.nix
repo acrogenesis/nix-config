@@ -5,7 +5,10 @@
     treefmt = {
       projectRootFile = "flake.nix";
       settings.global.excludes = [ "*.lock" ".gitignore" "secrets/*" ];
-      programs.nixfmt.enable = true;
+      programs.nixfmt = {
+        enable = true;
+        package = pkgs.nixfmt-classic;
+      };
       programs.deadnix.enable = true;
       programs.shellcheck.enable = true;
     };

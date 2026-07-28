@@ -1,6 +1,7 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, options, ... }:
 let
-  service = "jellyseerr";
+  service = "seerr";
+  upstreamService = if options.services ? seerr then "seerr" else "jellyseerr";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
 in {
@@ -8,7 +9,7 @@ in {
     enable = lib.mkEnableOption { description = "Enable ${service}"; };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "${service}.${homelab.baseDomain}";
+      default = "jellyseerr.${homelab.baseDomain}";
     };
     port = lib.mkOption {
       type = lib.types.port;
@@ -16,12 +17,17 @@ in {
     };
     configDir = lib.mkOption {
       type = lib.types.str;
-      default = "/var/lib/${service}/config";
+      default = "/var/lib/jellyseerr/config";
     };
-    package = lib.mkPackageOption pkgs "jellyseerr" { };
+    package = lib.mkOption {
+      type = lib.types.package;
+      default = if pkgs ? seerr then pkgs.seerr else pkgs.jellyseerr;
+      defaultText = lib.literalExpression "pkgs.seerr";
+      description = "The Seerr package to use.";
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
-      default = "Jellyseerr";
+      default = "Seerr";
     };
     homepage.description = lib.mkOption {
       type = lib.types.str;
@@ -29,7 +35,7 @@ in {
     };
     homepage.icon = lib.mkOption {
       type = lib.types.str;
-      default = "jellyseerr.svg";
+      default = "seerr.svg";
     };
     homepage.category = lib.mkOption {
       type = lib.types.str;
@@ -37,7 +43,7 @@ in {
     };
   };
   config = lib.mkIf cfg.enable {
-    services.${service} = {
+    services.${upstreamService} = {
       enable = true;
       port = cfg.port;
       package = cfg.package;

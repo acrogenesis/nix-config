@@ -168,11 +168,7 @@ in {
       flaresolverr.enable = true;
       bazarr.enable = true;
       prowlarr.enable = true;
-      jellyseerr = {
-        enable = true;
-        package =
-          inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.jellyseerr;
-      };
+      seerr.enable = true;
       nextcloud = {
         enable = true;
         url = "files.${hl.baseDomain}";
@@ -202,7 +198,8 @@ in {
       };
       refun = {
         enable = true;
-        package = inputs.refun.packages.${pkgs.system}.default;
+        package =
+          inputs.refun.packages.${pkgs.stdenv.hostPlatform.system}.default;
         environmentFile = config.age.secrets.refunEnv.path;
       };
       miniflux = {

@@ -22,7 +22,14 @@
     "tf"
   ];
   nil.server.path = "${pkgs.nil}/bin/nil";
-  nil.formatting.command = [ "${pkgs.nixfmt}/bin/nixfmt" ];
+  nil.formatting.command = [
+    "${
+      if pkgs.lib.versionAtLeast pkgs.lib.version "26.05" then
+        pkgs.nixfmt
+      else
+        pkgs.nixfmt-rfc-style
+    }/bin/nixfmt"
+  ];
   nil.diagnostics.excludedFiles = [ "generated.nix" ];
   nil.nix.flake.autoEvalInputs = false;
   nil.nix.maxMemoryMB = 2048;

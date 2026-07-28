@@ -9,6 +9,14 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 - Keep `docs/removed-services.md` in sync with config changes (add items when disabling, remove when re-enabling).
 - Mention new secrets or hardware requirements in `nix-private/README.md`.
 
+## Key learnings (2026-07-28)
+
+- The pinned TeslaMate `v2.2.0` NixOS module still reads the deprecated
+  `pkgs.system` alias. Import it through the compatibility wrapper in
+  `modules/homelab/services/teslamate/default.nix` until TeslaMate is upgraded;
+  the wrapper supplies `system = pkgs.stdenv.hostPlatform.system` without
+  changing the pinned TeslaMate release.
+
 ## Key learnings (2026-02-09)
 
 - On Duck, `acme-order-renew-rebelduck.cc.service` can fail DNS-01 propagation checks even when Cloudflare's API shows `_acme-challenge.rebelduck.cc` TXT records were created. During failures, authoritative queries (`hugh.ns.cloudflare.com`) and recursive lookups (`1.1.1.1`) still return "no TXT record", and renew exits status `11`.

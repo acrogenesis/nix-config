@@ -5,6 +5,12 @@ let
   cacheDir = "${cfg.configDir}/.cache";
   eggCacheDir = "${cacheDir}/Python-Eggs";
   ns = hl.services.wireguard-netns.namespace;
+  delugePackage = pkgs.deluge-2_x.override {
+    # Deluge 2.2.0 still imports pkg_resources, which setuptools 82 removed.
+    python3Packages = pkgs.python3Packages // {
+      setuptools = pkgs.python3Packages.setuptools_80;
+    };
+  };
 in {
   options.homelab.services.deluge = {
     enable = lib.mkEnableOption
@@ -89,6 +95,7 @@ in {
       enable = true;
       user = hl.user;
       group = hl.group;
+      package = delugePackage;
       web = { enable = true; };
     };
 

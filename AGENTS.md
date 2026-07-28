@@ -17,6 +17,9 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 - TeslaMate 4 drops ARMv7 support, but Duck is x86_64 and is unaffected. The
   NixOS unit runs database migrations in `ExecStartPre`; take a database backup
   before deploying a major update.
+- Deluge 2.2.0 imports `pkg_resources`, which setuptools 82 removed. Duck
+  overrides only Deluge's Python package set to use `setuptools_80` until
+  Deluge or nixpkgs migrates away from `pkg_resources`.
 
 ## Key learnings (2026-02-09)
 
@@ -30,7 +33,7 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 
 ## Key learnings (2025-11-10)
 
-- hddfancontrol v2 *requires* at least one PWM path per instance in `<path>:<start>:<stop>` form. Leaving the list empty still emits `-p` without an argument, so the daemon bails out (systemd status code 2). Duck uses `/sys/devices/platform/nct6775.656/hwmon/hwmon7/pwm2:50:50` (nct6775 module).
+- hddfancontrol v2 *requires* at least one PWM path per instance in `<path>:<start>:<stop>` form. Leaving the list empty still emits `-p` without an argument, so the daemon bails out (systemd status code 2). Duck resolves the nct6775 `hwmon` index at service start because the numeric index changes across boots, and starts fan control after `systemd-modules-load.service`.
 - Paperless-ngx services need explicit `RequiresMountsFor` on `/mnt/user/Documents/Paperless/{Documents,Import}` (see `modules/homelab/services/paperless-ngx/default.nix`) or systemd fails to enter the namespace with status 226 whenever those ZFS mounts lag during boot.
 - `kernel.unprivileged_userns_clone=0` means systemd can't honor `PrivateUsers`. Force `PrivateUsers = false` for every Paperless unit in the same module, or the ExecStartPre wrapper exits early with 226/NAMESPACE.
 

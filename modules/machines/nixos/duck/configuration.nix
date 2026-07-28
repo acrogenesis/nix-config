@@ -196,11 +196,16 @@ in {
     settings = {
       harddrives = {
         disks = hardDrives;
-        pwmPaths =
-          [ "/sys/devices/platform/nct6775.656/hwmon/hwmon7/pwm2:25:25" ];
+        pwmPaths = [
+          "`echo /sys/devices/platform/nct6775.656/hwmon/hwmon[[:print:]]`/pwm2:25:25"
+        ];
         extraArgs = [ "-i 30sec" ];
       };
     };
+  };
+  systemd.services.hddfancontrol-harddrives = {
+    after = [ "systemd-modules-load.service" ];
+    requires = [ "systemd-modules-load.service" ];
   };
 
   virtualisation.docker = { storageDriver = "overlay2"; };

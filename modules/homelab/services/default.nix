@@ -74,6 +74,7 @@
   imports = [
     ./arr/prowlarr
     ./arr/bazarr
+    ./arr/questarr
     ./arr/seerr
     ./arr/sonarr
     ./arr/radarr

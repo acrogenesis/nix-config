@@ -41,6 +41,7 @@ Very much a work in progress.
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/nextcloud.svg' width=32 height=32>|Nextcloud|Enterprise File Storage and Collaboration|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/paperless.svg' width=32 height=32>|Paperless-ngx|Document management system|Services|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/prowlarr.svg' width=32 height=32>|Prowlarr|PVR indexer|Arr|
+|<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/png/questarr.png' width=32 height=32>|Questarr|Video game collection and download manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/radarr.svg' width=32 height=32>|Radarr|Movie collection manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/sabnzbd.svg' width=32 height=32>|SABnzbd|The free and easy binary newsreader|Downloads|
 |<img src='https://cdn.jsdelivr.net/gh/selfhst/icons/svg/seerr.svg' width=32 height=32>|Seerr|Media request and discovery manager|Arr|
@@ -68,6 +69,7 @@ Duck’s restic jobs are wired through `modules/homelab/backup`, which automatic
 - `/var/lib/nextcloud`
 - `/var/lib/paperless`
 - `/var/lib/prowlarr`
+- `/var/lib/questarr`
 - `/var/lib/radarr`
 - `/var/lib/sabnzbd`
 - `/var/lib/shelfarr`
@@ -192,6 +194,7 @@ This flake expects an accompanying secrets repository that provides encrypted pa
 
 - Copy the `nix-private` directory, update each placeholder `.age` file with real secrets (see below), and edit `nix-private/networks.nix` to match your LAN.
 - TeslaMate requires `nix-private/teslamateEnv.age` containing `ENCRYPTION_KEY`, `DATABASE_PASS`, and `RELEASE_COOKIE`.
+- Questarr requires a Twitch Developer application client ID and secret for IGDB metadata. Enter them during Questarr's first-run setup; they are stored in `/var/lib/questarr`, so no additional age secret is required.
 - Point the flake input at your local copy by setting `secrets = { url = "path:./nix-private"; flake = false; };` in `flake.nix` and refreshing the lock file with `nix flake lock --update-input secrets`.
 - Keep the directory private (or push it to your own private Git remote) because it will eventually contain your credentials.
 - The fast tier lives on a standalone ZFS pool named `cache` (Samsung 980 PRO NVMe) mounted at `/mnt/cache`. If you ever swap that drive, recreate/import the pool before rebooting or the `fileSystems.${hl.mounts.fast}` mount will fail.

@@ -9,6 +9,18 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 - Keep `docs/removed-services.md` in sync with config changes (add items when disabling, remove when re-enabling).
 - Mention new secrets or hardware requirements in `nix-private/README.md`.
 
+## Key learnings (2026-08-01)
+
+- Questarr's Alpine image ships `7zip-bin`'s x86_64 p7zip 16.02 binary without
+  its executable bit or glibc loader, and the old extractor cannot read common
+  classic `.rar`/`.r00` game release sets even after those are supplied. The
+  Questarr module mounts a Nix-built CLI-compatible wrapper at the path expected
+  by `node-7z`: RAR extraction uses `unrar`, while other formats retain `7za`.
+- Questarr 1.4.0's `hardlink` import mode calls `link(2)` on the unpacked
+  directory itself instead of recursively linking its files, which fails with
+  `EPERM`. Use `move` mode for auto-unpacked game imports; the unpack directory
+  is temporary, so the move does not disturb Deluge's source archives.
+
 ## Key learnings (2026-07-31)
 
 - Questarr's GHCR `latest`, `production-sha-fcede1d`, and `v1.4.0` tags all

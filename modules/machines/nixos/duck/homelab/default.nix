@@ -45,6 +45,7 @@ in {
       shares = {
         Backups = { path = "${hl.mounts.merged}/Backups"; };
         Documents = { path = "${hl.mounts.merged}/Documents"; };
+        Games = { path = "${hl.mounts.merged}/Games"; };
         Media = { path = "${hl.mounts.merged}/Media"; };
         Music = { path = "${hl.mounts.merged}/Media/Music"; };
         Misc = { path = "${hl.mounts.merged}/Misc"; };

@@ -17,7 +17,7 @@ in {
     };
     image = lib.mkOption {
       type = lib.types.str;
-      default = "ghcr.io/doezer/questarr:latest";
+      default = "docker.io/doezer/questarr:latest";
       description = "Container image for Questarr.";
     };
     configDir = lib.mkOption {

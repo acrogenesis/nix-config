@@ -9,6 +9,13 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 - Keep `docs/removed-services.md` in sync with config changes (add items when disabling, remove when re-enabling).
 - Mention new secrets or hardware requirements in `nix-private/README.md`.
 
+## Key learnings (2026-07-31)
+
+- Questarr's GHCR `latest`, `production-sha-fcede1d`, and `v1.4.0` tags all
+  reference the same OCI index, but its x86_64 child manifest is missing from
+  GHCR. The identical image on Docker Hub is complete, so Duck uses
+  `docker.io/doezer/questarr:latest`.
+
 ## Key learnings (2026-07-28)
 
 - The TeslaMate input follows upstream's default branch rather than a release

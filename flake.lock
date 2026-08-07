@@ -34,11 +34,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1785962860,
-        "narHash": "sha256-5jBf6Bu0ksXLIV7uOaSUmJFUXY2baykqyhm5sXihbIk=",
+        "lastModified": 1786050795,
+        "narHash": "sha256-2zCqsc+C9KDwjm6DAAFL9gMWMsd3j3HzsNBYrqUQMSc=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "cc5995d67992854cd974fa8334194f9301ebc353",
+        "rev": "323b9dc42778c4b16de930461a681cb30dac6482",
         "type": "github"
       },
       "original": {
@@ -409,11 +409,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785958398,
-        "narHash": "sha256-5r/JgsoNMTx+qIh83WkxpujEKBR7PF5ssnh5vYCuSAw=",
+        "lastModified": 1786031233,
+        "narHash": "sha256-TIDlLTLI1/pB7IqgjzcKQjpODQsZE2oII4XGG9B6KjI=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "a7c70cc290290f373f50cd820403833d250459ac",
+        "rev": "7834e82588860aaf780cec1366524456a70898d7",
         "type": "github"
       },
       "original": {
@@ -480,11 +480,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785994144,
-        "narHash": "sha256-183XvUYJUP3/4FYNTSV5dzYkUhTeIcPw2xPdwN57Ej8=",
+        "lastModified": 1786040946,
+        "narHash": "sha256-1X5/h+ZNPX6S116mGTGjVE5xQRj0JqML4vuKracP6HY=",
         "owner": "Jovian-Experiments",
         "repo": "Jovian-NixOS",
-        "rev": "48daca538d63d6e303c980b7e72ade21125f7b65",
+        "rev": "ebcee4127b51bc6df62ee859fb6539bdfa0e902a",
         "type": "github"
       },
       "original": {
@@ -665,11 +665,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1785828668,
-        "narHash": "sha256-8fsyqeO+mJqvIzeO4xIpgJe/f7MTbbVTEC6RT6WSXNs=",
+        "lastModified": 1785967620,
+        "narHash": "sha256-IItrdb7Puk05RqOBWZYFC5X6Wl1sJmCfh5MWVHw5iMM=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "e72e4f299401a3689d4b3d5fc6496b11db7064eb",
+        "rev": "b7c2ada94fe99c15b0dbcf4d11fd7850b957a436",
         "type": "github"
       },
       "original": {
@@ -973,11 +973,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1785961304,
-        "narHash": "sha256-/EHCJ5NTiI+z9nATP4S0g/TaY8Ff7wnF3ELCIx/jthU=",
+        "lastModified": 1786014775,
+        "narHash": "sha256-osIWVooWjwrLUT2qLZ31fKM6QWATRHlmAmJL4FVIQeA=",
         "owner": "teslamate-org",
         "repo": "teslamate",
-        "rev": "6f9a2577fd01a02fd719a23a7ad48076e886ab99",
+        "rev": "d870413752f8e60741349850e6d568da6875339c",
         "type": "github"
       },
       "original": {

@@ -844,11 +844,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1786469383,
-        "narHash": "sha256-2gNW93Ht9wqqrphDVnmbG21BO3pknj20e9A4hfqo4zg=",
+        "lastModified": 1786470423,
+        "narHash": "sha256-a767nftyVTlFLATvkJ7ViPVYhIkC3E8z319ktL82fco=",
         "owner": "acrogenesis",
         "repo": "refun",
-        "rev": "208f651121478b101d3895572bfc0e13d23b9c76",
+        "rev": "29a98c9b33bc8913a94430eebf28085267f0722d",
         "type": "github"
       },
       "original": {

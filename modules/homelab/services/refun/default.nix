@@ -63,7 +63,7 @@ in {
       after = [ "network.target" "postgresql-setup.service" ];
       wantedBy = [ "multi-user.target" ];
       # pdftotext for finiquito PDF text extraction (Refun.Finiquito)
-      path = [ pkgs.poppler_utils ];
+      path = [ pkgs.poppler-utils ];
       environment = {
         MIX_ENV = "prod";
         PHX_HOST = cfg.url;

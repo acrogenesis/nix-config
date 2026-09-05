@@ -665,11 +665,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1788316716,
-        "narHash": "sha256-bc7rSpXIdn9QWGNqfWcPZWOhEVF8NoeAZkWq0XWnf/k=",
+        "lastModified": 1788531059,
+        "narHash": "sha256-hLD4l3QOGBQhkVp3mQ2lJ/YbEi99qUgKapb40KovZ88=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "3ed67ec0a4d3c7ab4ae1f04f8ee8df07bfa506a2",
+        "rev": "801bef6abd86b91e51083066b83fb354a11fc640",
         "type": "github"
       },
       "original": {
@@ -973,11 +973,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1788506795,
-        "narHash": "sha256-5vnqvk0rxOCyMHzoFD0/3Vxg1lnyIYsXcd44cPm9Ph8=",
+        "lastModified": 1788544933,
+        "narHash": "sha256-uhqsBAreYYhwR/WqpqIQ1Z2DSf3yL9nVL1HspXM9ARU=",
         "owner": "teslamate-org",
         "repo": "teslamate",
-        "rev": "aff5c7c5f093c766ba5c710d2a7599365c19182b",
+        "rev": "19738477d3e72b68738512cf81e997e445df1372",
         "type": "github"
       },
       "original": {

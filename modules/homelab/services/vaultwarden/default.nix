@@ -19,6 +19,18 @@ in {
       default = [ ];
       description = "Additional hostnames that should serve Vaultwarden.";
     };
+    environmentFile = lib.mkOption {
+      type = lib.types.path;
+      description = ''
+        Environment file with Vaultwarden secrets. Must define ADMIN_TOKEN so
+        /admin is available for inviting users while public signups stay closed.
+      '';
+      example = lib.literalExpression ''
+        pkgs.writeText "vaultwarden-env" '''
+          ADMIN_TOKEN='$argon2id$v=19$m=65540,t=3,p=4$...'
+        '''
+      '';
+    };
     cloudflared.credentialsFile = lib.mkOption {
       type = lib.types.str;
       example = lib.literalExpression ''
@@ -67,9 +79,11 @@ in {
         };
       ${service} = {
         enable = true;
+        environmentFile = cfg.environmentFile;
         config = {
           DOMAIN = "https://${cfg.url}";
           SIGNUPS_ALLOWED = false;
+          INVITATIONS_ALLOWED = true;
           ROCKET_ADDRESS = "127.0.0.1";
           ROCKET_PORT = 8222;
           EXTENDED_LOGGING = true;

@@ -28,6 +28,7 @@
       "${inputs.secrets}/nextcloudAdminPassword.age";
     vaultwardenCloudflared.file =
       "${inputs.secrets}/vaultwardenCloudflared.age";
+    vaultwardenEnv.file = "${inputs.secrets}/vaultwardenEnv.age";
     microbinCloudflared.file = "${inputs.secrets}/microbinCloudflared.age";
     audiobookshelfCloudflared.file =
       "${inputs.secrets}/audiobookshelfCloudflared.age";

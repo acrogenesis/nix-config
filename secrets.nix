@@ -64,6 +64,7 @@ let
     "../nix-private/refunEfirmaCer.age"
     "../nix-private/refunEfirmaKey.age"
     "../nix-private/vaultwardenCloudflared.age"
+    "../nix-private/vaultwardenEnv.age"
     # "../nix-private/wireguardCredentials.age"
     # "../nix-private/wireguardPrivateKeySpencer.age"
     # "../nix-private/withings2intervals.age"

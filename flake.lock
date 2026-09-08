@@ -891,11 +891,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1780876944,
-        "narHash": "sha256-29ocLGj1uPA9hYTCS80TjtYZothMTdxfrZ/YIhTrLGU=",
+        "lastModified": 1788843608,
+        "narHash": "sha256-5d91MwrYKu5VDkvJU8IY9utw6j3F/kPpN5FAei1wxgo=",
         "ref": "refs/heads/main",
-        "rev": "bc3872f6e505072d2b50b7c58e90bf95306eb1b2",
-        "revCount": 31,
+        "rev": "f82fe23bcab993cfcec616affa43c7ab81b97212",
+        "revCount": 32,
         "type": "git",
         "url": "ssh://git@github.com/acrogenesis/nix-private.git"
       },

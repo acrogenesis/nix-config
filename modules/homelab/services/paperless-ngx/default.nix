@@ -51,6 +51,8 @@ in {
 
   };
   config = lib.mkIf cfg.enable {
+    users.users.${homelab.user}.extraGroups =
+      lib.mkAfter [ config.services.redis.servers.paperless.group ];
     services = {
       ${service} = {
         enable = true;
@@ -88,7 +90,10 @@ in {
     '';
     systemd.services = lib.listToAttrs (map (svc: {
       name = svc;
-      value.unitConfig.RequiresMountsFor = [ cfg.mediaDir cfg.consumptionDir ];
+      value = {
+        unitConfig.RequiresMountsFor = [ cfg.mediaDir cfg.consumptionDir ];
+        serviceConfig.PrivateUsers = lib.mkForce false;
+      };
     }) cfg.monitoredServices);
   };
 }

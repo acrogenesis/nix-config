@@ -19,6 +19,11 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
   cache therefore lives below its persistent data directory, and the one-shot
   `jellyfin-cache-migration` unit preserves an existing Native Trickplay cache
   on the first deployment. Keep that generated cache excluded from Restic.
+- NixOS only adds its default Paperless user to the generated Redis instance's
+  socket group. Duck runs Paperless as the shared homelab user, so the Paperless
+  module must explicitly add that user to
+  `config.services.redis.servers.paperless.group`; otherwise the scheduler,
+  task queue, and web stack fail with `EACCES` on the Redis socket.
 
 ## Key learnings (2026-08-01)
 

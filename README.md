@@ -87,6 +87,10 @@ Paperless media has its own S3 job (`paperless-s3`) that pushes `${homelab.servi
 
 Finally, Duck’s `homelab.services.backup.extraPaths` contains `/mnt/user/Media/Photos`, so Immich’s originals live in both restic repositories as well. Scratch areas such as `/mnt/user/Downloads` or `/mnt/user/Downloads.tmp` are intentionally excluded; add them to `extraPaths` if you ever want them in the snapshot set.
 
+Jellyfin's cache is persisted at `/var/lib/jellyfin/cache` so Native Trickplay
+assets survive Duck's immutable-root rollback. That generated cache is excluded
+from both appdata backup targets and can be rebuilt from the media library.
+
 ## Installation runbook (NixOS)
 
 Create a root password using the TTY

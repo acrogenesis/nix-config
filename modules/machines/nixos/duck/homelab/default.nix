@@ -11,6 +11,31 @@ in {
     dataDir = "/var/lib/postgresql/16";
   };
 
+  # Keep transcoding on the T1000 even if a Jellyfin upgrade rejects an older
+  # encoding.xml. The NixOS module backs up and replaces drifted configurations
+  # with a schema-valid file before Jellyfin starts.
+  services.jellyfin = {
+    forceEncodingConfig = true;
+    hardwareAcceleration = {
+      enable = true;
+      type = "nvenc";
+      device = "/dev/nvidia0";
+    };
+    transcoding = {
+      enableHardwareEncoding = true;
+      enableToneMapping = false;
+      hardwareDecodingCodecs = {
+        h264 = true;
+        hevc = true;
+        hevc10bit = true;
+        mpeg2 = true;
+        vc1 = true;
+        vp8 = true;
+        vp9 = true;
+      };
+    };
+  };
+
   # Safety guard: prevent accidentally initializing an empty v16 cluster while
   # the existing v14 cluster still exists and has not been migrated.
   systemd.services.postgresql.preStart = lib.mkBefore ''

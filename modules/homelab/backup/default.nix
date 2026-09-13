@@ -83,6 +83,8 @@ in {
       in lib.optionals (dir != null && dir != false) [ dir ])
       (lib.attrsets.mapAttrsToList (name: _value: name) enabledServices);
     backupPaths = lib.lists.unique (stateDirList ++ cfg.extraPaths);
+    backupExcludes = lib.optionals config.services.jellyfin.enable
+      [ config.services.jellyfin.cacheDir ];
   in lib.mkIf (cfg.enable && backupPaths != [ ]) {
     systemd.tmpfiles.rules = lib.lists.optionals cfg.local.enable
       [ "d ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -" ];
@@ -117,7 +119,7 @@ in {
           initialize = true;
           passwordFile = cfg.passwordFile;
           pruneOpts = [ "--keep-last 5" ];
-          exclude = [ ];
+          exclude = backupExcludes;
           paths = backupPaths;
           backupPrepareCommand = let
             restic =
@@ -140,7 +142,7 @@ in {
           initialize = true;
           passwordFile = cfg.passwordFile;
           pruneOpts = [ "--keep-last 3" ];
-          exclude = [ ];
+          exclude = backupExcludes;
           paths = backupPaths;
           backupPrepareCommand = let
             restic =

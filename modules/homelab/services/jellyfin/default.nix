@@ -3,12 +3,19 @@ let
   service = "jellyfin";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
+  legacyCacheDir = "/var/cache/jellyfin";
 in {
   options.homelab.services.${service} = {
     enable = lib.mkEnableOption { description = "Enable ${service}"; };
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/${service}";
+    };
+    cacheDir = lib.mkOption {
+      type = lib.types.str;
+      default = "${cfg.configDir}/cache";
+      description =
+        "Persistent cache directory for Jellyfin and Native Trickplay assets.";
     };
     url = lib.mkOption {
       type = lib.types.str;
@@ -71,23 +78,50 @@ in {
       users.users.${homelab.user}.extraGroups =
         lib.mkBefore [ "video" "render" ];
       systemd.tmpfiles.rules = [
-        "d /var/cache/jellyfin 0750 ${homelab.user} ${homelab.group} - -"
-        "d /var/cache/jellyfin/mesa-shader-cache 0750 ${homelab.user} ${homelab.group} - -"
+        "d ${cfg.cacheDir}/mesa-shader-cache 0750 ${homelab.user} ${homelab.group} - -"
       ];
       services.${service} = {
         enable = true;
         user = homelab.user;
         group = homelab.group;
         dataDir = cfg.configDir;
+        cacheDir = cfg.cacheDir;
+      };
+      # Preserve any Native Trickplay work produced before the cache became
+      # persistent. This is a no-op after the first successful migration.
+      systemd.services.jellyfin-cache-migration = {
+        description = "Migrate Jellyfin's legacy Native Trickplay cache";
+        before = [ "jellyfin.service" ];
+        unitConfig.RequiresMountsFor = cfg.cacheDir;
+        serviceConfig = {
+          Type = "oneshot";
+          User = homelab.user;
+          Group = homelab.group;
+          TimeoutStartSec = "30min";
+        };
+        script = ''
+          legacy=${lib.escapeShellArg "${legacyCacheDir}/native-trickplay"}
+          destination=${lib.escapeShellArg "${cfg.cacheDir}/native-trickplay"}
+          staging=${
+            lib.escapeShellArg "${cfg.cacheDir}/.native-trickplay-migration"
+          }
+
+          if [[ -d "$legacy" && ! -e "$destination" ]]; then
+            echo "Migrating Native Trickplay cache to $destination"
+            ${pkgs.coreutils}/bin/mkdir -p "$staging"
+            ${pkgs.coreutils}/bin/cp -a --reflink=auto "$legacy"/. "$staging"/
+            ${pkgs.coreutils}/bin/mv -T "$staging" "$destination"
+          fi
+        '';
+      };
+      systemd.services.jellyfin = {
+        after = [ "jellyfin-cache-migration.service" ];
+        requires = [ "jellyfin-cache-migration.service" ];
       };
       systemd.services.jellyfin.serviceConfig.Environment = [
         "JELLYFIN_WEB_DIR=${pkgs.jellyfin-web}/share/jellyfin-web"
-        # Force VA-API to use the AMD iGPU and keep shader caches off /var/empty.
-        "LIBVA_DRIVER_NAME=radeonsi"
-        "VDPAU_DRIVER=radeonsi"
-        "XDG_CACHE_HOME=/var/cache/jellyfin"
-        "MESA_SHADER_CACHE_DIR=/var/cache/jellyfin/mesa-shader-cache"
-        "VK_ICD_FILENAMES=/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json"
+        "XDG_CACHE_HOME=${cfg.cacheDir}"
+        "MESA_SHADER_CACHE_DIR=${cfg.cacheDir}/mesa-shader-cache"
       ];
       systemd.services.jellyfin.serviceConfig = {
         PrivateDevices = lib.mkForce false;

@@ -9,6 +9,17 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 - Keep `docs/removed-services.md` in sync with config changes (add items when disabling, remove when re-enabling).
 - Mention new secrets or hardware requirements in `nix-private/README.md`.
 
+## Key learnings (2026-09-13)
+
+- Jellyfin 12 rejects legacy `encoding.xml` files with an empty
+  `EncoderPreset`, then falls back to software transcoding. Duck declares NVENC
+  through `services.jellyfin.hardwareAcceleration` and enables
+  `forceEncodingConfig` so each start gets a schema-valid configuration.
+- Duck's immutable root rollback erases `/var/cache` on every reboot. Jellyfin's
+  cache therefore lives below its persistent data directory, and the one-shot
+  `jellyfin-cache-migration` unit preserves an existing Native Trickplay cache
+  on the first deployment. Keep that generated cache excluded from Restic.
+
 ## Key learnings (2026-08-01)
 
 - Questarr's Alpine image ships `7zip-bin`'s x86_64 p7zip 16.02 binary without

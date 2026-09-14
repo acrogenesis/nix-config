@@ -34,11 +34,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1789110849,
-        "narHash": "sha256-TqmWwbg+zie5T+QOf263Hae/CzGUES0Zuo2KY8LLzb0=",
+        "lastModified": 1789370150,
+        "narHash": "sha256-pMqQS6Afna8IPs9M65qJ66HtqPy9bfkEK6bzqy30Kps=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "562a8131beca37171c1e2c50806be0df685e6445",
+        "rev": "0e51563bbfa4cdaaa7eb082a8819c960da251818",
         "type": "github"
       },
       "original": {
@@ -410,11 +410,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789273010,
-        "narHash": "sha256-E7dWx+utzZPpqQsBUd5sMimKTWMEEbTKFD+ya99Shps=",
+        "lastModified": 1789352311,
+        "narHash": "sha256-E9hlcRNSRQ1vb+UicOusX/ucroGlBAz/pYhCBorLOn4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "fdc36b12804b0179b24a5ffd282e4c95c37072e2",
+        "rev": "cfcda3f99334c8459fa4cd46cce87502e0b48f0a",
         "type": "github"
       },
       "original": {
@@ -590,11 +590,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789285203,
-        "narHash": "sha256-uK7nb1ijkoAYppFZmUkbqtLQPDTV2F+zpLz9PMEysg0=",
+        "lastModified": 1789286446,
+        "narHash": "sha256-xVstyCdg0DpzjyrEacm72VJAIP9DMhfWJdPDzhWxHuo=",
         "owner": "Mic92",
         "repo": "nix-index-database",
-        "rev": "7bf1a567b0d73f0702adb99d6bc05e0958bf75f4",
+        "rev": "a74e173407559083a412ea89a1cc58ea389c3b65",
         "type": "github"
       },
       "original": {

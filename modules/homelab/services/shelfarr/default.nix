@@ -84,7 +84,7 @@ in {
         PUID = toString config.users.users.${homelab.user}.uid;
         PGID = toString config.users.groups.${homelab.group}.gid;
       };
-      extraOptions = [ "--pull=newer" "--tmpfs=/rails/tmp:rw,mode=1777" ];
+      extraOptions = [ "--pull=newer" ];
     };
 
     services.caddy.virtualHosts."${cfg.url}" = {

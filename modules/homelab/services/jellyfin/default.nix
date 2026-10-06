@@ -58,21 +58,18 @@ in {
   in lib.mkMerge [
     {
       nixpkgs.overlays = [
-        (_final: prev: {
-          jellyfin-web = prev.jellyfin-web.overrideAttrs
-            (_finalAttrs: _previousAttrs: {
-              installPhase = ''
-                runHook preInstall
-
-                # this is the important line
-                sed -i "s#</head>#<script src=\"configurationpage?name=skip-intro-button.js\"></script></head>#" dist/index.html
-
-                mkdir -p $out/share
-                cp -a dist $out/share/jellyfin-web
-
-                runHook postInstall
-              '';
-            });
+        # Patch the cached upstream build instead of overriding installPhase:
+        # an override recompiles jellyfin-web with webpack, which gets
+        # OOM-killed on duck alongside the running services.
+        (final: prev: {
+          jellyfin-web =
+            final.runCommand "jellyfin-web-${prev.jellyfin-web.version}" { }
+            ''
+              mkdir -p $out/share
+              cp -r ${prev.jellyfin-web}/share/jellyfin-web $out/share/jellyfin-web
+              chmod u+w $out/share/jellyfin-web/index.html
+              sed -i "s#</head>#<script src=\"configurationpage?name=skip-intro-button.js\"></script></head>#" $out/share/jellyfin-web/index.html
+            '';
         })
       ];
       users.users.${homelab.user}.extraGroups =

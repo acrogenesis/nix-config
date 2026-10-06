@@ -14,6 +14,14 @@ let
     rev = "7455efae41b330c265e7cd4b78dfa848e7ce5ebd";
     hash = "sha256-bAit6zzd1Q1SPgb3ydjuZN78yXjRcgcIs+hH4gKNaxE=";
   };
+  mcp = pkgs.callPackage ./mcp.nix { };
+  # Read-only MCP server for LLM clients, spawned over ssh. The data files are
+  # 0600 and owned by the homelab user, so it runs as that user.
+  mcpCommand = pkgs.writeShellScriptBin "opengym-mcp" ''
+    exec /run/wrappers/bin/sudo -u ${homelab.user} \
+      ${pkgs.coreutils}/bin/env OPENGYM_DATA=${cfg.dataDir} \
+      ${mcp}/bin/opengym-mcp
+  '';
 in {
   options.homelab.services.${service} = {
     enable = lib.mkEnableOption "Enable ${service}";
@@ -42,6 +50,11 @@ in {
       description =
         "Profiles, passkeys, workouts, uploads and the session secret.";
     };
+    adminUids = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "Profile ids (users[].id in db.json) with admin access.";
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "openGym";
@@ -64,6 +77,8 @@ in {
     systemd.tmpfiles.rules =
       [ "d ${cfg.dataDir} 0775 ${homelab.user} ${homelab.group} - -" ];
 
+    environment.systemPackages = [ mcpCommand ];
+
     virtualisation.podman.enable = true;
     virtualisation.oci-containers.containers = {
       # The web container joins this one's network namespace, so the published
@@ -85,6 +100,7 @@ in {
           RP_ID = cfg.url;
           ORIGIN = "https://${cfg.url}";
           RP_NAME = "openGym";
+          ADMIN_UIDS = lib.concatStringsSep "," cfg.adminUids;
         };
         extraOptions = [ "--pull=newer" ];
       };

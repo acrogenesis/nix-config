@@ -195,7 +195,10 @@ in {
       bazarr.enable = true;
       prowlarr.enable = true;
       questarr.enable = true;
-      opengym.enable = true;
+      opengym = {
+        enable = true;
+        adminUids = [ "V1no8F2aRGjAzxvK" ];
+      };
       seerr.enable = true;
       nextcloud = {
         enable = true;

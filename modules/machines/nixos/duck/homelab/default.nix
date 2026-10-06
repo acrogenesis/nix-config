@@ -195,6 +195,7 @@ in {
       bazarr.enable = true;
       prowlarr.enable = true;
       questarr.enable = true;
+      opengym.enable = true;
       seerr.enable = true;
       nextcloud = {
         enable = true;

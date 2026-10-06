@@ -67,7 +67,7 @@ in {
             ''
               mkdir -p $out/share
               cp -r ${prev.jellyfin-web}/share/jellyfin-web $out/share/jellyfin-web
-              chmod u+w $out/share/jellyfin-web/index.html
+              chmod u+w $out/share/jellyfin-web $out/share/jellyfin-web/index.html
               sed -i "s#</head>#<script src=\"configurationpage?name=skip-intro-button.js\"></script></head>#" $out/share/jellyfin-web/index.html
             '';
         })

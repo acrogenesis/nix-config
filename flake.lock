@@ -31,11 +31,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1791273523,
-        "narHash": "sha256-G8gPz/CuzDt+dC/xLnAOwxOTzbFFuZnAf04+dh1RzFY=",
+        "lastModified": 1791359241,
+        "narHash": "sha256-Y4q7XvqsUlsjCHb4fWuesca3d+qdrwjb9iD8EtALWC4=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "00c9cef38db022baf70af57881869cb080e26a56",
+        "rev": "512e3e7bb12f7f2e6bc69f8b3acc2fa19d6b7970",
         "type": "github"
       },
       "original": {
@@ -385,11 +385,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791227480,
-        "narHash": "sha256-+lrD+sxc2RKUWXRBAcggn7uBCFeJgnV75jD/cz7gJRA=",
+        "lastModified": 1791306979,
+        "narHash": "sha256-KuLePuhwJM9NLt/gTLHzXaOoSZKGoB3m7NfXjiQ98HY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "aa23f720d022187228bc264f759aef6b80233bcf",
+        "rev": "fae6e9e42c3b762ab47635cddcfaf6f52374a61b",
         "type": "github"
       },
       "original": {
@@ -913,11 +913,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1791242808,
-        "narHash": "sha256-KQN9EGVtrKyJyy2fj/kydZq/Ap1eBxkileafr4F+soI=",
+        "lastModified": 1791353112,
+        "narHash": "sha256-rCc8pDVF7u3CYUuEu98OSEX+0upF3Nz2TUnUrpRBMf0=",
         "owner": "teslamate-org",
         "repo": "teslamate",
-        "rev": "d00c5136349d90e78768f6963e0f2b47768396c6",
+        "rev": "96119f65a98ecc2f6d3584c07af4d0b952326daa",
         "type": "github"
       },
       "original": {

@@ -12,6 +12,9 @@
 - **Technitium DNS**
   Removed from the homelab services; the module (`modules/homelab/services/technitium`) and duck service stanza were deleted. Re-add both (and any required DNS configuration) to bring it back.
 
+- **openGym** (workout tracker)
+  Tried and dropped; the module (`modules/homelab/services/opengym`, including its read-only MCP package) and the duck service stanza were deleted, along with `/var/lib/opengym`. Restore them from git history to bring it back.
+
 - **Keycloak**, **Nextcloud**, **Vaultwarden**, **Paperless**, **Navidrome**, **Miniflux**, **Microbin**, **Radicale**, **InvoicePlane**, **WireGuard netns**
   These homelab services are currently disabled. Their `.age` secrets are commented out; re-enable them only after you recreate the necessary secrets and infrastructure (Cloudflare tunnels, databases, etc.).
 

@@ -20,6 +20,9 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 - Nextcloud no longer accepts `config.adminuser` or `config.adminpassFile`.
   Existing users persist; on fresh installations, create the administrator using
   `nextcloud-occ user:add` and `nextcloud-occ group:adduser admin` (see README).
+- The custom Keycloak trusted-device plugin and Shelly exporter needed refreshed
+  `mvnHash` values with this nixpkgs update, with their source versions unchanged.
+  `flake check` does not build these packages; validate the full Duck system too.
 
 ## Key learnings (2026-09-13)
 

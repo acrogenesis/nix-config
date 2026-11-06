@@ -11,7 +11,7 @@ maven.buildMavenPackage rec {
     hash = "sha256-3GFQsgFXDEN5ORO7rkHSlEcdCbnVR3V8byXsGXCd00o=";
   };
 
-  mvnHash = "sha256-rsRHOliZO2GrQQU0C9SVlFK1uxY4TqBbWXI80Ub7JYU=";
+  mvnHash = "sha256-Fhuqfd54O77Xn+hXZnp/cyqXMykHFv3jfNFp2Dm87VQ=";
 
   installPhase = ''
     install -D "spi/target/keycloak-spi-trusted-device-1.0-SNAPSHOT.jar" "$out/spi-trusted-device-${version}.jar"

@@ -52,18 +52,6 @@ in {
       type = lib.types.str;
       example = "00000000-0000-0000-0000-000000000000";
     };
-    admin.username = lib.mkOption {
-      type = lib.types.str;
-      example = "admin";
-    };
-    admin.passwordFile = lib.mkOption {
-      type = lib.types.str;
-      example = lib.literalExpression ''
-        pkgs.writeText "nc-admin-password" '''
-        super-secret-password
-        '''
-      '';
-    };
   };
   config = lib.mkIf cfg.enable (let
     hostnames = [ cfg.url ] ++ cfg.aliases;
@@ -97,11 +85,7 @@ in {
 
       };
 
-      config = {
-        dbtype = "pgsql";
-        adminuser = cfg.admin.username;
-        adminpassFile = cfg.admin.passwordFile;
-      };
+      config.dbtype = "pgsql";
       settings = {
         overwriteprotocol = "https";
         default_phone_region = "MX";

@@ -15,9 +15,6 @@ in {
     mergerfs-tools
   ];
 
-  # This fixes the weird mergerfs permissions issue
-  boot.initrd.systemd.enable = true;
-
   fileSystems.${hl.mounts.fast} = {
     device = "cache";
     fsType = "zfs";

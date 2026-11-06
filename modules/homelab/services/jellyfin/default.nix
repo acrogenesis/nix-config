@@ -63,8 +63,7 @@ in {
         # OOM-killed on duck alongside the running services.
         (final: prev: {
           jellyfin-web =
-            final.runCommand "jellyfin-web-${prev.jellyfin-web.version}" { }
-            ''
+            final.runCommand "jellyfin-web-${prev.jellyfin-web.version}" { } ''
               mkdir -p $out/share
               cp -r ${prev.jellyfin-web}/share/jellyfin-web $out/share/jellyfin-web
               chmod u+w $out/share/jellyfin-web $out/share/jellyfin-web/index.html

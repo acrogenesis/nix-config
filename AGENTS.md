@@ -9,6 +9,18 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 - Keep `docs/removed-services.md` in sync with config changes (add items when disabling, remove when re-enabling).
 - Mention new secrets or hardware requirements in `nix-private/README.md`.
 
+## Key learnings (2026-11-06)
+
+- Lego now spells the fixed DNS propagation wait flag
+  `--dns.propagation.wait`. The old `--dns.propagation-wait` makes renewals exit
+  before contacting the CA, allowing the shared wildcard certificate to expire.
+- Scripted initrd is removed in Duck's nixpkgs revision. Remove
+  `boot.initrd.systemd.enable` declarations while retaining the systemd initrd
+  rollback service; systemd initrd is now unconditional.
+- Nextcloud no longer accepts `config.adminuser` or `config.adminpassFile`.
+  Existing users persist; on fresh installations, create the administrator using
+  `nextcloud-occ user:add` and `nextcloud-occ group:adduser admin` (see README).
+
 ## Key learnings (2026-09-13)
 
 - Jellyfin 12 rejects legacy `encoding.xml` files with an empty
@@ -59,7 +71,7 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 ## Key learnings (2026-02-09)
 
 - On Duck, `acme-order-renew-rebelduck.cc.service` can fail DNS-01 propagation checks even when Cloudflare's API shows `_acme-challenge.rebelduck.cc` TXT records were created. During failures, authoritative queries (`hugh.ns.cloudflare.com`) and recursive lookups (`1.1.1.1`) still return "no TXT record", and renew exits status `11`.
-- Mitigation in `modules/homelab/services/default.nix`: keep `dnsPropagationCheck = true` and set `extraLegoFlags = [ "--dns.propagation-wait" "5m" ]` for `security.acme.certs.${config.homelab.baseDomain}` so lego uses a fixed wait before validation instead of failing early on local propagation checks.
+- Mitigation in `modules/homelab/services/default.nix`: keep `dnsPropagationCheck = true` and set `extraLegoFlags = [ "--dns.propagation.wait" "5m" ]` for `security.acme.certs.${config.homelab.baseDomain}` so lego uses a fixed wait before validation instead of failing early on local propagation checks. This uses the current flag spelling (updated 2026-11-06).
 
 ## Key learnings (2026-02-11)
 

@@ -193,6 +193,20 @@ Reboot
 reboot
 ```
 
+### Nextcloud administrator on a fresh installation
+
+After booting the installed system, create the Nextcloud administrator and add
+it to the admin group:
+
+```bash
+sudo nextcloud-occ user:add acrogenesis
+sudo nextcloud-occ group:adduser admin acrogenesis
+```
+
+The first command prompts for the password. Existing installations retain their
+users and need neither command. NixOS no longer creates the initial administrator
+from `adminuser` and `adminpassFile`; `nextcloudAdminPassword.age` is no longer used.
+
 ## Private secrets (`nix-private`)
 
 This flake expects an accompanying secrets repository that provides encrypted payloads and shared network settings. A ready-made template lives in `./nix-private`.

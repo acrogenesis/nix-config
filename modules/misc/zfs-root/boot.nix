@@ -53,7 +53,6 @@ in {
     (lib.mkIf cfg.immutable {
       zfs-root.fileSystems = { datasets = { "rpool/nixos/empty" = "/"; }; };
       boot.initrd.systemd = {
-        enable = true;
         services.initrd-rollback-root = {
           after = [ "zfs-import-rpool.service" ];
           wantedBy = [ "initrd.target" ];

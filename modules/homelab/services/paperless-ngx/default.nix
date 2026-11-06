@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, options, ... }:
 let
   service = "paperless";
   cfg = config.homelab.services.${service};
@@ -70,6 +70,8 @@ in {
             pdfa_image_compression = "lossless";
           };
         };
+      } // lib.optionalAttrs (options.services.paperless ? group) {
+        group = homelab.group;
       };
       caddy.virtualHosts."${cfg.url}" = {
         useACMEHost = homelab.baseDomain;

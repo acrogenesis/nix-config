@@ -23,6 +23,9 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 - The custom Keycloak trusted-device plugin and Shelly exporter needed refreshed
   `mvnHash` values with this nixpkgs update, with their source versions unchanged.
   `flake check` does not build these packages; validate the full Duck system too.
+- Set both `services.paperless.user` and `services.paperless.group` for Duck's
+  shared homelab account. The default `paperless` group is not created with a
+  custom user, and the secret-key generator otherwise fails with `216/GROUP`.
 
 ## Key learnings (2026-09-13)
 

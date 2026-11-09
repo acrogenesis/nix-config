@@ -11,6 +11,13 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 
 ## Key learnings (2026-11-09)
 
+- Current Immich supports PostgreSQL 18 and Duck already uses VectorChord.
+  The old pgvecto.rs restriction below is historical. Before the 16-to-18
+  upgrade, remove the unused `vectors` extension without `CASCADE`, rehearse
+  `pg_upgrade --check` and `--copy` on a clone, and match source checksums when
+  initializing the target (18 enables them by default). Rebuild affected
+  indexes before refreshing collation metadata. The startup guard must refuse
+  an empty 18 cluster while an old 16 or 14 cluster exists.
 - The old `home-assistant-libs/python-matter-server:stable` image is frozen at
   8.1.0. Duck now uses `matter-js/matterjs-server:stable`, running as the homelab
   user. Preserve and back up the existing data directory before its first-start
@@ -104,7 +111,9 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 ## Key learnings (2026-02-11)
 
 - TeslaMate `v2.x` enforces PostgreSQL compatibility at runtime and fails startup on PostgreSQL 14 (`PostgreSQL version 14.20 is not supported. Only 16.7 and 17.3 and 18.0 are supported.`).
-- Duck currently has `services.immich.database.enableVectors = true` (pgvecto-rs), and nixpkgs asserts this is incompatible with PostgreSQL 17+; PostgreSQL 16 is the safe upgrade target unless Immich is migrated off pgvecto-rs first.
+- At that time Duck used `services.immich.database.enableVectors = true`
+  (pgvecto-rs), which blocked PostgreSQL 17+. This is superseded by the
+  VectorChord setup and PostgreSQL 18 migration noted above.
 
 ## Key learnings (2025-11-10)
 

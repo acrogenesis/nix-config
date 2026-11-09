@@ -4,11 +4,10 @@ let
   wgBase = lib.strings.removeSuffix ".1" wg.gateway;
   hl = config.homelab;
 in {
-  # Keep PostgreSQL modern for TeslaMate while remaining compatible with
-  # the current Immich (pgvecto-rs) setup.
+  # Upgrade the existing cluster before switching; Immich uses VectorChord.
   services.postgresql = {
-    package = pkgs.postgresql_16;
-    dataDir = "/var/lib/postgresql/16";
+    package = pkgs.postgresql_18;
+    dataDir = "/var/lib/postgresql/18";
   };
 
   # Keep transcoding on the T1000 even if a Jellyfin upgrade rejects an older
@@ -36,13 +35,16 @@ in {
     };
   };
 
-  # Safety guard: prevent accidentally initializing an empty v16 cluster while
-  # the existing v14 cluster still exists and has not been migrated.
+  # Refuse an empty cluster when an earlier major version still has data.
   systemd.services.postgresql.preStart = lib.mkBefore ''
-    if [ ! -e "${config.services.postgresql.dataDir}/PG_VERSION" ] && [ -e "/var/lib/postgresql/14/PG_VERSION" ]; then
-      echo "Refusing to initialize a new PostgreSQL cluster at ${config.services.postgresql.dataDir} while /var/lib/postgresql/14 still exists."
-      echo "Run pg_upgrade (with a backup) before switching."
-      exit 1
+    if [ ! -e "${config.services.postgresql.dataDir}/PG_VERSION" ]; then
+      for previous in 16 14; do
+        if [ -e "/var/lib/postgresql/$previous/PG_VERSION" ]; then
+          echo "Refusing to initialize an empty PostgreSQL cluster while /var/lib/postgresql/$previous still exists."
+          echo "Run pg_upgrade (with a backup) before switching."
+          exit 1
+        fi
+      done
     fi
   '';
 

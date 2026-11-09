@@ -120,8 +120,15 @@ In particular:
   upgrading from 34; major releases must be upgraded sequentially.
 - Unpackerr 1.x preserves the existing headless configuration with
   `listen_addr = ""` inside `[webserver]` so its new web UI is disabled.
-- PostgreSQL stays on the latest packaged 16.x release while the existing Immich
-  vector extension prevents a supported major-version upgrade.
+- Duck uses PostgreSQL 18 with Immich's VectorChord extension. Before switching
+  from 16, back up the shared cluster and rehearse `pg_upgrade` on a copy. Remove
+  the obsolete `vectors` extension with `DROP EXTENSION vectors` without
+  `CASCADE` after confirming Immich's indexes use VectorChord. Initialize the
+  target with checksum settings matching the source (`--no-data-checksums` for
+  Duck's 16 cluster), then use `pg_upgrade --check` and `pg_upgrade --copy`.
+  Rebuild indexes before refreshing any outdated collation versions. Keep the
+  old cluster and persistent backups until all database clients are verified;
+  changing the package or data-directory option alone does not migrate data.
 
 Validate with `nix flake check --accept-flake-config`, build the full Duck system,
 then switch and reboot when the kernel or driver changes. Container tags are

@@ -122,6 +122,11 @@ In particular:
   in its generated PHP configuration, before request parsing. Verify the FPM
   workers use the new runtime and configuration after switching; changing the
   PHP branch alone does not apply the upload-progress security mitigation.
+- Duck's Deluge 2.2 uses libtorrent 2.1 with its ABI 1 compatibility interface;
+  the default ABI 2 removes settings and status fields Deluge still needs.
+  Before changing the backend, stop Deluge and back up its config and resume
+  state. Test a copy in an isolated network with read-only media, including
+  saved torrents, plugins, and checksum-verified downloads and uploads.
 - Unpackerr 1.x preserves the existing headless configuration with
   `listen_addr = ""` inside `[webserver]` so its new web UI is disabled.
 - Duck uses PostgreSQL 18 with Immich's VectorChord extension. Before switching

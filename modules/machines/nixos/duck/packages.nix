@@ -5,6 +5,21 @@
     phpOptions."session.upload_progress.enabled" = "0";
   };
 
+  nixpkgs.overlays = [
+    (_final: prev: {
+      deluge-2_x = prev.deluge-2_x.override {
+        # Deluge still uses the ABI 1 settings and torrent-status properties.
+        libtorrent-rasterbar-2_0_x =
+          prev.libtorrent-rasterbar-2_1_x.overrideAttrs (old: {
+            postPatch = (old.postPatch or "") + ''
+              substituteInPlace CMakeLists.txt \
+                --replace-fail 'ENABLED TORRENT_ABI_VERSION=2' 'ENABLED TORRENT_ABI_VERSION=1'
+            '';
+          });
+      };
+    })
+  ];
+
   # The channel recipe omits the system libraries used by these Rust crates.
   services.microbin.package = pkgs.microbin.overrideAttrs (old: {
     buildInputs =

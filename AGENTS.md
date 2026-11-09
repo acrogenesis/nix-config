@@ -11,6 +11,12 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 
 ## Key learnings (2026-11-09)
 
+- Deluge 2.2 needs libtorrent's ABI 1 compatibility interface when using 2.1.
+  Its default ABI 2 rejects `ignore_resume_timestamps` and removes legacy
+  torrent-status properties. Duck overrides the 2.1 CMake definition for both
+  the library and Python bindings; retain the existing setuptools workaround.
+  Rehearse with copied resume state, plugins and real transfers before switching,
+  and take a cold backup of the live state for rollback.
 - Duck's Nextcloud uses PHP 8.5. Set `session.upload_progress.enabled = 0`
   through `services.nextcloud.phpOptions` so the mitigation applies before
   request parsing. Check the actual FPM unit's binary and generated INI, and

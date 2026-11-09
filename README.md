@@ -118,6 +118,10 @@ In particular:
   unprivileged homelab user.
 - Nextcloud uses version 35. Back up its PostgreSQL database and config before
   upgrading from 34; major releases must be upgraded sequentially.
+- Duck runs Nextcloud on PHP 8.5 and disables `session.upload_progress.enabled`
+  in its generated PHP configuration, before request parsing. Verify the FPM
+  workers use the new runtime and configuration after switching; changing the
+  PHP branch alone does not apply the upload-progress security mitigation.
 - Unpackerr 1.x preserves the existing headless configuration with
   `listen_addr = ""` inside `[webserver]` so its new web UI is disabled.
 - Duck uses PostgreSQL 18 with Immich's VectorChord extension. Before switching

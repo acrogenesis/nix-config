@@ -1,4 +1,10 @@
 { lib, pkgs, ... }: {
+  services.nextcloud = {
+    phpPackage = pkgs.php85;
+    # Apply before request parsing, including every FPM worker.
+    phpOptions."session.upload_progress.enabled" = "0";
+  };
+
   # The channel recipe omits the system libraries used by these Rust crates.
   services.microbin.package = pkgs.microbin.overrideAttrs (old: {
     buildInputs =

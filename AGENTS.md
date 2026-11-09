@@ -11,6 +11,10 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 
 ## Key learnings (2026-11-09)
 
+- Duck's Nextcloud uses PHP 8.5. Set `session.upload_progress.enabled = 0`
+  through `services.nextcloud.phpOptions` so the mitigation applies before
+  request parsing. Check the actual FPM unit's binary and generated INI, and
+  replace its workers after deploying; a CLI version check alone is insufficient.
 - Current Immich supports PostgreSQL 18 and Duck already uses VectorChord.
   The old pgvecto.rs restriction below is historical. Before the 16-to-18
   upgrade, remove the unused `vectors` extension without `CASCADE`, rehearse

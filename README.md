@@ -102,8 +102,10 @@ Prowlarr, and Unpackerr releases where the channel lags. The application overrid
 nixpkgs when it catches up. Paperless uses its matching upstream release frontend
 and builds the backend with its required Python dependencies.
 
-Before database or application migrations, take database dumps and snapshots of
-`rpool/nixos/var/lib` and `rpool/nixos/persist`. In particular:
+Before database or application migrations, store database dumps under a private
+directory on `/var/lib` or `/persist`, and snapshot `rpool/nixos/var/lib` and
+`rpool/nixos/persist`. `/var/backup` is erased by the root rollback at reboot.
+In particular:
 
 - Grimmory uses LinuxServer MariaDB 11.8.9. Its database unit waits for SQL and
   runs `mariadb-upgrade` before starting Grimmory. Stop Grimmory before replacing

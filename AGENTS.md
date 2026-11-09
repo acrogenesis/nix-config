@@ -20,6 +20,10 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
   starts. The 11.4 to 11.8 migration was checked on an isolated snapshot copy.
   OCI units explicitly set `TimeoutStartSec = 0`; use `lib.mkForce` when setting
   a finite timeout for the readiness and upgrade check.
+- `/var/backup` is on Duck's rolled-back root. Keep manual migration backups on
+  `/var/lib` or `/persist` so they survive the reboot.
+- Microbin's channel recipe omits zstd and SQLite while its Rust crates link
+  against those system libraries. Duck adds both to the package's build inputs.
 - Duck's temporary package overrides cover stable releases ahead of the tested
   channel. Paperless needs its matching frontend, django-guardian and API docs
   assets; Prowlarr's bundled .NET tracing provider needs the UST 0 compatibility

@@ -1,16 +1,21 @@
 { lib, pkgs, ... }: {
+  # The channel recipe omits the system libraries used by these Rust crates.
+  services.microbin.package = pkgs.microbin.overrideAttrs (old: {
+    buildInputs =
+      lib.unique ((old.buildInputs or [ ]) ++ [ pkgs.zstd pkgs.sqlite ]);
+  });
+
   # Keep the channel's packages as soon as they catch up with these releases.
-  services.openssh.package =
-    if lib.versionOlder pkgs.openssh.version "10.6p2" then
-      pkgs.openssh.overrideAttrs {
-        version = "10.6p2";
-        src = pkgs.fetchurl {
-          url = "mirror://openbsd/OpenSSH/portable/openssh-10.6p2.tar.gz";
-          hash = "sha256-muRIcgkM8vBrPPn/FH5/FvMJZxNAdj7S+ZJIOYrinVs=";
-        };
-      }
-    else
-      pkgs.openssh;
+  programs.ssh.package = if lib.versionOlder pkgs.openssh.version "10.6p2" then
+    pkgs.openssh.overrideAttrs {
+      version = "10.6p2";
+      src = pkgs.fetchurl {
+        url = "mirror://openbsd/OpenSSH/portable/openssh-10.6p2.tar.gz";
+        hash = "sha256-muRIcgkM8vBrPPn/FH5/FvMJZxNAdj7S+ZJIOYrinVs=";
+      };
+    }
+  else
+    pkgs.openssh;
 
   services.paperless.package =
     if lib.versionOlder pkgs.paperless-ngx.version "3.4.2" then

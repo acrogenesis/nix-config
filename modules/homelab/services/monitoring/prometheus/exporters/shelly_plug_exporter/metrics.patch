@@ -32,8 +32,8 @@ index f05640b..12acaa8 100644
  
    val restTemplate = RestTemplate()
    fun getMetrics() = restTemplate
--    .getForObject<String?>("http://localhost:$port/prometheus")
-+    .getForObject<String?>("http://localhost:$port/metrics")
+-    .getForObject<String>("http://localhost:$port/prometheus")
++    .getForObject<String>("http://localhost:$port/metrics")
      ?.trim()
      ?.lines()
      ?.filterNot { it.startsWith("#") }

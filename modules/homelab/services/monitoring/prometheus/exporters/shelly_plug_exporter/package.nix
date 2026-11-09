@@ -2,16 +2,16 @@
 
 maven.buildMavenPackage rec {
   pname = "prometheus-shellyplug-exporter";
-  version = "2.8.0";
+  version = "3.2.0";
 
   src = fetchFromGitHub {
     owner = "easimon";
     repo = "shelly-exporter";
     rev = version;
-    hash = "sha256-I8yVMX+mlgYjkdj/lo3mKr9JQ6b3d0bT0r0q1jj4z4g=";
+    hash = "sha256-uwd/ZvA0yPnRFLmIfejEdDmHcyW043d16sDnQKeFzyM=";
   };
 
-  mvnHash = "sha256-I8Ht9vQ2JFAelTSW2aYyJYLEbtMM51BmCQLHX1DRrcg=";
+  mvnHash = "sha256-8jLThm4i8mdway1zYwCTQjxszbvUBqYD0Ww9uFxT0OA=";
   nativeBuildInputs = [ makeWrapper ];
 
   installPhase = ''

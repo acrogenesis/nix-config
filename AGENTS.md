@@ -9,6 +9,20 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 - Keep `docs/removed-services.md` in sync with config changes (add items when disabling, remove when re-enabling).
 - Mention new secrets or hardware requirements in `nix-private/README.md`.
 
+## Key learnings (2026-11-09)
+
+- The old `home-assistant-libs/python-matter-server:stable` image is frozen at
+  8.1.0. Duck now uses `matter-js/matterjs-server:stable`, running as the homelab
+  user. Preserve and back up the existing data directory before its first-start
+  migration; tmpfiles must repair the Python server's root-owned fabric files.
+  Never run both controllers on the production network at the same time.
+- Grimmory's MariaDB unit must finish `mariadb-upgrade` before the application
+  starts. The 11.4 to 11.8 migration was checked on an isolated snapshot copy.
+- Duck's temporary package overrides cover stable releases ahead of the tested
+  channel. Paperless needs its matching frontend, django-guardian and API docs
+  assets; Prowlarr's bundled .NET tracing provider needs the UST 0 compatibility
+  library. Build these packages and the full system, not just `flake check`.
+
 ## Key learnings (2026-11-06)
 
 - Lego now spells the fixed DNS propagation wait flag

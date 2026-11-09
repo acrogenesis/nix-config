@@ -1,9 +1,11 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 let
   service = "grimmory";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
   dbService = "${service}-mariadb";
+  backend = config.virtualisation.oci-containers.backend;
+  runtime = lib.getExe pkgs.${backend};
 in {
   options.homelab.services.${service} = {
     enable = lib.mkEnableOption "Enable ${service}";
@@ -23,7 +25,7 @@ in {
     };
     databaseImage = lib.mkOption {
       type = lib.types.str;
-      default = "lscr.io/linuxserver/mariadb:11.4.5";
+      default = "lscr.io/linuxserver/mariadb:11.8.9";
       description = "MariaDB container image for ${service}.";
     };
     configDir = lib.mkOption {
@@ -76,6 +78,20 @@ in {
     ];
 
     virtualisation.podman.enable = true;
+    # dependsOn keeps Grimmory behind this unit, including its upgrade check.
+    systemd.services."${backend}-${dbService}" = {
+      serviceConfig.TimeoutStartSec = "5min";
+      postStart = ''
+        for ((attempt = 0; attempt < 120; attempt++)); do
+          if ${runtime} exec ${dbService} mariadb-admin ping --silent >/dev/null 2>&1; then
+            exec ${runtime} exec ${dbService} mariadb-upgrade
+          fi
+          ${pkgs.coreutils}/bin/sleep 1
+        done
+        echo "MariaDB did not become ready for its upgrade check" >&2
+        exit 1
+      '';
+    };
     virtualisation.oci-containers.containers = {
       ${dbService} = {
         image = cfg.databaseImage;

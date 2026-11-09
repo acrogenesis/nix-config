@@ -172,6 +172,9 @@ in {
         enable = true;
         environmentFile = config.age.secrets.unpackerrEnvironmentFile.path;
         configText = ''
+          # Preserve the existing headless service when upgrading to v1.
+          listen_addr = ""
+
           [[sonarr]]
           url = "http://127.0.0.1:8989"
 

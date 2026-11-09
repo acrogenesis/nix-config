@@ -2,16 +2,16 @@
 
 maven.buildMavenPackage rec {
   pname = "keycloak-spi-trusted-device";
-  version = "0.0.2";
+  version = "0.0.3";
 
   src = fetchFromGitHub {
     owner = "wouterh-dev";
     repo = "keycloak-spi-trusted-device";
     rev = "v${version}";
-    hash = "sha256-3GFQsgFXDEN5ORO7rkHSlEcdCbnVR3V8byXsGXCd00o=";
+    hash = "sha256-zzJeoLmz0RpFAByL2KZ9+G8B2pQv2ZPw+DxOA8jdKUs=";
   };
 
-  mvnHash = "sha256-Fhuqfd54O77Xn+hXZnp/cyqXMykHFv3jfNFp2Dm87VQ=";
+  mvnHash = "sha256-6cG3nwZ7Zj2sBHBUN0dMyoKue+5Pj+aA61Lk7JOrS2k=";
 
   installPhase = ''
     install -D "spi/target/keycloak-spi-trusted-device-1.0-SNAPSHOT.jar" "$out/spi-trusted-device-${version}.jar"

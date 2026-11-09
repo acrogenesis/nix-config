@@ -24,3 +24,8 @@
 Keep this list in sync with future removals or re-enables so it serves as a quick reference for which pieces still need secrets or hardware.
 
 - **maya (NixOS desktop)** — removed from this fork; delete directory `modules/machines/nixos/maya` to avoid lint errors.
+
+- **Python Matter Server image** — superseded by the maintained Matter.js Server.
+  The `matter-server` service and persistent data path remain; the replacement
+  migrates the existing fabric on first start. Retain a backup and never run the
+  two controllers simultaneously on the same network.

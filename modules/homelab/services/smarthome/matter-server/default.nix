@@ -16,15 +16,22 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    systemd.tmpfiles.rules =
-      [ "d ${cfg.configDir} 0775 ${homelab.user} ${homelab.group} - -" ];
+    systemd.tmpfiles.rules = [
+      "d ${cfg.configDir} 0770 ${homelab.user} ${homelab.group} - -"
+      # The Python server wrote root-owned fabric keys. The replacement runs as
+      # the homelab user and migrates those files on its first start.
+      "Z ${cfg.configDir} - ${homelab.user} ${homelab.group} - -"
+    ];
 
     virtualisation = {
       podman.enable = true;
       oci-containers = {
         containers = {
           matter-server = {
-            image = "ghcr.io/home-assistant-libs/python-matter-server:stable";
+            image = "ghcr.io/matter-js/matterjs-server:stable";
+            user = "${toString config.users.users.${homelab.user}.uid}:${
+                toString config.users.groups.${homelab.group}.gid
+              }";
             autoStart = true;
             extraOptions = [ "--pull=newer" "--network=host" ];
             volumes = [ "${cfg.configDir}:/data" ];

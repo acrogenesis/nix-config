@@ -91,6 +91,40 @@ Jellyfin's cache is persisted at `/var/lib/jellyfin/cache` so Native Trickplay
 assets survive Duck's immutable-root rollback. That generated cache is excluded
 from both appdata backup targets and can be rebuilt from the media library.
 
+## Updating Duck
+
+Duck uses the tested `nixos-unstable` channel. GitHub refreshes `flake.lock`
+daily, while the host pulls and rebuilds on Saturdays at 02:30 Monterrey time.
+A newer lock in Git does not mean the running system has been upgraded.
+
+Duck's `packages.nix` temporarily supplies newer stable OpenSSH, Nix, Paperless,
+Prowlarr, and Unpackerr releases where the channel lags. The application overrides yield to
+nixpkgs when it catches up. Paperless uses its matching upstream release frontend
+and builds the backend with its required Python dependencies.
+
+Before database or application migrations, take database dumps and snapshots of
+`rpool/nixos/var/lib` and `rpool/nixos/persist`. In particular:
+
+- Grimmory uses LinuxServer MariaDB 11.8.9. Its database unit waits for SQL and
+  runs `mariadb-upgrade` before starting Grimmory. Stop Grimmory before replacing
+  an existing database image, and retain a pre-upgrade database backup.
+- The Matter service uses `ghcr.io/matter-js/matterjs-server:stable`, replacing
+  the discontinued Python server. It keeps `/persist/opt/services/matter-server`
+  and the existing controller fabric. The first start migrates that state; do
+  not run both controllers on the network at once. Tmpfiles repairs ownership of
+  the Python server's root-owned files so the new container can run as the
+  unprivileged homelab user.
+- Nextcloud uses version 35. Back up its PostgreSQL database and config before
+  upgrading from 34; major releases must be upgraded sequentially.
+- Unpackerr 1.x preserves the existing headless configuration with
+  `listen_addr = ""`; its new web UI is not enabled by the version update.
+- PostgreSQL stays on the latest packaged 16.x release while the existing Immich
+  vector extension prevents a supported major-version upgrade.
+
+Validate with `nix flake check --accept-flake-config`, build the full Duck system,
+then switch and reboot when the kernel or driver changes. Container tags are
+refreshed on service start; verify the running image digests after deployment.
+
 ## Installation runbook (NixOS)
 
 Create a root password using the TTY

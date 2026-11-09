@@ -163,6 +163,7 @@ in {
   imports = [
     inputs.disko.nixosModules.disko
     ./disko.nix
+    ./packages.nix
     ../../../misc/tailscale
     ../../../misc/zfs-root
     ../../../misc/agenix

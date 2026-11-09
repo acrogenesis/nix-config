@@ -80,7 +80,7 @@ in {
     virtualisation.podman.enable = true;
     # dependsOn keeps Grimmory behind this unit, including its upgrade check.
     systemd.services."${backend}-${dbService}" = {
-      serviceConfig.TimeoutStartSec = "5min";
+      serviceConfig.TimeoutStartSec = lib.mkForce "5min";
       postStart = ''
         for ((attempt = 0; attempt < 120; attempt++)); do
           if ${runtime} exec ${dbService} mariadb-admin ping --silent >/dev/null 2>&1; then

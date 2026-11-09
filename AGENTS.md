@@ -24,6 +24,8 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
   `/var/lib` or `/persist` so they survive the reboot.
 - Microbin's channel recipe omits zstd and SQLite while its Rust crates link
   against those system libraries. Duck adds both to the package's build inputs.
+- Unpackerr 1.x enables its HTTP server by default. The empty `listen_addr`
+  setting must be inside `[webserver]`; a top-level setting is ignored.
 - Duck's temporary package overrides cover stable releases ahead of the tested
   channel. Paperless needs its matching frontend, django-guardian and API docs
   assets; Prowlarr's bundled .NET tracing provider needs the UST 0 compatibility

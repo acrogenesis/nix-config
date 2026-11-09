@@ -119,7 +119,7 @@ In particular:
 - Nextcloud uses version 35. Back up its PostgreSQL database and config before
   upgrading from 34; major releases must be upgraded sequentially.
 - Unpackerr 1.x preserves the existing headless configuration with
-  `listen_addr = ""`; its new web UI is not enabled by the version update.
+  `listen_addr = ""` inside `[webserver]` so its new web UI is disabled.
 - PostgreSQL stays on the latest packaged 16.x release while the existing Immich
   vector extension prevents a supported major-version upgrade.
 

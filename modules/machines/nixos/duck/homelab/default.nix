@@ -173,6 +173,7 @@ in {
         environmentFile = config.age.secrets.unpackerrEnvironmentFile.path;
         configText = ''
           # Preserve the existing headless service when upgrading to v1.
+          [webserver]
           listen_addr = ""
 
           [[sonarr]]

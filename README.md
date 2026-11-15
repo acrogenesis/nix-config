@@ -111,15 +111,21 @@ Duck uses the tested `nixos-unstable` channel. GitHub refreshes `flake.lock`
 daily, while the host pulls and rebuilds on Saturdays at 02:30 Monterrey time.
 A newer lock in Git does not mean the running system has been upgraded.
 
-The November 15 Time Machine repair retains Duck's already deployed input
-revisions. The newer automated refresh was blocked by an insecure
-`python3.14-python-jose-3.5.0` dependency; resolve that channel issue before
-advancing the lock for deployment.
+Auxiliary stable inputs track the supported 26.05 releases. Nixvim follows the
+matching stable or unstable package set for each host, and Refun uses Duck's
+maintained unstable input instead of its former 24.11 dependencies.
 
-Duck's `packages.nix` temporarily supplies newer stable OpenSSH, Nix, Paperless,
-Prowlarr, and Unpackerr releases where the channel lags. The application overrides yield to
-nixpkgs when it catches up. Paperless uses its matching upstream release frontend
-and builds the backend with its required Python dependencies.
+Duck's `packages.nix` temporarily supplies newer stable releases where the
+channel lags, including Glances, Nextcloud, Seerr, Grafana, OpenSSH, Nix,
+Paperless, Prowlarr and Unpackerr. The overrides yield to nixpkgs when it catches
+up. Glances 4.5.9 replaces insecure `python-jose` with PyJWT, and Seerr 3.5.2
+includes upstream security fixes. No insecure-package exception is required.
+Paperless uses its matching upstream frontend and required Python dependencies.
+The shared OpenSSH overlay also updates the clients used by Mosh and Restic.
+
+The system manager uses systemd 262.2 through `systemd.package`; library
+consumers retain the channel's libsystemd build. This applies the runtime patch
+release without rebuilding every consumer of the systemd libraries.
 
 Before database or application migrations, store database dumps under a private
 directory on `/var/lib` or `/persist`, and snapshot `rpool/nixos/var/lib` and

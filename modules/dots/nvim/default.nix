@@ -21,6 +21,8 @@ in {
 
   programs.nixvim = {
     enable = true;
+    # Reuse Home Manager's package set and its existing license policy.
+    nixpkgs.pkgs = pkgs;
     colorschemes.nord = {
       enable = true;
       settings = {

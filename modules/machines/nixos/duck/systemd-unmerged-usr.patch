@@ -1,0 +1,22 @@
+NixOS uses store paths rather than a merged /usr hierarchy. Preserve nixpkgs'
+existing taint policy with systemd 262.2's ENOENT-aware symlink checks.
+
+--- a/src/core/taint.c
++++ b/src/core/taint.c
+@@ -49,16 +49,6 @@ char** taint_strv(void) {
+ 
+         _cleanup_free_ char *bin = NULL, *usr_sbin = NULL, *var_run = NULL;
+ 
+-        r = readlink_malloc("/bin", &bin);
+-        if (r != -ENOENT && (r < 0 || !PATH_IN_SET(bin, "usr/bin", "/usr/bin")))
+-                stage[n++] = "unmerged-usr";
+-
+-        /* Note that the check is different from default_PATH(), as we want to taint on uncanonical symlinks
+-         * too. */
+-        r = readlink_malloc("/usr/sbin", &usr_sbin);
+-        if (r != -ENOENT && (r < 0 || !PATH_IN_SET(usr_sbin, "bin", "/usr/bin")))
+-                stage[n++] = "unmerged-bin";
+-
+         r = readlink_malloc("/var/run", &var_run);
+         if (r != -ENOENT && (r < 0 || !PATH_IN_SET(var_run, "../run", "/run")))
+                 stage[n++] = "var-run-bad";

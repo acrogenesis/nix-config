@@ -9,6 +9,23 @@ Check `/nix/var/nix/profiles/default/bin/nix flake check --accept-flake-config` 
 - Keep `docs/removed-services.md` in sync with config changes (add items when disabling, remove when re-enabling).
 - Mention new secrets or hardware requirements in `nix-private/README.md`.
 
+## Key learnings (2026-11-15)
+
+- Glances 4.5.9 replaces insecure python-jose with PyJWT. Its SMART tests need
+  pySMART as a check input even when that optional plugin is not installed at
+  runtime. Its browser test server also needs an API readiness wait instead of a
+  fixed startup sleep. Preserve the SMART and credential-sanitization assertions.
+- systemd 262.2 changed the symlink checks in `src/core/taint.c`; the existing
+  NixOS unmerged-usr patch must be rebased. Duck selects the runtime through
+  `systemd.package`, retaining the channel's library builds.
+- Paperless 3.4.2 works with Torch 2.15 (3,902 upstream tests passed). Limit the
+  dependency-cap relaxation to that tested pair. Use `overrideAttrs` here to
+  preserve the package's `override` method required by the NixOS module.
+- Nixvim needs a matching stable/unstable input and an explicit Home Manager
+  package set so its existing license policy is preserved.
+- Override OpenSSH in the package overlay, not only `programs.ssh.package`:
+  Restic and Mosh otherwise retain their separately referenced old SSH client.
+
 ## Key learnings (2026-11-09)
 
 - Deluge 2.2 needs libtorrent's ABI 1 compatibility interface when using 2.1.

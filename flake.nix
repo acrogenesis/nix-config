@@ -13,22 +13,26 @@
     ];
   };
   inputs = {
-    nixpkgs = { url = "github:nixos/nixpkgs/nixos-25.05"; };
+    nixpkgs = { url = "github:nixos/nixpkgs/nixos-26.05"; };
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-25.05";
+      url = "github:nix-community/nixvim/nixos-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixvim-unstable = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager-unstable = {
@@ -44,7 +48,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/nix-darwin-25.05";
+      url = "github:LnL7/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     disko = {
@@ -68,10 +72,13 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     teslamate.url = "github:teslamate-org/teslamate";
-    refun.url = "github:acrogenesis/refun";
+    refun = {
+      url = "github:acrogenesis/refun";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
-  outputs = inputs@{ flake-parts, ... }:
+  outputs = inputs@{ ... }:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } ({ ... }: {
       systems = [ "x86_64-linux" "aarch64-darwin" ];
       imports = [

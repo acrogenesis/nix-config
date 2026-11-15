@@ -3,12 +3,12 @@ let
   entries = builtins.attrNames (builtins.readDir ./.);
   configs = builtins.filter
     (dir: builtins.pathExists (./. + "/${dir}/configuration.nix")) entries;
-  homeManagerCfg = userPackages: extraImports: {
+  homeManagerCfg = nixvim: userPackages: extraImports: {
     home-manager.useGlobalPkgs = false;
     home-manager.extraSpecialArgs = { inherit (self) inputs; };
     home-manager.users.acrogenesis.imports = [
       self.inputs.agenix.homeManagerModules.default
-      self.inputs.nixvim.homeModules.nixvim
+      nixvim.homeModules.nixvim
       self.inputs.nix-index-database.homeModules.nix-index
       ../../users/acrogenesis/dots.nix
       ../../users/acrogenesis/age.nix
@@ -49,7 +49,9 @@ in {
         (./. + "/_common/default.nix")
         (./. + "/${name}/configuration.nix")
         ../../users/acrogenesis
-        (homeManagerCfg false [ ])
+        (homeManagerCfg
+          self.inputs."nixvim${lib.attrsets.attrByPath [ name ] "" nixpkgsMap}"
+          false [ ])
       ];
     })) configs);
 }

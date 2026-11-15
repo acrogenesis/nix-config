@@ -91,11 +91,30 @@ Jellyfin's cache is persisted at `/var/lib/jellyfin/cache` so Native Trickplay
 assets survive Duck's immutable-root rollback. That generated cache is excluded
 from both appdata backup targets and can be rebuilt from the media library.
 
+### Omarchy Time Machine client backups
+
+The `archy` desktop stores its encrypted Restic repository at
+`/mnt/mergerfs_slow/Backups/TimeMachine/archy` over SSH/SFTP as `acrogenesis`.
+NixOS creates the directory and restores its ownership at boot and activation,
+after the disk pool is mounted. The backup contents live on the persistent data
+disks and survive Duck's root rollback.
+
+The mover excludes `Backups/TimeMachine/archy` from both file moves and its
+recursive ownership/mode reset on both pools. Exclusions match complete path
+components, so similarly named neighboring directories retain the normal mover
+policy. Desktop credentials, exclusions and its nightly timer remain configured
+on the desktop. No client-side privileged ownership repair is required.
+
 ## Updating Duck
 
 Duck uses the tested `nixos-unstable` channel. GitHub refreshes `flake.lock`
 daily, while the host pulls and rebuilds on Saturdays at 02:30 Monterrey time.
 A newer lock in Git does not mean the running system has been upgraded.
+
+The November 15 Time Machine repair retains Duck's already deployed input
+revisions. The newer automated refresh was blocked by an insecure
+`python3.14-python-jose-3.5.0` dependency; resolve that channel issue before
+advancing the lock for deployment.
 
 Duck's `packages.nix` temporarily supplies newer stable OpenSSH, Nix, Paperless,
 Prowlarr, and Unpackerr releases where the channel lags. The application overrides yield to

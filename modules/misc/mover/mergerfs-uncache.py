@@ -8,11 +8,87 @@ import syslog
 import time
 import urllib.request
 from pathlib import Path
-from typing import List
 import asyncio
-import aiofiles
+
+
+def normalize_exclusions(cache_path, entries):
+    """Return absolute, component-aligned exclusions inside the cache pool."""
+    cache_path = Path(os.path.abspath(cache_path))
+    exclusions = []
+    for entry in entries:
+        excluded = Path(entry)
+        if not excluded.is_absolute():
+            excluded = cache_path / excluded
+        excluded = Path(os.path.abspath(excluded))
+        if not excluded.is_relative_to(cache_path):
+            raise ValueError(f"Excluded path is outside the cache pool: {entry}")
+        exclusions.append(excluded)
+    return tuple(exclusions)
+
+
+def is_excluded(candidate, exclusions):
+    return any(candidate.is_relative_to(excluded) for excluded in exclusions)
+
+
+def fix_permissions(uid, gid, cache_path, slow_path, excluded_paths=()):
+    """Preserve excluded subtrees on both pools, including their ownership."""
+    if not uid or not gid:
+        return
+    cache_path = Path(os.path.abspath(cache_path))
+    exclusions = normalize_exclusions(cache_path, excluded_paths)
+    relatives = [excluded.relative_to(cache_path) for excluded in exclusions]
+    owner = f"{uid}:{gid}"
+
+    for pool in (cache_path, Path(os.path.abspath(slow_path))):
+        protected = tuple(pool / relative for relative in relatives)
+        syslog.syslog(syslog.LOG_INFO, f"Fixing permissions on {pool}...")
+
+        def repair(target):
+            if is_excluded(target, protected):
+                return
+            # A symlink passed directly to chmod would follow its target.
+            # Keep the old recursive traversal's no-follow behavior.
+            if target.is_symlink():
+                subprocess.run([
+                    "/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown",
+                    "-h", "--", owner, str(target),
+                ])
+                return
+            contains_exclusion = any(path.is_relative_to(target) for path in protected)
+            recursive = [] if contains_exclusion else ["-R"]
+            subprocess.run([
+                "/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown",
+                *recursive, "-h", "--", owner, str(target),
+            ])
+            subprocess.run([
+                "/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chmod",
+                *recursive, "--", "ug=rwX,o=rX", str(target),
+            ])
+            # Only split branches leading to an exclusion. Other subtrees
+            # retain the efficient recursive chown/chmod operations.
+            if contains_exclusion and target.is_dir():
+                for child in target.iterdir():
+                    repair(child)
+
+        repair(pool)
+
+
+def iter_candidates(cache_path, exclusions):
+    for directory, subdirs, names in os.walk(cache_path, followlinks=False):
+        directory = Path(directory)
+        if is_excluded(directory, exclusions):
+            subdirs[:] = []
+            continue
+        subdirs[:] = [name for name in subdirs
+                      if not is_excluded(directory / name, exclusions)]
+        for name in names:
+            candidate = directory / name
+            if not is_excluded(candidate, exclusions) and candidate.is_file():
+                yield candidate, candidate.stat()
 
 if __name__ == "__main__":
+    import aiofiles
+
     """
     Uncaching utility. This scripts assumes that you have a cache-like
     mount point, for which you want to preserve a certain amount of free
@@ -93,7 +169,7 @@ if __name__ == "__main__":
         "--exclude",
         dest="exclude",
         nargs="*",
-        help="Optional list of absolute paths to be excluded from uncaching operations.",
+        help="Paths under the source pool, absolute or relative, excluded from moving and permission changes on both pools.",
         required=False,
         default=list(),
     )
@@ -111,14 +187,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Some general checks
-    cache_path: Path = args.source
+    cache_path: Path = Path(os.path.abspath(args.source))
     if not cache_path.is_dir():
         raise NotADirectoryError(f"{cache_path} is not a valid directory.")
-    slow_path: Path = args.destination
+    slow_path: Path = Path(os.path.abspath(args.destination))
     if not slow_path.is_dir():
         raise NotADirectoryError(f"{slow_path} is not a valid directory.")
 
-    excluded_paths: List[str] = args.exclude
+    excluded_paths = normalize_exclusions(cache_path, args.exclude)
 
     last_id = args.num_files
     time_limit = args.time_limit
@@ -134,20 +210,7 @@ if __name__ == "__main__":
     ###################
     uid = args.uid
     gid = args.gid
-    def fix_permissions(uid, gid, cache_path, slow_path):
-        if len(uid) > 0 and len(gid) > 0:
-            syslog.syslog(
-                    syslog.LOG_INFO, f"Fixing permissions on {cache_path}..."
-                    )
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown", "-R", f"{uid}:{gid}", f"{cache_path}"])
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chmod", "-R", "ug=rwX,o=rX", f"{cache_path}"])
-            syslog.syslog(
-                    syslog.LOG_INFO, f"Fixing permissions on {slow_path}..."
-                    )
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown", "-R", f"{uid}:{gid}", f"{slow_path}"])
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chmod", "-R", "ug=rwX,o=rX", f"{slow_path}"])
-
-    fix_permissions(uid, gid, cache_path, slow_path)
+    fix_permissions(uid, gid, cache_path, slow_path, excluded_paths)
     if args.hc_url != "":
         try:
             urllib.request.urlopen(args.hc_url + "/start", timeout=3)
@@ -163,7 +226,7 @@ if __name__ == "__main__":
     )
     syslog.syslog(syslog.LOG_INFO, "Computing candidates...")
     candidates = sorted(
-        [(c, c.stat()) for c in cache_path.glob("**/*") if c.is_file()],
+        iter_candidates(cache_path, excluded_paths),
         key=lambda p: p[1].st_atime,
     )
 
@@ -210,7 +273,7 @@ if __name__ == "__main__":
 
         tasks = []
         for c_id, (c_path, c_stat) in enumerate(candidates):
-            if any(excluded_path in str(c_path) for excluded_path in excluded_paths):
+            if is_excluded(c_path, excluded_paths):
                 syslog.syslog(syslog.LOG_DEBUG, f"Skipping {c_path} since it is excluded.")
                 continue
 
@@ -245,7 +308,7 @@ if __name__ == "__main__":
     syslog.syslog(syslog.LOG_INFO, f"Starting to move files")
     asyncio.run(process_files(candidates, excluded_paths, cache_path, slow_path, target, last_id, time_limit))
 
-    fix_permissions(uid, gid, cache_path, slow_path)
+    fix_permissions(uid, gid, cache_path, slow_path, excluded_paths)
     if args.hc_url != "":
         try:
             urllib.request.urlopen(args.hc_url, timeout=3)

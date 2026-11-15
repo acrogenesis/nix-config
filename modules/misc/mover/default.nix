@@ -2,7 +2,7 @@
 let
   cfg = config.services.mover;
   inherit (builtins) toString map readFile;
-  inherit (lib) mkIf mkEnableOption types mkOption concatStringsSep;
+  inherit (lib) mkIf mkEnableOption types mkOption;
   mergerfs-uncache =
     pkgs.writeScriptBin "mergerfs-uncache" (readFile ./mergerfs-uncache.py);
 in {
@@ -26,7 +26,7 @@ in {
     };
     excludedPaths = mkOption {
       description =
-        "List of paths (relative to cacheArray) that should be excluded from moving";
+        "Paths relative to the pool roots excluded from moving and permission changes on both arrays";
       type = types.listOf types.str;
       default = [ ];
     };
@@ -80,7 +80,7 @@ in {
             ""
           else
             "--exclude ${
-              concatStringsSep " "
+              lib.escapeShellArgs
               (map (path: "${cfg.cacheArray}/${path}") cfg.excludedPaths)
             }";
           runner = pkgs.writeShellScript "run-mergerfs-uncache" ''

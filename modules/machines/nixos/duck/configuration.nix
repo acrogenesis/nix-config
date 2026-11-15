@@ -8,6 +8,7 @@ let
   gatewayIpv6Address = "fd84:7b2c:3e5a:1::1";
   lanInterface = lan.interface;
   bootDeviceId = "nvme-Patriot_M.2_P300_512GB_P300WCBB24093006490";
+  timeMachineRepository = "${hl.mounts.slow}/Backups/TimeMachine/archy";
   hardDrives = [
     "/dev/disk/by-label/Data1"
     "/dev/disk/by-label/Data2"
@@ -230,7 +231,18 @@ in {
     user = hl.user;
     group = hl.group;
     percentageFree = 60;
+    excludedPaths = [ "Backups/TimeMachine/archy" ];
   };
+
+  # This encrypted client repository belongs to the SSH backup account, not
+  # the shared media account. Restore ownership at boot and activation.
+  systemd.tmpfiles.rules = [
+    "d ${hl.mounts.slow}/Backups/TimeMachine 0775 ${hl.user} ${hl.group} - -"
+    "d ${timeMachineRepository} 0700 acrogenesis acrogenesis - -"
+    "Z ${timeMachineRepository} - acrogenesis acrogenesis - -"
+  ];
+  systemd.services.systemd-tmpfiles-setup.unitConfig.RequiresMountsFor =
+    [ hl.mounts.slow ];
 
   services.autoaspm.enable = true;
   powerManagement.powertop.enable = true;

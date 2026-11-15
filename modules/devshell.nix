@@ -2,6 +2,13 @@
   systems = [ "aarch64-darwin" ];
   imports = [ inputs.treefmt-nix.flakeModule ];
   perSystem = { pkgs, ... }: {
+    checks.mover-permissions = pkgs.runCommand "mover-permissions-check" {
+      nativeBuildInputs = [ pkgs.python313 ];
+    } ''
+      export PYTHONDONTWRITEBYTECODE=1
+      python ${./misc/mover}/test_permissions.py
+      touch $out
+    '';
     treefmt = {
       projectRootFile = "flake.nix";
       settings.global.excludes = [ "*.lock" ".gitignore" "secrets/*" ];

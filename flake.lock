@@ -94,11 +94,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1793700691,
-        "narHash": "sha256-g2PRN40ToD3ji0c4wpOI6pOMFgyWPY7yNxxn/+y5e7o=",
+        "lastModified": 1794562632,
+        "narHash": "sha256-MOb8lrEUUki0Kxe+LNLuhj3DbPsjcurZWq3eG3R0Z9U=",
         "owner": "cachix",
         "repo": "devenv",
-        "rev": "8e6eb8ecb878146883526ea0ebcbb7344a83be68",
+        "rev": "6c954cc1c04f1d0b2f6ad689c9dffd835fa4d928",
         "type": "github"
       },
       "original": {
@@ -591,11 +591,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1793633738,
-        "narHash": "sha256-tItrb9M8eYA6WhFgmT9tpGKueri3+wRuVA952o/2xSU=",
+        "lastModified": 1794552581,
+        "narHash": "sha256-qXFIqA6FCcx7XeDzw0ZNlkDT9UiCzrNDwK8RuU8RcHM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "7dcdd87373d72e7a2173e4db02e20d3d7f495cfd",
+        "rev": "f1e5c356f35d07e7b71a6b5e6c9338e0b029e0c0",
         "type": "github"
       },
       "original": {
@@ -836,11 +836,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1794390573,
-        "narHash": "sha256-HaR2BN8qtQy0MiubKCmSJh3DdKe9HxwT3aYRMtrHgS8=",
+        "lastModified": 1794822327,
+        "narHash": "sha256-XeZQSkVa2ObY8wAx1/dsAOjHZyQqFB5y95u18X70NJk=",
         "owner": "teslamate-org",
         "repo": "teslamate",
-        "rev": "e8f031902a422388a52db3d87a5a41bd297d0def",
+        "rev": "406456f00bb272ac0a42e115ec6e96bb4bb9f56c",
         "type": "github"
       },
       "original": {

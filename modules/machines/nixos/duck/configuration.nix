@@ -9,6 +9,13 @@ let
   lanInterface = lan.interface;
   bootDeviceId = "nvme-Patriot_M.2_P300_512GB_P300WCBB24093006490";
   timeMachineRepository = "${hl.mounts.slow}/Backups/TimeMachine/archy";
+  # pgBackRest repository for the Valiot Postgres databases on archy, written over
+  # SFTP. It lives on the parity-protected HDD array, outside every Restic path, so
+  # it is not shipped to Backblaze, and outside the Samba shares.
+  pgbackrestRepository = "${hl.mounts.slow}/pgbackrest";
+  # sshd chroots only into root-owned paths, and the mergerfs mount belongs to the
+  # share account, so the chroot is on /var/lib with the repository bound into it.
+  pgbackrestChroot = "/var/lib/pgbackrest-sftp";
   hardDrives = [
     "/dev/disk/by-label/Data1"
     "/dev/disk/by-label/Data2"
@@ -240,7 +247,39 @@ in {
     "d ${hl.mounts.slow}/Backups/TimeMachine 0775 ${hl.user} ${hl.group} - -"
     "d ${timeMachineRepository} 0700 acrogenesis acrogenesis - -"
     "Z ${timeMachineRepository} - acrogenesis acrogenesis - -"
+    "d ${pgbackrestRepository} 0750 pgbackrest pgbackrest - -"
+    "d ${pgbackrestChroot} 0755 root root - -"
+    "d ${pgbackrestChroot}/repo 0750 pgbackrest pgbackrest - -"
   ];
+
+  # Archy's Postgres servers push WAL and backups here with pgBackRest
+  # (repo1-type=sftp). The account can only use SFTP inside its chroot.
+  users.groups.pgbackrest = { };
+  users.users.pgbackrest = {
+    isSystemUser = true;
+    group = "pgbackrest";
+    home = "/var/empty";
+    shell = "${pkgs.shadow}/bin/nologin";
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB/MvLptoZtmsHPQjzShclu/GkpdYL1eLHPsDizEq3t7 pgbackrest@archy"
+    ];
+  };
+  services.openssh.extraConfig = ''
+    Match User pgbackrest
+      ChrootDirectory ${pgbackrestChroot}
+      ForceCommand internal-sftp -d /repo
+      AllowTcpForwarding no
+      AllowAgentForwarding no
+      AllowStreamLocalForwarding no
+      PermitTunnel no
+      PermitTTY no
+      X11Forwarding no
+  '';
+  fileSystems."${pgbackrestChroot}/repo" = {
+    device = pgbackrestRepository;
+    fsType = "none";
+    options = [ "bind" "nofail" "x-systemd.requires-mounts-for=${hl.mounts.slow}" ];
+  };
   systemd.services.systemd-tmpfiles-setup.unitConfig.RequiresMountsFor =
     [ hl.mounts.slow ];
 

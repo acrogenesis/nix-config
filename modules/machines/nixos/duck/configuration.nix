@@ -264,6 +264,16 @@ in {
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB/MvLptoZtmsHPQjzShclu/GkpdYL1eLHPsDizEq3t7 pgbackrest@archy"
     ];
   };
+  # pgBackRest's libssh2 (1.10, in the Postgres image) has no encrypt-then-MAC
+  # support, and sshd cannot set MACs per Match block. Keep the default ETM MACs
+  # first so every modern client still negotiates them; the plain HMACs come last.
+  services.openssh.settings.Macs = [
+    "hmac-sha2-512-etm@openssh.com"
+    "hmac-sha2-256-etm@openssh.com"
+    "umac-128-etm@openssh.com"
+    "hmac-sha2-512"
+    "hmac-sha2-256"
+  ];
   services.openssh.extraConfig = ''
     Match User pgbackrest
       ChrootDirectory ${pgbackrestChroot}

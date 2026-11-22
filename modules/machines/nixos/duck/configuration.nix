@@ -278,7 +278,8 @@ in {
   fileSystems."${pgbackrestChroot}/repo" = {
     device = pgbackrestRepository;
     fsType = "none";
-    options = [ "bind" "nofail" "x-systemd.requires-mounts-for=${hl.mounts.slow}" ];
+    options =
+      [ "bind" "nofail" "x-systemd.requires-mounts-for=${hl.mounts.slow}" ];
   };
   systemd.services.systemd-tmpfiles-setup.unitConfig.RequiresMountsFor =
     [ hl.mounts.slow ];

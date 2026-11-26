@@ -93,17 +93,24 @@ from both appdata backup targets and can be rebuilt from the media library.
 
 ### Omarchy Time Machine client backups
 
-The `archy` desktop stores its encrypted Restic repository at
-`/mnt/mergerfs_slow/Backups/TimeMachine/archy` over SSH/SFTP as `acrogenesis`.
-NixOS creates the directory and restores its ownership at boot and activation,
-after the disk pool is mounted. The backup contents live on the persistent data
-disks and survive Duck's root rollback.
+Omarchy clients keep separate encrypted Restic repositories on Duck:
 
-The mover excludes `Backups/TimeMachine/archy` from both file moves and its
-recursive ownership/mode reset on both pools. Exclusions match complete path
-components, so similarly named neighboring directories retain the normal mover
-policy. Desktop credentials, exclusions and its nightly timer remain configured
-on the desktop. No client-side privileged ownership repair is required.
+| Client | Repository |
+| --- | --- |
+| Archy | `/mnt/mergerfs_slow/Backups/TimeMachine/archy` |
+| Machy | `/mnt/mergerfs_slow/Backups/TimeMachine/machy` |
+
+The `timeMachineClients` list in Duck's configuration declares each repository.
+Boot/activation restores `acrogenesis:acrogenesis` ownership and mode `0700`
+after the slow pool is mounted. The mover skips each repository on both pools,
+including its permission-repair passes, so it cannot reset them to `share:share`.
+
+Machy authenticates with its own SFTP-only key; its public key is declared in
+Duck's configuration. Client SSH private keys and repository passwords stay on
+the corresponding client, outside this repository. Each client must keep an
+independent recovery-key copy, and uses `~/.config/omarchy-time-machine/config.json`
+for its backup schedule and exclusions. This is separate from Duck's appdata
+backup repositories and its macOS Time Machine Samba share.
 
 ## Updating Duck
 

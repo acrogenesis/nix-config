@@ -8,7 +8,10 @@ let
   gatewayIpv6Address = "fd84:7b2c:3e5a:1::1";
   lanInterface = lan.interface;
   bootDeviceId = "nvme-Patriot_M.2_P300_512GB_P300WCBB24093006490";
-  timeMachineRepository = "${hl.mounts.slow}/Backups/TimeMachine/archy";
+  timeMachineClients = [ "archy" "machy" ];
+  timeMachineRepositories =
+    map (name: "${hl.mounts.slow}/Backups/TimeMachine/${name}")
+    timeMachineClients;
   # pgBackRest repository for the Valiot Postgres databases on archy, written over
   # SFTP. It lives on the parity-protected HDD array, outside every Restic path, so
   # it is not shipped to Backblaze, and outside the Samba shares.
@@ -238,18 +241,25 @@ in {
     user = hl.user;
     group = hl.group;
     percentageFree = 60;
-    excludedPaths = [ "Backups/TimeMachine/archy" ];
+    excludedPaths =
+      map (name: "Backups/TimeMachine/${name}") timeMachineClients;
   };
 
-  # This encrypted client repository belongs to the SSH backup account, not
+  # Encrypted client repositories belong to the SSH backup account, not
   # the shared media account. Restore ownership at boot and activation.
   systemd.tmpfiles.rules = [
     "d ${hl.mounts.slow}/Backups/TimeMachine 0775 ${hl.user} ${hl.group} - -"
-    "d ${timeMachineRepository} 0700 acrogenesis acrogenesis - -"
-    "Z ${timeMachineRepository} - acrogenesis acrogenesis - -"
     "d ${pgbackrestRepository} 0750 pgbackrest pgbackrest - -"
     "d ${pgbackrestChroot} 0755 root root - -"
     "d ${pgbackrestChroot}/repo 0750 pgbackrest pgbackrest - -"
+  ] ++ lib.concatMap (repository: [
+    "d ${repository} 0700 acrogenesis acrogenesis - -"
+    "Z ${repository} - acrogenesis acrogenesis - -"
+  ]) timeMachineRepositories;
+
+  users.users.acrogenesis.openssh.authorizedKeys.keys = [
+    ''
+      restrict,command="internal-sftp" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICOY06WLgwsDxmWOIXvdbrztBEA3HqEklAz1KKYILOJX time-machine@machy''
   ];
 
   # Archy's Postgres servers push WAL and backups here with pgBackRest
